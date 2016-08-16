@@ -2,6 +2,7 @@ package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.ContentProviderOperation;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -124,13 +126,13 @@ public class Utils {
                             .getJSONObject("quote");
                     String theBidPrice = jsonObject.getString("Bid");
 
-                    if (theBidPrice.equals("null")){ //this is Not a valid stock
+                    if (theBidPrice.equals("null")) { //this is Not a valid stock
                         //return a toast - Handler needed to show toast on UI thread from non-UI thread
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(context,"Not A Valid Stock",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Not A Valid Stock", Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -142,5 +144,14 @@ public class Utils {
             Log.e(LOG_TAG, "String to JSON failed: " + e);
         }
         return true; //stock is valid
+    }
+
+
+    //LJG Trying to broadcast that API data is done
+    public static void sendBroadcastForUpdate(Context context) {
+        Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
+        // getApplicationContext().sendBroadcast(new Intent(MyStocksActivity.REFRESH_DATA_INTENT));
+        context.sendBroadcast(dataUpdated);
+
     }
 }

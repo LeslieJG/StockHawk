@@ -1,9 +1,11 @@
 
-<FrameLayout
+
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/stock_swipe_container"
     >
 
   <android.support.v7.widget.RecyclerView
@@ -27,4 +29,4 @@
       fab:layout_anchor="recycler_view"
       fab:layout_anchorGravity="bottom | end"
       />
-</FrameLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

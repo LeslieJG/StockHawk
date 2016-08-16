@@ -1,14 +1,17 @@
 package com.sam_chordas.android.stockhawk.ui;
 
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,7 +40,7 @@ import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
-public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -54,7 +57,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private Context mContext;
     private Cursor mCursor;
     boolean isConnected;
+    SwipeRefreshLayout mSwipeLayout;
     private final String LOG_TAG = MyStocksActivity.class.getSimpleName();
+
+    private DataUpdateReceiver dataUpdateReceiver; //for getting updates From StockTaskService that API call done
+    public static final String REFRESH_DATA_INTENT = "Api_Call_Complete"; //for sending out intent that API call is done
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +72,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         isConnected = checkInternetConnected();
         setContentView(R.layout.activity_my_stocks);
 
+        //Start the API call
+
+        //update the db from API call
 
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
@@ -77,6 +88,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 networkToast();
             }
         }
+
+
+        //TODO: Deal with Swipe Layout
+        //For Swipe Layout
+        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.stock_swipe_container);
+        mSwipeLayout.setOnRefreshListener(this);
+
+
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
@@ -162,15 +181,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
-    /*
-    Helper method to check for internet connectivity
-     */
-    private boolean checkInternetConnected() {
-        ConnectivityManager cm =
-                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
+
+    @Override
+    protected void onPause() {
+        if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver);
+
+        Log.v(LOG_TAG, "LJG onPause");
+        super.onPause();
+
     }
 
 
@@ -179,15 +197,34 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         super.onResume();
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
 
-        //quick network check for better user experience
+        Log.v(LOG_TAG, "LJG onResume");
+
+        //LJG ensure Dataupdate Receiver is available
+        if (dataUpdateReceiver == null) {
+            dataUpdateReceiver = new DataUpdateReceiver();
+            Log.v(LOG_TAG, "LJG onResume made new DataUpdateReciever");
+        }
+
+        IntentFilter intentFilter = new IntentFilter(REFRESH_DATA_INTENT);
+        registerReceiver(dataUpdateReceiver, intentFilter);
+
+
+        //LJG quick network check for better user experience
         if (!checkInternetConnected()) {
             networkToast();
         }
 
     }
 
+    /*
+    To show user no network connection
+     */
     public void networkToast() {
         Toast.makeText(mContext, getString(R.string.network_toast), Toast.LENGTH_SHORT).show();
+    }
+
+    public void refreshFailedToast() {
+        Toast.makeText(mContext, "Can Not Refresh - No Internet Connection", Toast.LENGTH_SHORT).show();
     }
 
     public void restoreActionBar() {
@@ -246,5 +283,75 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     public void onLoaderReset(Loader<Cursor> loader) {
         mCursorAdapter.swapCursor(null);
     }
+
+
+    /*
+    FOr the swipe Refresh
+     */
+    @Override
+    public void onRefresh() {
+        Log.v(LOG_TAG, "Swipe Refresh");
+        updateDbfromAPi();
+    }
+
+    //stops the refreshing display
+    private void stopRefresh() {
+        if (mSwipeLayout != null) mSwipeLayout.setRefreshing(false);
+    }
+
+
+    /*
+     //LJG before returning result let the SwipreRefresh know that the refresh is done
+        //Credit: http://stackoverflow.com/users/574859/maximumgoat
+        //from this thread http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
+     */
+    private class DataUpdateReceiver extends BroadcastReceiver {
+        private final String LOG_TAG = DataUpdateReceiver.class.getSimpleName();
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(REFRESH_DATA_INTENT)) {
+                // Do stuff - maybe update my view based on the changed DB contents
+
+                Log.v(LOG_TAG, "LJG API call done, data updated");
+                //mSwipeLayout.setRefreshing(false);
+                stopRefresh();
+            }
+        }
+    }
+
+    /*
+        Helper method to check for internet connectivity
+         */
+    private boolean checkInternetConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
+
+
+    /*
+    Updates the database from API
+     */
+    private void updateDbfromAPi() {
+        // The intent service is for executing immediate pulls from the Yahoo API
+        // GCMTaskService can only schedule tasks, they cannot execute immediately
+        mServiceIntent = new Intent(this, StockIntentService.class);
+
+        mServiceIntent.putExtra("tag", "init");//could also use "periodic" either will work
+        // if (isConnected) {
+        if (checkInternetConnected()) {
+            startService(mServiceIntent);
+        } else {
+            //networkToast();
+            refreshFailedToast();
+            stopRefresh();
+        }
+
+
+    }
+
 
 }

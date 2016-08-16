@@ -2,6 +2,7 @@ package com.sam_chordas.android.stockhawk.service;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -14,6 +15,7 @@ import com.google.android.gms.gcm.TaskParams;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.Utils;
+import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -35,6 +37,12 @@ public class StockTaskService extends GcmTaskService {
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
 
+
+
+    //public static final String REFRESH_DATA_INTENT = "Api_Call_Complete"; //for sending out intent that API call is done
+
+
+    //Constructor
     public StockTaskService() {
     }
 
@@ -66,6 +74,8 @@ public class StockTaskService extends GcmTaskService {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
+        //Do update if the tag is init(ial) or periodic
         if (params.getTag().equals("init") || params.getTag().equals("periodic")) {
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
@@ -121,27 +131,14 @@ public class StockTaskService extends GcmTaskService {
                     ContentValues contentValues = new ContentValues();
                     // update ISCURRENT to 0 (false) so new data is current
                     if (isUpdate) {
+
                         contentValues.put(QuoteColumns.ISCURRENT, 0);
                         mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                                 null, null);
                     }
 
-                   //TODO: Clean up this code
-                    //LJG split this up
-                    //get the content values, then iff it is valid, pass it to content provider
-
-                    //perhaps send it off, and if an arraylist with no entries is returned, then don't put it in content povider
-                    //just make a toast
-
-               //     Log.v(LOG_TAG, "the getResponse variable which will be evetually put into DB has value" + getResponse);
-                    //LJG debug
-
-                   // ArrayList stockValues = Utils.quoteJsonToContentVals(getResponse); //LJG separating out calls
-
                     //if data is valid, ONLY then try to put it into Database and pass get the JSON
-
                     Boolean stockValid = Utils.isStockValid(getResponse, mContext);
-
                     if (stockValid) { //ONLY update if stock is valid
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse));
@@ -155,6 +152,38 @@ public class StockTaskService extends GcmTaskService {
                 e.printStackTrace();
             }
         }
+
+        //LJG before returning result let the SwipreRefresh know that the refresh is done
+        //Credit: http://stackoverflow.com/users/574859/maximumgoat
+        //from this thread http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
+        Utils.sendBroadcastForUpdate(mContext);
+
         return result;
     }
+
+    private void sendBroadcastForUpdate(){
+        Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
+         // getApplicationContext().sendBroadcast(new Intent(MyStocksActivity.REFRESH_DATA_INTENT));
+   sendBroadcast(dataUpdated, MyStocksActivity.REFRESH_DATA_INTENT);
+
+    }
+
+
+    /**
+     *
+     * A callback interface that all activities wanting to be notified that the API call has
+     * been complete must
+     * implement. This mechanism allows activities to be notified API calls completed
+     */
+    public interface callback{
+
+        public void onRefreshComplete(int result);
+
+    }
+
+
+
+
+
+
 }
