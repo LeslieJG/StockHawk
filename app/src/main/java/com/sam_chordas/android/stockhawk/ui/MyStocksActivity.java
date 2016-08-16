@@ -310,6 +310,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
         @Override
         public void onReceive(Context context, Intent intent) {
+
+
             if (intent.getAction().equals(REFRESH_DATA_INTENT)) {
                 // Do stuff - maybe update my view based on the changed DB contents
 
