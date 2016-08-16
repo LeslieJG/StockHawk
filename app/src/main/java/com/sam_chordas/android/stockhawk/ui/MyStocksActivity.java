@@ -61,7 +61,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private final String LOG_TAG = MyStocksActivity.class.getSimpleName();
 
     private DataUpdateReceiver dataUpdateReceiver; //for getting updates From StockTaskService that API call done
-    public static final String REFRESH_DATA_INTENT = "Api_Call_Complete"; //for sending out intent that API call is done
+
+    //This key is accessed by all classes needing to recieve or broadcast that API call done
+    //public static final String REFRESH_DATA_INTENT = "Api_Call_Complete"; //for sending out intent that API call is done
 
 
     @Override
@@ -134,15 +136,15 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                             new String[]{input.toString()}, null);
                                     if (c.getCount() != 0) {
                                         Toast toast =
-                                                Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
+                                                Toast.makeText(MyStocksActivity.this, R.string.stock_already_exists_toast,
                                                         Toast.LENGTH_LONG);
                                         toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                                         toast.show();
                                         return;
                                     } else {
                                         // Add the stock to DB
-                                        mServiceIntent.putExtra("tag", "add");
-                                        mServiceIntent.putExtra("symbol", input.toString());
+                                        mServiceIntent.putExtra(getString(R.string.intent_tag_key), getString(R.string.intent_add));
+                                        mServiceIntent.putExtra(getString(R.string.intent_symbol_key), input.toString());
                                         startService(mServiceIntent);
                                     }
                                 }
@@ -163,7 +165,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         if (isConnected) {
             long period = 3600L;
             long flex = 10L;
-            String periodicTag = "periodic";
+            String periodicTag = getString(R.string.service_periodic_tag);
 
             // create a periodic task to pull stocks once every hour after the app has been opened. This
             // is so Widget data stays up to date.
@@ -205,7 +207,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
             Log.v(LOG_TAG, "LJG onResume made new DataUpdateReciever");
         }
 
-        IntentFilter intentFilter = new IntentFilter(REFRESH_DATA_INTENT);
+       // IntentFilter intentFilter = new IntentFilter(REFRESH_DATA_INTENT);
+        IntentFilter intentFilter = new IntentFilter(getString(R.string.refresh_data_intent_key));
         registerReceiver(dataUpdateReceiver, intentFilter);
 
 
@@ -224,7 +227,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     }
 
     public void refreshFailedToast() {
-        Toast.makeText(mContext, "Can Not Refresh - No Internet Connection", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, R.string.can_not_refresh_network_toast, Toast.LENGTH_SHORT).show();
     }
 
     public void restoreActionBar() {
@@ -312,7 +315,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         public void onReceive(Context context, Intent intent) {
 
 
-            if (intent.getAction().equals(REFRESH_DATA_INTENT)) {
+          //  if (intent.getAction().equals(REFRESH_DATA_INTENT)) {
+                if (intent.getAction().equals(getString(R.string.refresh_data_intent_key))) {
                 // Do stuff - maybe update my view based on the changed DB contents
 
                 Log.v(LOG_TAG, "LJG API call done, data updated");
@@ -342,7 +346,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         // GCMTaskService can only schedule tasks, they cannot execute immediately
         mServiceIntent = new Intent(this, StockIntentService.class);
 
-        mServiceIntent.putExtra("tag", "init");//could also use "periodic" either will work
+       // mServiceIntent.putExtra("tag", getString(R.string.intent_value_init));//could also use "periodic" either will work
+        mServiceIntent.putExtra(getString(R.string.intent_tag_key), getString(R.string.intent_value_init));//could also use "periodic" either will work
+
         // if (isConnected) {
         if (checkInternetConnected()) {
             startService(mServiceIntent);

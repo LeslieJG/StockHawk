@@ -8,9 +8,9 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -149,7 +149,8 @@ public class Utils {
 
     //LJG Trying to broadcast that API data is done
     public static void sendBroadcastForUpdate(Context context) {
-        Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
+       // Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
+        Intent dataUpdated = new Intent(context.getString(R.string.refresh_data_intent_key));
         // getApplicationContext().sendBroadcast(new Intent(MyStocksActivity.REFRESH_DATA_INTENT));
         context.sendBroadcast(dataUpdated);
 

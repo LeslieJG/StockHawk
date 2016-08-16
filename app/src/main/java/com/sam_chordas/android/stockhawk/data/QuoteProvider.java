@@ -16,7 +16,8 @@ public class QuoteProvider {
   static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
   interface Path{
-    String QUOTES = "quotes";
+    //String QUOTES = "quotes"; //LJG change to be consistent and be declared ONLY in one place
+    String QUOTES = QuoteDatabase.QUOTES;
   }
 
   private static Uri buildUri(String... paths){
