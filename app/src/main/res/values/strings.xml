@@ -1,4 +1,6 @@
 <resources>
+
+    <!-- App Names and Titles [CHAR LIMIT=30] -->
     <string name="app_name">Stock Hawk</string>
     <string name="action_settings">Settings</string>
     <string name="action_change_units">Change Units</string>
@@ -12,21 +14,20 @@
     <!-- Search for New Stock [CHAR LIMIT=NONE]-->
     <string name="stock_already_exists_toast">This stock is already saved!</string>
 
-
     <!-- No Network Toast Messages  [CHAR LIMIT=NONE] -->
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
     <string name="can_not_refresh_network_toast">Can Not Refresh - No Internet Connection</string>
+    <!-- Toast Error Messages-->
+    <!-- Not Valid Stcok Toast Message [CHAR LIMIT=NONE]-->
+    <string name="toast_error_not_valid_stock_symbol">Not A Valid Stock</string>
 
 
-
-
-    <!-- No Usages - Delete-->
-    <string name="action_example">Example action</string>
-
+    <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+    <!-- Non Translatable keys and tags                                        -->
 
 
     <!-- Intent Keys and Tags -->
-    <string name ="refresh_data_intent_key" translatable="false">Api_Call_Complete</string>
+    <string name="refresh_data_intent_key" translatable="false">Api_Call_Complete</string>
     <string name="intent_tag" translatable="false">tag</string>
     <string name="intent_add" translatable="false">add</string>
     <string name="intent_symbol" translatable="false">symbol</string>
@@ -62,13 +63,7 @@
     <string name="json_null" translatable="false">null</string>
 
 
-    <!-- Toast Error Messages-->
-
-    <!-- Error Message showing not valid stock [CHAR LIMIT=NONE]-->
-    <string name="toast_error_not_valid_stock_symbol">Not A Valid Stock</string>
-
-    <!-- JSON Keys -->
-
-
+    <!-- No Usages - Delete-->
+    <string name="action_example">Example action</string>
 
 </resources>
