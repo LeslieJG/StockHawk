@@ -27,14 +27,14 @@
 
     <!-- Intent Keys and Tags [CHAR LIMIT=NONE]-->
     <string name ="refresh_data_intent_key" translatable="false">Api_Call_Complete</string>
-    <string name="intent_tag_key">tag</string>
-    <string name="intent_add">add</string>
-    <string name="intent_symbol_key">symbol</string>
+    <string name="intent_tag" translatable="false">tag</string>
+    <string name="intent_add" translatable="false">add</string>
+    <string name="intent_symbol" translatable="false">symbol</string>
 
 
     <!-- Service Keys and Tags [CHAR LIMIT=NONE]-->
-    <string name="service_periodic_tag">periodic</string>
-    <string name="intent_value_init">init</string>
+    <string name="service_periodic" translatable="false">periodic</string>
+    <string name="intent_init" translatable="false">init</string>
 
 
 </resources>

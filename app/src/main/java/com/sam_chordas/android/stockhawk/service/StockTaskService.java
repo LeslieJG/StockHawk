@@ -74,7 +74,9 @@ public class StockTaskService extends GcmTaskService {
         }
 
         //Do update if the tag is init(ial) or periodic
-        if (params.getTag().equals("init") || params.getTag().equals("periodic")) {
+      //  if (params.getTag().equals("init") || params.getTag().equals("periodic")) {
+            if (params.getTag().equals("init") || params.getTag().equals("periodic")) {
+
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                     new String[]{"Distinct " + QuoteColumns.SYMBOL}, null,

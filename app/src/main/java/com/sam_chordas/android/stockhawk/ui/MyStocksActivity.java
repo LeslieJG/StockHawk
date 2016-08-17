@@ -143,8 +143,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                         return;
                                     } else {
                                         // Add the stock to DB
-                                        mServiceIntent.putExtra(getString(R.string.intent_tag_key), getString(R.string.intent_add));
-                                        mServiceIntent.putExtra(getString(R.string.intent_symbol_key), input.toString());
+                                        mServiceIntent.putExtra(getString(R.string.intent_tag), getString(R.string.intent_add));
+                                        mServiceIntent.putExtra(getString(R.string.intent_symbol), input.toString());
                                         startService(mServiceIntent);
                                     }
                                 }
@@ -165,7 +165,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         if (isConnected) {
             long period = 3600L;
             long flex = 10L;
-            String periodicTag = getString(R.string.service_periodic_tag);
+            String periodicTag = getString(R.string.service_periodic);
 
             // create a periodic task to pull stocks once every hour after the app has been opened. This
             // is so Widget data stays up to date.
@@ -347,7 +347,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         mServiceIntent = new Intent(this, StockIntentService.class);
 
        // mServiceIntent.putExtra("tag", getString(R.string.intent_value_init));//could also use "periodic" either will work
-        mServiceIntent.putExtra(getString(R.string.intent_tag_key), getString(R.string.intent_value_init));//could also use "periodic" either will work
+        mServiceIntent.putExtra(getString(R.string.intent_tag), getString(R.string.intent_init));//could also use "periodic" either will work
 
         // if (isConnected) {
         if (checkInternetConnected()) {
