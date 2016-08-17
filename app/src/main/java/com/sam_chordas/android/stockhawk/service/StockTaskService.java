@@ -161,7 +161,7 @@ public class StockTaskService extends GcmTaskService {
                     Boolean stockValid = Utils.isStockValid(getResponse, mContext);
                     if (stockValid) { //ONLY update if stock is valid
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-                                Utils.quoteJsonToContentVals(getResponse));
+                                Utils.quoteJsonToContentVals(getResponse, mContext));
                     } else {  //stock NOT valid!!!! - delete this else!!!!
                     }
 

@@ -37,7 +37,6 @@
     <string name="intent_init" translatable="false">init</string>
 
 
-
     <!-- Default empty database stocks to load-->
     <string name="yahoo_stock_symbol" translatable="false">YHOO</string>
     <string name="apple_stock_symbol" translatable="false">AAPL</string>
@@ -50,6 +49,26 @@
     <string name="api_url_query_2" translatable="false">"select * from yahoo.finance.quotes where symbol "</string>
     <string name="api_url_query_3" translatable="false"><![CDATA[&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.]]></string>
     <string name="api_url_query_4" translatable="false"><![CDATA[org%2Falltableswithkeys&callback=]]></string>
+
+    <!-- JSON tags -->
+    <string name="json_query" translatable="false">query</string>
+    <string name="json_count" translatable="false">count</string>
+    <string name="json_results" translatable="false">results</string>
+    <string name="json_quote" translatable="false">quote</string>
+    <string name="json_change" translatable="false">Change</string>
+    <string name="json_symbol" translatable="false">symbol</string>
+    <string name="json_bid" translatable="false">Bid</string>
+    <string name="json_change_in_percent" translatable="false">ChangeinPercent</string>
+    <string name="json_null" translatable="false">null</string>
+
+
+    <!-- Toast Error Messages-->
+
+    <!-- Error Message showing not valid stock [CHAR LIMIT=NONE]-->
+    <string name="toast_error_not_valid_stock_symbol">Not A Valid Stock</string>
+
+    <!-- JSON Keys -->
+
 
 
 </resources>

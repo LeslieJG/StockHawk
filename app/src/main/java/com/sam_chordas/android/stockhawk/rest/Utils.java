@@ -27,26 +27,27 @@ public class Utils {
 
     public static boolean showPercent = true;
 
-    public static ArrayList quoteJsonToContentVals(String JSON) {
+    public static ArrayList quoteJsonToContentVals(String JSON, Context context) {
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
         JSONObject jsonObject = null;
         JSONArray resultsArray = null;
         try {
             jsonObject = new JSONObject(JSON);
             if (jsonObject != null && jsonObject.length() != 0) {
-                jsonObject = jsonObject.getJSONObject("query");
-                int count = Integer.parseInt(jsonObject.getString("count"));
+                jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_query));
+                int count = Integer.parseInt(jsonObject.getString(context.getString(R.string.json_count)));
                 if (count == 1) {
-                    jsonObject = jsonObject.getJSONObject("results")
-                            .getJSONObject("quote");
-                    batchOperations.add(buildBatchOperation(jsonObject)); //add result to
+                    jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
+                            .getJSONObject(context.getString(R.string.json_quote));
+                    batchOperations.add(buildBatchOperation(jsonObject, context)); //add result to
                 } else {
-                    resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
+                    resultsArray = jsonObject.getJSONObject(context.getString(R.string.json_results))
+                            .getJSONArray(context.getString(R.string.json_quote));
 
                     if (resultsArray != null && resultsArray.length() != 0) {
                         for (int i = 0; i < resultsArray.length(); i++) {
                             jsonObject = resultsArray.getJSONObject(i);
-                            batchOperations.add(buildBatchOperation(jsonObject));
+                            batchOperations.add(buildBatchOperation(jsonObject, context));
                         }
                     }
                 }
@@ -80,16 +81,21 @@ public class Utils {
         return change;
     }
 
-    public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) {
+    public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject, Context context) {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
         try {
-            String change = jsonObject.getString("Change");
-            builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString("symbol"));
+            //String change = jsonObject.getString("Change");
+            String change = jsonObject.getString(context.getString(R.string.json_change));
+            // builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString("symbol"));
+            builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString(context.getString(R.string.json_symbol)));
             //LJG this is where the "null" bid price comes in
-            builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString("Bid")));
+            //  builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString("Bid")));
+            builder.withValue(QuoteColumns.BIDPRICE
+                    , truncateBidPrice(jsonObject.getString(context.getString(R.string.json_bid))));
             builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
-                    jsonObject.getString("ChangeinPercent"), true));
+                    //  jsonObject.getString("ChangeinPercent"), true));
+                    jsonObject.getString(context.getString(R.string.json_change_in_percent)), true));
             builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
             builder.withValue(QuoteColumns.ISCURRENT, 1);
             if (change.charAt(0) == '-') {
@@ -116,23 +122,31 @@ public class Utils {
         try {
             jsonObject = new JSONObject(JSON);
             if (jsonObject != null && jsonObject.length() != 0) {
-                jsonObject = jsonObject.getJSONObject("query");
+                // jsonObject = jsonObject.getJSONObject("query");
+                jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_query));
 
-                int count = Integer.parseInt(jsonObject.getString("count"));
+                // int count = Integer.parseInt(jsonObject.getString("count"));
+                int count = Integer.parseInt(jsonObject.getString(context.getString(R.string.json_count)));
 
                 //Invalid User input will just result in one stock being searched - this is the only thing we will look for
                 if (count == 1) {
-                    jsonObject = jsonObject.getJSONObject("results")
-                            .getJSONObject("quote");
-                    String theBidPrice = jsonObject.getString("Bid");
+                    //  jsonObject = jsonObject.getJSONObject("results")
+                    jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
+                            // .getJSONObject("quote");
+                            .getJSONObject(context.getString(R.string.json_quote));
+                    // String theBidPrice = jsonObject.getString("Bid");
+                    String theBidPrice = jsonObject.getString(context.getString(R.string.json_bid));
 
-                    if (theBidPrice.equals("null")) { //this is Not a valid stock
+                    // if (theBidPrice.equals("null")) { //this is Not a valid stock
+                    if (theBidPrice.equals(context.getString(R.string.json_null))) { //this is Not a valid stock
                         //return a toast - Handler needed to show toast on UI thread from non-UI thread
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(context, "Not A Valid Stock", Toast.LENGTH_SHORT).show();
+                                //    Toast.makeText(context, "Not A Valid Stock", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.toast_error_not_valid_stock_symbol
+                                        , Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -149,7 +163,7 @@ public class Utils {
 
     //LJG Trying to broadcast that API data is done
     public static void sendBroadcastForUpdate(Context context) {
-       // Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
+        // Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
         Intent dataUpdated = new Intent(context.getString(R.string.refresh_data_intent_key));
         // getApplicationContext().sendBroadcast(new Intent(MyStocksActivity.REFRESH_DATA_INTENT));
         context.sendBroadcast(dataUpdated);
