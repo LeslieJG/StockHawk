@@ -109,8 +109,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 new RecyclerViewItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int position) {
-                        //TODO:
-                        // do something on item click
+                        //TODO: do something on item click
 
                         Log.v(LOG_TAG, "Item Clicked");
                     }

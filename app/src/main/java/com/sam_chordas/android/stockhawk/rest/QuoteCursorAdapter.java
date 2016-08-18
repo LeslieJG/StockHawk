@@ -2,10 +2,12 @@ package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,10 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
   private static Context mContext;
   private static Typeface robotoLight;
   private boolean isPercent;
+
+  private final static String LOG_TAG = QuoteCursorAdapter.class.getSimpleName();
+
+
   public QuoteCursorAdapter(Context context, Cursor cursor){
     super(context, cursor);
     mContext = context;
@@ -50,10 +56,24 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
     viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL)));
 
+
+
+
+  //  Log.v(LOG_TAG, "LJG Random Column index is " + cursor.getColumnIndex("random Column"));
+    Log.v(LOG_TAG, "NAME Column index is " +  cursor.getColumnIndex(QuoteColumns.NAME));
+  //  Log.v(LOG_TAG, "LJG Symbol Column index is " + cursor.getColumnIndex(QuoteColumns.SYMBOL));
+  //  Log.v(LOG_TAG, "LJG Change Column index is " + cursor.getColumnIndex(QuoteColumns.CHANGE));
     //LJG Trying to get name from Database cursor......not working
-    String stockSymbol = cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL));
+   // int randomBadColumnIndex = cursor.getColumnIndex("FUCK YOU");
+   // int nameColumnIndex = cursor.getColumnIndex(QuoteColumns.NAME);
+   // int SymbolColumnIndex = cursor.getColumnIndex(QuoteColumns.SYMBOL);
+   // int changeColumIndex = cursor.getColumnIndex(QuoteColumns.CHANGE);
+    // String stockSymbol = cursor.getString(cursor.getColumnIndex(QuoteColumns.NAME));
     //TODO: Add contentDescription
-    viewHolder.symbol.setContentDescription("Fuck yah");
+    viewHolder.symbol.setContentDescription("Test Description");
+
+    //LJG Dump out cursor to see what's in it
+    Log.v(LOG_TAG,"LJG - THe cursor is: " + DatabaseUtils.dumpCursorToString(cursor));
 
 
 

@@ -81,9 +81,13 @@ public class StockTaskService extends GcmTaskService {
                 || params.getTag().equals(mContext.getString(R.string.service_periodic))) {
 
             isUpdate = true;
-            initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                    new String[]{"Distinct " + QuoteColumns.SYMBOL}, null,
-                    null, null);
+
+            initQueryCursor = mContext.getContentResolver().query(
+                    QuoteProvider.Quotes.CONTENT_URI, //table name
+                    new String[]{"Distinct " + QuoteColumns.SYMBOL}, //projection (columns to return)
+                    null, //selection Clause
+                    null, //selection Arguments
+                    null); //sort order
             if (initQueryCursor.getCount() == 0 || initQueryCursor == null) {
                 // Init task. Populates DB with quotes for the symbols seen below
                 try {
@@ -179,28 +183,4 @@ public class StockTaskService extends GcmTaskService {
         Utils.sendBroadcastForUpdate(mContext);
 
         return result;
-    }
-/*
-
-//LJG TODO Delete if not needed
-    private void sendBroadcastForUpdate(){
-        Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
-         // getApplicationContext().sendBroadcast(new Intent(MyStocksActivity.REFRESH_DATA_INTENT));
-   sendBroadcast(dataUpdated, MyStocksActivity.REFRESH_DATA_INTENT);
-
-    }*/
-
-
-    /**
-     * A callback interface that all activities wanting to be notified that the API call has
-     * been complete must
-     * implement. This mechanism allows activities to be notified API calls completed
-     */
-    public interface callback {
-
-        public void onRefreshComplete(int result);
-
-    }
-
-
-}
+    }}
