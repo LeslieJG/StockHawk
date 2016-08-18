@@ -74,9 +74,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         isConnected = checkInternetConnected();
         setContentView(R.layout.activity_my_stocks);
 
-        //Start the API call
+        //TODO set ActionBar content description
+       /* android.app.ActionBar actionBar = getActionBar();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            actionBar.setHomeActionContentDescription("Fuck You");
+        }
+*/
+       // getSupportActionBar().setHomeActionContentDescription("Action Bar Test Content Description");
 
-        //update the db from API call
 
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
@@ -187,7 +192,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     protected void onPause() {
-        if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver);
+        if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver); //for indicating stock refresh
 
         Log.v(LOG_TAG, "LJG onPause");
         super.onPause();
@@ -201,9 +206,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
 
         Log.v(LOG_TAG, "LJG onResume");
-
         //LJG ensure Dataupdate Receiver is available
-        if (dataUpdateReceiver == null) {
+        if (dataUpdateReceiver == null) { //for indicating stock refresh
             dataUpdateReceiver = new DataUpdateReceiver();
             Log.v(LOG_TAG, "LJG onResume made new DataUpdateReciever");
         }
@@ -211,7 +215,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
        // IntentFilter intentFilter = new IntentFilter(REFRESH_DATA_INTENT);
         IntentFilter intentFilter = new IntentFilter(getString(R.string.refresh_data_intent_key));
         registerReceiver(dataUpdateReceiver, intentFilter);
-
 
         //LJG quick network check for better user experience
         if (!checkInternetConnected()) {

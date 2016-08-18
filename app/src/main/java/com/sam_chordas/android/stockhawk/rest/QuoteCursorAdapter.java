@@ -2,12 +2,10 @@ package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,34 +49,17 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
   @Override
   public void onBindViewHolder(final ViewHolder viewHolder, final Cursor cursor){
-   // viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex("symbol")));
+    String stockSymbol = cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL));
+    String stockName =  cursor.getString(cursor.getColumnIndex(QuoteColumns.NAME));
+   // viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL)));
+    viewHolder.symbol.setText(stockSymbol);
+    viewHolder.symbol.setContentDescription(stockName);
 
+    String stockBidPrice = cursor.getString(cursor.getColumnIndex(QuoteColumns.BIDPRICE));
+     //viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.BIDPRICE)));
+    viewHolder.bidPrice.setText(stockBidPrice);
+    viewHolder.bidPrice.setContentDescription("Bid Price is " +stockBidPrice + "dollars");
 
-    viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL)));
-
-
-
-
-  //  Log.v(LOG_TAG, "LJG Random Column index is " + cursor.getColumnIndex("random Column"));
-    Log.v(LOG_TAG, "NAME Column index is " +  cursor.getColumnIndex(QuoteColumns.NAME));
-  //  Log.v(LOG_TAG, "LJG Symbol Column index is " + cursor.getColumnIndex(QuoteColumns.SYMBOL));
-  //  Log.v(LOG_TAG, "LJG Change Column index is " + cursor.getColumnIndex(QuoteColumns.CHANGE));
-    //LJG Trying to get name from Database cursor......not working
-   // int randomBadColumnIndex = cursor.getColumnIndex("FUCK YOU");
-   // int nameColumnIndex = cursor.getColumnIndex(QuoteColumns.NAME);
-   // int SymbolColumnIndex = cursor.getColumnIndex(QuoteColumns.SYMBOL);
-   // int changeColumIndex = cursor.getColumnIndex(QuoteColumns.CHANGE);
-    // String stockSymbol = cursor.getString(cursor.getColumnIndex(QuoteColumns.NAME));
-    //TODO: Add contentDescription
-    viewHolder.symbol.setContentDescription("Test Description");
-
-    //LJG Dump out cursor to see what's in it
-    Log.v(LOG_TAG,"LJG - THe cursor is: " + DatabaseUtils.dumpCursorToString(cursor));
-
-
-
- //   viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex("bid_price")));
-    viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.BIDPRICE)));
     int sdk = Build.VERSION.SDK_INT;
    // if (cursor.getInt(cursor.getColumnIndex("is_up")) == 1){
       if (cursor.getInt(cursor.getColumnIndex(QuoteColumns.ISUP)) == 1){
@@ -99,11 +80,16 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
       }
     }
     if (Utils.showPercent){
-      //viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("percent_change")));
-      viewHolder.change.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
+      String stockPercentChange = cursor.getString(cursor.getColumnIndex(QuoteColumns.PERCENT_CHANGE));
+      //viewHolder.change.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
+      viewHolder.change.setText(stockPercentChange);
+      viewHolder.change.setContentDescription("Percent change is " + stockPercentChange);
     } else{
-      //viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("change")));
-      viewHolder.change.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.CHANGE)));
+
+      String stockChange = cursor.getString(cursor.getColumnIndex(QuoteColumns.CHANGE));
+     // viewHolder.change.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.CHANGE)));
+      viewHolder.change.setText(stockChange);
+      viewHolder.change.setContentDescription("Stock change is " + stockChange + "dollars");
     }
   }
 
