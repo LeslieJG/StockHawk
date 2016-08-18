@@ -46,7 +46,17 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
   @Override
   public void onBindViewHolder(final ViewHolder viewHolder, final Cursor cursor){
    // viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex("symbol")));
+
+
     viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL)));
+
+    //LJG Trying to get name from Database cursor......not working
+    String stockSymbol = cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL));
+    //TODO: Add contentDescription
+    viewHolder.symbol.setContentDescription("Fuck yah");
+
+
+
  //   viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex("bid_price")));
     viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.BIDPRICE)));
     int sdk = Build.VERSION.SDK_INT;
@@ -94,6 +104,10 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     public final TextView symbol;
     public final TextView bidPrice;
     public final TextView change;
+
+
+
+
     public ViewHolder(View itemView){
       super(itemView);
       symbol = (TextView) itemView.findViewById(R.id.stock_symbol);

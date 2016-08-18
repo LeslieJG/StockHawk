@@ -91,6 +91,14 @@ public class Utils {
             builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString(context.getString(R.string.json_symbol)));
             //LJG this is where the "null" bid price comes in
             //  builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString("Bid")));
+
+
+            //TODO Inserting name here from JSON
+            //LJG Delete comments when done
+            builder.withValue(QuoteColumns.NAME, jsonObject.getString("Name"));
+            Log.v(LOG_TAG, "LJG Inserted Name into database is " + jsonObject.getString("Name"));
+
+
             builder.withValue(QuoteColumns.BIDPRICE
                     , truncateBidPrice(jsonObject.getString(context.getString(R.string.json_bid))));
             builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(

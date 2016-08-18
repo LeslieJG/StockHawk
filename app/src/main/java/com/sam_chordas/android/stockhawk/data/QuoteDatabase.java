@@ -10,6 +10,7 @@ import net.simonvt.schematic.annotation.Table;
 public class QuoteDatabase {
   private QuoteDatabase(){}
 
+  //TODO: LJG I changed the database version from 7 to 8
   public static final int VERSION = 7;
 
   @Table(QuoteColumns.class) public static final String QUOTES = "quotes";

@@ -25,4 +25,9 @@ public class QuoteColumns {
   public static final String ISUP = "is_up";
   @DataType(DataType.Type.INTEGER) @NotNull
   public static final String ISCURRENT = "is_current";
+
+  //Adding a new column for Stock Name. Used for Content Description for talkback
+  @DataType(DataType.Type.TEXT)
+  public static final String NAME = "Name";
+
 }
