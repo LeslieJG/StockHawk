@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
 
     <!-- App Names and Titles [CHAR LIMIT=30] -->
     <string name="app_name">Stock Hawk</string>
@@ -66,4 +66,22 @@
     <!-- No Usages - Delete-->
     <string name="action_example">Example action</string>
 
+
+    <!-- Content Descriptions. These will be read by TalkBack or another reader
+    for visually impared users [CHAR LIMIT=NONE]-->
+    <string name="add_new_stock_button_content_description">Add new stock</string>
+    <string name="bid_price_content_description">Bid Price is
+        <xliff:g example="243" id="bid_price">%1$s</xliff:g>  dollars</string>
+    <string name="percent_change_content_description">Stock change is
+        <xliff:g example="1.5%" id="percent_stock_change_string">%1$s</xliff:g>
+        <xliff:g example="up" id="stock_change_went_up_or_down">%2$s</xliff:g>
+    </string>
+    <string name="stock_change_content_description">Stock change is
+        <xliff:g example="0.56" id="stock_change_string">%1$s</xliff:g> dollars
+        <xliff:g example="up" id="stock_change_went_up_or_down">%2$s</xliff:g>
+    </string>
+    <string name="stock_value_up">up</string>
+    <string name="stock_value_down">down</string>
+    
+        
 </resources>

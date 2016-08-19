@@ -33,7 +33,7 @@
       fab:fab_type="normal"
       fab:layout_anchor="recycler_view"
       fab:layout_anchorGravity="bottom | end"
-      android:contentDescription="Add new stock"
+      android:contentDescription="@string/add_new_stock_button_content_description"
       />
     </FrameLayout>
 </android.support.v4.widget.SwipeRefreshLayout>
