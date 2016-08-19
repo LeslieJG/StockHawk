@@ -74,15 +74,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         isConnected = checkInternetConnected();
         setContentView(R.layout.activity_my_stocks);
 
-        //TODO set ActionBar content description
-       /* android.app.ActionBar actionBar = getActionBar();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            actionBar.setHomeActionContentDescription("Fuck You");
-        }
-*/
-       // getSupportActionBar().setHomeActionContentDescription("Action Bar Test Content Description");
-
-
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
         mServiceIntent = new Intent(this, StockIntentService.class);
@@ -115,8 +106,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     @Override
                     public void onItemClick(View v, int position) {
                         //TODO: do something on item click
+                   //     Log.v(LOG_TAG, "Item Clicked");
 
-                        Log.v(LOG_TAG, "Item Clicked");
+                        //Launch the Detail Activity with explicit intent
+                       // Intent detailActivityIntent = new Intent(this, DetailActivity.class);
+                        Intent detailActivityIntent = new Intent(getApplicationContext() , DetailActivity.class);
+                        startActivity(detailActivityIntent);
+
+
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);
@@ -215,7 +212,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         //LJG ensure Dataupdate Receiver is available
         if (dataUpdateReceiver == null) { //for indicating stock refresh
             dataUpdateReceiver = new DataUpdateReceiver();
-            Log.v(LOG_TAG, "LJG onResume made new DataUpdateReceiver");
+        //    Log.v(LOG_TAG, "LJG onResume made new DataUpdateReceiver");
         }
 
        // IntentFilter intentFilter = new IntentFilter(REFRESH_DATA_INTENT);
@@ -322,17 +319,16 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     /*
      //LJG before returning result let the SwipreRefresh know that the refresh is done
-        //Credit: http://stackoverflow.com/users/574859/maximumgoat
-        //from this thread http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
+        Receives call that API call is done
+        Used to let UI refresh symbol know that refresh is done now.
+        Credit: http://stackoverflow.com/users/574859/maximumgoat
+        from this thread http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
      */
     private class DataUpdateReceiver extends BroadcastReceiver {
         private final String LOG_TAG = DataUpdateReceiver.class.getSimpleName();
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
-
-          //  if (intent.getAction().equals(REFRESH_DATA_INTENT)) {
                 if (intent.getAction().equals(getString(R.string.refresh_data_intent_key))) {
                 // Do stuff - maybe update my view based on the changed DB contents
 
@@ -374,9 +370,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
             refreshFailedToast();
             stopRefresh();
         }
-
-
     }
-
 
 }

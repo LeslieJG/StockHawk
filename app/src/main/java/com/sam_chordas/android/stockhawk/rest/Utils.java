@@ -96,7 +96,7 @@ public class Utils {
             //TODO Inserting name here from JSON
             //LJG Delete comments when done
             builder.withValue(QuoteColumns.NAME, jsonObject.getString("Name"));
-            Log.v(LOG_TAG, "LJG Inserted Name into database is " + jsonObject.getString("Name"));
+           // Log.v(LOG_TAG, "LJG Inserted Name into database is " + jsonObject.getString("Name"));
 
 
             builder.withValue(QuoteColumns.BIDPRICE
