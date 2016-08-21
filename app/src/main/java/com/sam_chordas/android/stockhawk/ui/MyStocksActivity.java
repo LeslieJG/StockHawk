@@ -105,7 +105,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 new RecyclerViewItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int position) {
-                        //TODO: do something on item click
+                        //TODO: LJG do something on item click
                    //     Log.v(LOG_TAG, "Item Clicked");
 
 
@@ -126,9 +126,18 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         Log.v(LOG_TAG, "LJG Click listener - stock symbol is " + stockSymbolClicked );
 
 
+                        //pass the stock symbol to detail activity to let it know what to look up
+
+                        //start an API call for historic data
+                        //ensure that the data is loaded into DB
+
+
+
+
                         //Launch the Detail Activity with explicit intent
                        // Intent detailActivityIntent = new Intent(this, DetailActivity.class);
                         Intent detailActivityIntent = new Intent(getApplicationContext() , DetailActivity.class);
+                        detailActivityIntent.putExtra("Stock Symbol Tag", stockSymbolClicked);
                         startActivity(detailActivityIntent);
 
 

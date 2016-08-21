@@ -18,18 +18,33 @@ public class DetailActivity extends AppCompatActivity {
         Log.v(LOG_TAG, "LJG Detail Activity - onCreate");
 
         if (savedInstanceState == null) {
+
+            //get the stock sybmol name
+            String stockSymbolName = getIntent().getStringExtra("Stock Symbol Tag");
+            Log.v(LOG_TAG, "LJG onCreate - the stock symbol received in DetailActivity is "+ stockSymbolName);
+
+
+
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
+
+
+
 
             Bundle arguments = new Bundle();
            // arguments.putParcelable(DetailFragment.DETAIL_URI, getIntent().getData());
           //  arguments.putBoolean(DetailFragment.DETAIL_TRANSITION_ANIMATION, true);
 
-            DetailFragment fragment = new DetailFragment();
+
+            DetailFragment detailFragment = DetailFragment.newInstance(stockSymbolName);
+
+
+           // DetailFragment fragment = new DetailFragment();
           //  fragment.setArguments(arguments);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.detail_fragment_container, fragment)
+                  //  .add(R.id.detail_fragment_container, fragment)
+                    .add(R.id.detail_fragment_container, detailFragment)
                     .commit();
 
             // Being here means we are in animation mode
