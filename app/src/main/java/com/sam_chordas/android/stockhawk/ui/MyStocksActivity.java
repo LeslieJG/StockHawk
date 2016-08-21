@@ -96,7 +96,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         mSwipeLayout.setOnRefreshListener(this);
 
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
@@ -108,10 +108,31 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         //TODO: do something on item click
                    //     Log.v(LOG_TAG, "Item Clicked");
 
+
+                        //LJG get the stock symbol from db and put it in log statement
+                        //eventually pass it to the API call for historic data
+                        //and store that historic data somewhere
+                        //then put into line chart
+                        //then display it
+
+
+
+                        Cursor cursor = mCursorAdapter.getCursor(); //Get the cursor with all the data in it
+                        cursor.moveToPosition(position); //move cursor to correct position
+                        //get Stcok symbol
+                        String stockSymbolClicked = cursor
+                                .getString(cursor.getColumnIndex(QuoteColumns.SYMBOL));
+
+                        Log.v(LOG_TAG, "LJG Click listener - stock symbol is " + stockSymbolClicked );
+
+
                         //Launch the Detail Activity with explicit intent
                        // Intent detailActivityIntent = new Intent(this, DetailActivity.class);
                         Intent detailActivityIntent = new Intent(getApplicationContext() , DetailActivity.class);
                         startActivity(detailActivityIntent);
+
+
+
 
 
                     }
