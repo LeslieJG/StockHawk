@@ -129,7 +129,13 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         //pass the stock symbol to detail activity to let it know what to look up
 
                         //start an API call for historic data
+
+                        //Make new database for historic data
+
+
+
                         //ensure that the data is loaded into DB
+
 
 
 
@@ -137,7 +143,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         //Launch the Detail Activity with explicit intent
                        // Intent detailActivityIntent = new Intent(this, DetailActivity.class);
                         Intent detailActivityIntent = new Intent(getApplicationContext() , DetailActivity.class);
-                        detailActivityIntent.putExtra("Stock Symbol Tag", stockSymbolClicked);
+                        detailActivityIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolClicked);
                         startActivity(detailActivityIntent);
 
 

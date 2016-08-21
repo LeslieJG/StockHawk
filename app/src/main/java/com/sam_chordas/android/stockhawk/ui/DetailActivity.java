@@ -8,7 +8,7 @@ import com.sam_chordas.android.stockhawk.R;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
-
+    public static final String STOCK_SYMBOL_DETAIL_TAG = "Stock Symbol Tag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +20,7 @@ public class DetailActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
 
             //get the stock sybmol name
-            String stockSymbolName = getIntent().getStringExtra("Stock Symbol Tag");
+            String stockSymbolName = getIntent().getStringExtra(STOCK_SYMBOL_DETAIL_TAG);
             Log.v(LOG_TAG, "LJG onCreate - the stock symbol received in DetailActivity is "+ stockSymbolName);
 
 
