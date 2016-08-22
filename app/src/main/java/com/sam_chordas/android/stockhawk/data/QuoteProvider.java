@@ -63,8 +63,8 @@ public class QuoteProvider {
   public static class  Histories{
     @ContentUri(
             path = Path.HISTORIES,
-            type = "vnd.android.cursor.dir/history",
-            defaultSort = StockHistoryColumns.DATE + "ASC"
+            type = "vnd.android.cursor.dir/history"
+          //  , defaultSort = StockHistoryColumns.DATE + "ASC"
     )
     public static final Uri CONTENT_URI = buildUri(Path.HISTORIES);
 

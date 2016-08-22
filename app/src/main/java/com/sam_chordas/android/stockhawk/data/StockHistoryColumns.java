@@ -14,11 +14,11 @@ public class StockHistoryColumns {
     @AutoIncrement
     public static final String _ID = "_id";
     @DataType(DataType.Type.TEXT) @NotNull
-    public static final String SYMBOL = "symbol";
+    public static final String SYMBOL = "symbol_history";
     @DataType(DataType.Type.TEXT) @NotNull
-    public static final String CLOSEPRICE = "close_price";
+    public static final String CLOSEPRICE = "close_price_histoty";
     @DataType(DataType.Type.TEXT) @NotNull
-    public static final String DATE = "date";
+    public static final String DATE = "date_history";
 
 /*
 

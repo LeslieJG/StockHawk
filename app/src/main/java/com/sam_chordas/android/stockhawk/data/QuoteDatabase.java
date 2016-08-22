@@ -11,10 +11,10 @@ public class QuoteDatabase {
   private QuoteDatabase(){}
 
 
-  public static final int VERSION = 10;
+  public static final int VERSION = 11;
 
   @Table(QuoteColumns.class) public static final String QUOTES = "quotes";
 
   //For detail view stock history graph
-  @Table(QuoteColumns.class) public static final String HISTORIES = "histories";
+  @Table(StockHistoryColumns.class) public static final String HISTORIES = "histories";
 }
