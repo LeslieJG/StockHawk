@@ -8,16 +8,22 @@ import net.simonvt.schematic.annotation.TableEndpoint;
 
 /**
  * Created by sam_chordas on 10/5/15.
+ *
+ * Two Table database based on schordas
+ * https://github.com/schordas/SchematicPlanets/blob/master/app/src/main/java/com/sam_chordas/android/schematicplanets/data/PlanetProvider.java
  */
+
 @ContentProvider(authority = QuoteProvider.AUTHORITY, database = QuoteDatabase.class)
 public class QuoteProvider {
-  public static final String AUTHORITY = "com.sam_chordas.android.stockhawk.data.QuoteProvider";
+  public static final String AUTHORITY =
+          "com.sam_chordas.android.stockhawk.data.QuoteProvider";
 
   static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
   interface Path{
     //String QUOTES = "quotes"; //LJG change to be consistent and be declared ONLY in one place
     String QUOTES = QuoteDatabase.QUOTES;
+    String HISTORIES = QuoteDatabase.HISTORIES;
   }
 
   private static Uri buildUri(String... paths){
@@ -28,6 +34,9 @@ public class QuoteProvider {
     return builder.build();
   }
 
+
+
+  //The StockQuote Uri
   @TableEndpoint(table = QuoteDatabase.QUOTES)
   public static class Quotes{
     @ContentUri(
@@ -47,4 +56,30 @@ public class QuoteProvider {
       return buildUri(Path.QUOTES, symbol);
     }
   }
+
+
+  //LJG The Stock History URI
+  @TableEndpoint(table = QuoteDatabase.HISTORIES)
+  public static class  Histories{
+    @ContentUri(
+            path = Path.HISTORIES,
+            type = "vnd.android.cursor.dir/history",
+            defaultSort = StockHistoryColumns.DATE + "ASC"
+    )
+    public static final Uri CONTENT_URI = buildUri(Path.HISTORIES);
+
+    @InexactContentUri(
+            name = "HISTORY_ID",
+            path = Path.HISTORIES + "/*",
+            type = "vnd.android.cursor.item/history",
+            whereColumn = StockHistoryColumns.SYMBOL,
+            pathSegment = 1
+    )
+    public static Uri withSymbol(String symbol){
+      return buildUri(Path.HISTORIES, symbol);
+    }
+  }
+
+
+
 }

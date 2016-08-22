@@ -14,4 +14,7 @@ public class QuoteDatabase {
   public static final int VERSION = 10;
 
   @Table(QuoteColumns.class) public static final String QUOTES = "quotes";
+
+  //For detail view stock history graph
+  @Table(QuoteColumns.class) public static final String HISTORIES = "histories";
 }
