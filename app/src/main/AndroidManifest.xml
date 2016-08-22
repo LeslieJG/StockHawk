@@ -48,6 +48,7 @@
             </intent-filter>
         </service>
         <service android:name=".service.StockIntentService" />
+        <service android:name=".service.StockHistoryIntentService" />
 
         <provider
             android:name=".data.generated.QuoteProvider"
