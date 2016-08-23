@@ -161,6 +161,9 @@ public class StockTaskService extends GcmTaskService {
                                 null, null);
                     }
 
+                    //Log the value of output for debuggin
+                    Log.v(LOG_TAG, "The JSON response is "+ getResponse);
+
                     //if data is valid, ONLY then try to put it into Database and pass get the JSON
                     Boolean stockValid = Utils.isStockValid(getResponse, mContext);
                     if (stockValid) { //ONLY update if stock is valid

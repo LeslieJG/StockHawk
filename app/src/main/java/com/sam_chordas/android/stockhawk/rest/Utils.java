@@ -177,4 +177,19 @@ public class Utils {
         context.sendBroadcast(dataUpdated);
 
     }
+
+    //LJG Trying to broadcast that Stock History API data is done
+    public static void sendHistoryBroadcastForUpdate(Context context) {
+        // Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
+       Intent dataUpdated = new Intent(context.getString(R.string.stock_history_received_intent_key));
+       // Intent dataUpdated = new Intent();
+       // dataUpdated.setAction("FUCK");
+        // getApplicationContext().sendBroadcast(new Intent(MyStocksActivity.REFRESH_DATA_INTENT));
+        Log.v(LOG_TAG, "In sendHistoryBroadcastForUpdate");
+
+        context.sendBroadcast(dataUpdated);
+
+    }
+
+
 }

@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
+import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -15,6 +16,9 @@ import java.io.IOException;
  *
  * Intent Service to get Stock History from Yahoo API and put into database
  * Using OkHttp for API call
+ *
+ * Credit for Sending/Receiving Broadcast status from IntentService:
+ * http://stacktips.com/tutorials/android/creating-a-background-service-in-android
  */
 public class StockHistoryIntentService extends IntentService{
     public final static String LOG_TAG = StockHistoryIntentService.class.getSimpleName();
@@ -47,15 +51,15 @@ public class StockHistoryIntentService extends IntentService{
             urlString = urlStringBuilder.toString();
             try {
                 getResponse = fetchData(urlString);
-                Log.v(LOG_TAG, "LJG The JSON for history is " + getResponse);
+               // Log.v(LOG_TAG, "LJG The JSON for history is " + getResponse);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
 
 
+        //Broadcast that results are in
+        Utils.sendHistoryBroadcastForUpdate(getApplicationContext());
 
 
 

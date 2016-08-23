@@ -18,26 +18,28 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".ui.MyStocksActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.DetailActivity"
             android:label="@string/detail_name"
             android:parentActivityName=".ui.MyStocksActivity">
-
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MyStocksActivity" />
         </activity>
+
+
 
         <service
             android:name=".service.StockTaskService"
@@ -49,6 +51,15 @@
         </service>
         <service android:name=".service.StockIntentService" />
         <service android:name=".service.StockHistoryIntentService" />
+<!--
+
+        <receiver android:name=".ui.DetailActivity$StockHistoryReceiver">
+            <intent-filter>
+                <action android:name="YES"/>
+            </intent-filter>
+        </receiver>
+-->
+
 
         <provider
             android:name=".data.generated.QuoteProvider"

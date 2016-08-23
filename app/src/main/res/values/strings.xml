@@ -30,6 +30,7 @@
 
     <!-- Intent Keys and Tags -->
     <string name="refresh_data_intent_key" translatable="false">Api_Call_Complete</string>
+    <string name="stock_history_received_intent_key" translatable="false">STOCK_HISTORY</string>
     <string name="intent_tag" translatable="false">tag</string>
     <string name="intent_add" translatable="false">add</string>
     <string name="intent_symbol" translatable="false">symbol</string>

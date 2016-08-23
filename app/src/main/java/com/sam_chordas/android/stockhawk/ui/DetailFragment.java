@@ -1,9 +1,13 @@
 package com.sam_chordas.android.stockhawk.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +24,15 @@ import com.sam_chordas.android.stockhawk.R;
  * create an instance of this fragment.
  */
 public class DetailFragment extends Fragment {
+   // private Context mContext;
+    private StockHistoryReceiver stockHistoryReceiver; //Broadcast Receiver to receive updates for stock history
+    private static final String LOG_TAG = DetailFragment.class.getSimpleName();
+
+
+
+
+
+    ////////////**** Default Fragment Stuff ///////////////////////// - can delete if not used
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -76,20 +89,6 @@ public class DetailFragment extends Fragment {
         return fragmentView;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -129,5 +128,50 @@ public class DetailFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    ///////////////////////////////End of Default Fragment stuff
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //dynamically register Stock History Broadcast Receiver
+        if (stockHistoryReceiver == null) {
+            stockHistoryReceiver = new StockHistoryReceiver(); //make a new one
+        }
+        //either way reigister the receiver
+        IntentFilter intentFilter = new IntentFilter(getString(R.string.stock_history_received_intent_key));
+        getContext().registerReceiver(stockHistoryReceiver, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        //Dynmaically Unregister the Stock History Broadcast Receiver
+        if (stockHistoryReceiver != null) getContext().unregisterReceiver(stockHistoryReceiver);
+        super.onPause();
+    }
+
+    /*
+         //LJG before returning result let the SwipreRefresh know that the refresh is done
+            Receives call that API call is done
+            Used to let UI refresh symbol know that refresh is done now.
+            Credit: http://stackoverflow.com/users/574859/maximumgoat
+            from this thread http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
+         */
+    private class StockHistoryReceiver extends BroadcastReceiver {
+        private final String LOG_TAG = StockHistoryReceiver.class.getSimpleName();
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(getString(R.string.stock_history_received_intent_key))) {
+                // Do stuff - maybe update my view based on the changed DB contents
+
+                Log.v(LOG_TAG, "LJG StockHistoryUpdate Received");
+                //mSwipeLayout.setRefreshing(false);
+               // stopRefresh();
+            }
+        }
     }
 }

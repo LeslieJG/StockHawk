@@ -106,18 +106,20 @@ public class DetailActivity extends AppCompatActivity {
             stocksFromDbCursor.moveToFirst();
             String stockDateFromDB;
             stockDateFromDB = stocksFromDbCursor.getString(stocksFromDbCursor.getColumnIndex(StockHistoryColumns.DATE));
-            Log.v(LOG_TAG, "I got the date back from DB! it is " + stockDateFromDB);
+           // Log.v(LOG_TAG, "I got the date back from DB! it is " + stockDateFromDB);
 
 
 
             //Testing Yahoo API Quaery
             Intent stockHistoryIntent = new Intent(this, StockHistoryIntentService.class);
             this.startService(stockHistoryIntent);
-            //THis works
+            //This works
 
 
 
 
         }
     }
+
+
 }

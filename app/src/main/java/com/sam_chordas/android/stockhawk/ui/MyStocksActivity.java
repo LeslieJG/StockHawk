@@ -58,9 +58,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private Cursor mCursor;
     private boolean isConnected;
     SwipeRefreshLayout mSwipeLayout;
+    private DataUpdateReceiver dataUpdateReceiver; //for getting updates From StockTaskService that API call done
     private final String LOG_TAG = MyStocksActivity.class.getSimpleName();
 
-    private DataUpdateReceiver dataUpdateReceiver; //for getting updates From StockTaskService that API call done
 
     //This key is accessed by all classes needing to receive or broadcast that API call done
     //public static final String REFRESH_DATA_INTENT = "Api_Call_Complete"; //for sending out intent that API call is done
