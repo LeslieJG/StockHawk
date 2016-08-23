@@ -1,6 +1,7 @@
 package com.sam_chordas.android.stockhawk.service;
 
 import android.app.IntentService;
+import android.content.ContentProviderOperation;
 import android.content.Intent;
 import android.util.Log;
 
@@ -8,6 +9,10 @@ import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +29,7 @@ import java.util.ArrayList;
 public class StockHistoryIntentService extends IntentService{
     public final static String LOG_TAG = StockHistoryIntentService.class.getSimpleName();
     private OkHttpClient client = new OkHttpClient();
+
 
     public StockHistoryIntentService() {
         super("StockHistoryIntentService");
@@ -44,10 +50,10 @@ public class StockHistoryIntentService extends IntentService{
 
         urlStringBuilder.append("2016-08-23"); //replace with coded end date
 
-        urlStringBuilder.append("%22&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys");
+        urlStringBuilder.append("%22&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys");
 
         String urlString;
-        String getResponse; //JSON from Yahoo HTTP
+        String getResponse = null; //JSON from Yahoo HTTP
         if (urlStringBuilder != null) { //do api call and get data back
             urlString = urlStringBuilder.toString();
             try {
@@ -57,6 +63,40 @@ public class StockHistoryIntentService extends IntentService{
                 e.printStackTrace();
             }
         }
+
+
+        //Now get the JSON from the fetchData string
+        String tester = getResponse;
+
+        ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
+        JSONObject jsonObject = null;
+        JSONArray resultsArray = null;
+        try {
+            jsonObject = new JSONObject(getResponse);
+            Log.v(LOG_TAG, "LJG JSON StockHistory is OK");
+            /*if (jsonObject != null && jsonObject.length() != 0) {
+                jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_query));
+                int count = Integer.parseInt(jsonObject.getString(context.getString(R.string.json_count)));
+                if (count == 1) {
+                    jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
+                            .getJSONObject(context.getString(R.string.json_quote));
+                    batchOperations.add(buildBatchOperation(jsonObject, context)); //add result to
+                } else {
+                    resultsArray = jsonObject.getJSONObject(context.getString(R.string.json_results))
+                            .getJSONArray(context.getString(R.string.json_quote));
+
+                    if (resultsArray != null && resultsArray.length() != 0) {
+                        for (int i = 0; i < resultsArray.length(); i++) {
+                            jsonObject = resultsArray.getJSONObject(i);
+                            batchOperations.add(buildBatchOperation(jsonObject, context));
+                        }
+                    }
+                }*/
+
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "LJG Stock History String to JSON failed: " + e);
+        }
+
 
 
 
