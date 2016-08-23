@@ -10,6 +10,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Leslie on 2016-08-23.
@@ -56,6 +57,20 @@ public class StockHistoryIntentService extends IntentService{
                 e.printStackTrace();
             }
         }
+
+
+
+
+        //Broadcast a String of history answers
+        ArrayList<String> historyAnswers = new ArrayList<>();
+        historyAnswers.add("One");
+        historyAnswers.add("Two");
+        historyAnswers.add("Three");
+
+
+
+
+
 
 
         //Broadcast that results are in

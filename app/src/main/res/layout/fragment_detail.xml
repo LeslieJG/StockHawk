@@ -11,4 +11,13 @@
         android:layout_height="match_parent"
         android:text="@string/hello_blank_fragment" />
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/stock_history_line_chart">
+
+
+    </com.github.mikephil.charting.charts.LineChart>
+
+
 </FrameLayout>

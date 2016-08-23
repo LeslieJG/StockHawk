@@ -65,6 +65,12 @@ public class Utils {
     }
 
     public static String truncateChange(String change, boolean isPercentChange) {
+        Log.v(LOG_TAG, "LJG Utils truncate Change - change value is " + change);
+//LJG trying to deal with null values from API
+        if (change.contains("null")){
+            return "No Change";
+        }
+
         String weight = change.substring(0, 1);
         String ampersand = "";
         if (isPercentChange) {
