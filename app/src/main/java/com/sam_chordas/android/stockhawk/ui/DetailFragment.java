@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -92,7 +91,7 @@ public class DetailFragment extends Fragment {
         View fragmentView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         //TextView (to erase?)
-        TextView stockStymbolTextView = (TextView) fragmentView.findViewById(R.id.detail_fragment_stock_symbol);
+      //  TextView stockStymbolTextView = (TextView) fragmentView.findViewById(R.id.detail_fragment_stock_symbol);
        // stockStymbolTextView.setText("The stock symbol name is " + stockSymbolName);
 
         stockHistoryLineChart = (LineChart) fragmentView.findViewById(R.id.stock_history_line_chart);

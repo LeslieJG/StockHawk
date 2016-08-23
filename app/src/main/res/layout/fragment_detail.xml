@@ -1,9 +1,11 @@
-<FrameLayout
+<android.support.v7.widget.GridLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sam_chordas.android.stockhawk.ui.DetailFragment">
+    tools:context="com.sam_chordas.android.stockhawk.ui.DetailFragment"
+    app:columnCount="3">
 
 
 
@@ -11,19 +13,51 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/detail_fragment_stock_symbol"
+        android:id="@+id/line_chart_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment" />
+        android:text="Stock Chart Title"
+        app:layout_gravity="center_horizontal"
+        app:layout_columnSpan="3"
+        app:layout_columnWeight="1"/>
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/stock_history_line_chart"
-        android:contentDescription="@string/stock_history_line_chart_content_description">
+    <TextView
+        android:id="@+id/line_chart_y_axis_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Y-Axis"
+        app:layout_columnWeight="1"
+        app:layout_column="1"
+        android:rotation="-90"
+        app:layout_gravity="center"
 
 
-    </com.github.mikephil.charting.charts.LineChart>
 
 
-</FrameLayout>
+      />
+
+    <FrameLayout
+        app:layout_columnWeight="12"
+        app:layout_columnSpan="1"
+        app:layout_rowWeight="1"
+        >
+        <com.github.mikephil.charting.charts.LineChart
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/stock_history_line_chart"
+            android:contentDescription="@string/stock_history_line_chart_content_description">
+        </com.github.mikephil.charting.charts.LineChart>
+
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/line_chart_x_axis_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="X-Axis"
+        app:layout_columnWeight="1"
+        app:layout_column="2"
+        />
+
+</android.support.v7.widget.GridLayout>
