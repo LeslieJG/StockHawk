@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -89,8 +91,9 @@ public class DetailFragment extends Fragment {
 
         View fragmentView = inflater.inflate(R.layout.fragment_detail, container, false);
 
+        //TextView (to erase?)
         TextView stockStymbolTextView = (TextView) fragmentView.findViewById(R.id.detail_fragment_stock_symbol);
-        stockStymbolTextView.setText("The stock symbol name is " + stockSymbolName);
+       // stockStymbolTextView.setText("The stock symbol name is " + stockSymbolName);
 
         stockHistoryLineChart = (LineChart) fragmentView.findViewById(R.id.stock_history_line_chart);
 
@@ -123,13 +126,40 @@ public class DetailFragment extends Fragment {
         //put all data into line chart
 
         stockHistoryLineChart.setData(data); //puts all the data into chart
+
+        //Style the chart
+       // stockHistoryLineChart.setBackgroundColor(Color.WHITE); //sets background colour
+        stockHistoryLineChart.setDescription( stockSymbolName + "   stock history for the past year");//Sets the Chart Description
+        stockHistoryLineChart.setDescriptionColor(Color.YELLOW); //sets the graph description colour
+        stockHistoryLineChart.setDescriptionTextSize(16f); //sets size of Description from 6f to 16f
+        stockHistoryLineChart.setNoDataTextDescription("No Stock History");
+
+        //Style the Axis
+        YAxis leftAxis =   stockHistoryLineChart.getAxisLeft();
+        leftAxis.setTextColor(Color.WHITE);
+
+        YAxis rightAxis = stockHistoryLineChart.getAxisRight();
+        rightAxis.setTextColor(Color.WHITE);
+
+        XAxis xAxis = stockHistoryLineChart.getXAxis();
+        xAxis.setTextColor(Color.WHITE);
+
+       // Limi
+
+       // stockHistoryLineChart.
+
+
+
+
+
+
         stockHistoryLineChart.invalidate(); //redraws chart
 
 
 
 
 
-        
+
 
         // return inflater.inflate(R.layout.fragment_detail, container, false);
         return fragmentView;
