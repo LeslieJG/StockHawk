@@ -64,6 +64,9 @@
     <string name="json_bid" translatable="false">Bid</string>
     <string name="json_change_in_percent" translatable="false">ChangeinPercent</string>
     <string name="json_null" translatable="false">null</string>
+    <string name="json_date" translatable="false">Date</string>
+    <string name="json_close" translatable="false">Close</string>
+    <string name="json_symbol_for_historical_data">Symbol</string>
 
 
     <!-- No Usages - Delete-->

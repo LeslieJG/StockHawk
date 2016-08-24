@@ -1,6 +1,7 @@
 package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.ContentProviderOperation;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.data.StockHistoryColumns;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -88,6 +90,7 @@ public class Utils {
     }
 
     public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject, Context context) {
+
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
         try {
@@ -196,6 +199,29 @@ public class Utils {
         context.sendBroadcast(dataUpdated);
 
     }
+
+
+    /**
+     * Used to make a Content Value for he closing price of a stock
+     * on a given date.
+     * To put into Histories Database eventually
+     *
+     * @param symbol Stock Symbol String
+     * @param date  Stock Date String
+     * @param closePrice Stock Closing Price String
+     * @return Content Values of the stock on this date
+     */
+    public static ContentValues makeStockHistoryContentValue (String symbol, String date, String closePrice){
+        ContentValues value = new ContentValues();
+        value.put(StockHistoryColumns.SYMBOL, symbol);
+        value.put(StockHistoryColumns.DATE, date);
+        value.put(StockHistoryColumns.CLOSEPRICE, closePrice);
+        return  value;
+            }
+
+
+
+
 
 
 }

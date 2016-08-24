@@ -20,6 +20,12 @@ public class StockHistoryColumns {
     @DataType(DataType.Type.TEXT) @NotNull
     public static final String DATE = "date_history";
 
+
+
+
+}
+
+
 /*
 
     @DataType(DataType.Type.TEXT) @NotNull
@@ -37,6 +43,3 @@ public class StockHistoryColumns {
     @DataType(DataType.Type.INTEGER) @NotNull
     public static final String ISCURRENT = "is_current";
 */
-
-
-}

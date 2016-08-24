@@ -5,6 +5,7 @@ import android.content.ContentProviderOperation;
 import android.content.Intent;
 import android.util.Log;
 
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -19,14 +20,14 @@ import java.util.ArrayList;
 
 /**
  * Created by Leslie on 2016-08-23.
- *
+ * <p/>
  * Intent Service to get Stock History from Yahoo API and put into database
  * Using OkHttp for API call
- *
+ * <p/>
  * Credit for Sending/Receiving Broadcast status from IntentService:
  * http://stacktips.com/tutorials/android/creating-a-background-service-in-android
  */
-public class StockHistoryIntentService extends IntentService{
+public class StockHistoryIntentService extends IntentService {
     public final static String LOG_TAG = StockHistoryIntentService.class.getSimpleName();
     private OkHttpClient client = new OkHttpClient();
 
@@ -38,6 +39,12 @@ public class StockHistoryIntentService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d(LOG_TAG, "Stock Intent Service");
+
+
+        //Check the database and see if I have any stock close info for this stock
+        //if yes, just chose the next day AFTer I have (no need to consult database afterwards)
+        //download all dates from the day AFTER I have in DB until today's date
+        //THen put all new dates into database
 
 
         //Build Yahoo API query URL for stock history
@@ -58,7 +65,7 @@ public class StockHistoryIntentService extends IntentService{
             urlString = urlStringBuilder.toString();
             try {
                 getResponse = fetchData(urlString);
-               // Log.v(LOG_TAG, "LJG The JSON for history is " + getResponse);
+                // Log.v(LOG_TAG, "LJG The JSON for history is " + getResponse);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -74,9 +81,59 @@ public class StockHistoryIntentService extends IntentService{
         try {
             jsonObject = new JSONObject(getResponse);
             Log.v(LOG_TAG, "LJG JSON StockHistory is OK");
-            /*if (jsonObject != null && jsonObject.length() != 0) {
-                jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_query));
-                int count = Integer.parseInt(jsonObject.getString(context.getString(R.string.json_count)));
+            if (jsonObject != null && jsonObject.length() != 0) {
+                JSONObject queryJsonObject = jsonObject.getJSONObject(getString(R.string.json_query));
+
+                int count = Integer.parseInt(queryJsonObject.getString(getString(R.string.json_count)));
+                Log.v(LOG_TAG, "LJG JSON StockHistory count is " + count);
+
+                if (count > 0) { //if there is a count - i.e. if their is historical data
+                    Log.v(LOG_TAG, "LJG JSON Stock history count is 1 or more");
+
+                    JSONObject resultsJsonObject = queryJsonObject.getJSONObject(getString(R.string.json_results));
+                    JSONArray quoteArray = resultsJsonObject.getJSONArray(getString(R.string.json_quote));
+                    JSONObject individualQuoteJson = null;
+
+                    // Log.v(LOG_TAG, "quoteArray is " +quoteArray );
+
+                    if (quoteArray != null && quoteArray.length() != 0) {
+                        Log.v(LOG_TAG, "Quote Array Not null and length is not Zero");
+
+                        int quoteArrayLength =  quoteArray.length();
+                        Log.v(LOG_TAG, "Quote array Length is " + quoteArrayLength);
+
+                        //do the for loop backwards to put the data in date ascending order (oldest to newest)
+                        // for (int i = 0; i < quoteArray.length(); i++) { //loop forwards - how API delivers it (dates descending)
+                        for (int i = quoteArrayLength-1; i>=0 ; i--) { //loop backwards - ascending date
+                            individualQuoteJson = quoteArray.getJSONObject(i);
+                            //  Log.v(LOG_TAG, "Individual Quote is "+ individualQuoteJson);
+
+                            //get the indivual parts that I want to keep
+                            String stockSymbol = individualQuoteJson.getString(getString(R.string.json_symbol_for_historical_data));
+                            String stockDate = individualQuoteJson.getString(getString(R.string.json_date));
+                            String stockCloseValue = individualQuoteJson.getString(getString(R.string.json_close));
+
+                            Log.v(LOG_TAG, "From historic data - Symbol:" + stockSymbol + " Date:" + stockDate + " Object:" + i);
+
+                            //put into database (or assemble into a batch process to add into database
+                            //need to figure out which values I already have in database?
+                            //or just empty the database?
+
+                            //temporarily empty the database of all of that symbol
+                            //better just to update the dates that I need first
+
+
+                            //   batchOperations.add(buildBatchOperation(jsonObject, context));
+                        }
+
+
+                    }
+
+
+                }
+
+
+               /*
                 if (count == 1) {
                     jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
                             .getJSONObject(context.getString(R.string.json_quote));
@@ -93,12 +150,12 @@ public class StockHistoryIntentService extends IntentService{
                     }
                 }*/
 
+
+            }
+
         } catch (JSONException e) {
             Log.e(LOG_TAG, "LJG Stock History String to JSON failed: " + e);
         }
-
-
-
 
 
         //Broadcast a String of history answers
@@ -108,14 +165,8 @@ public class StockHistoryIntentService extends IntentService{
         historyAnswers.add("Three");
 
 
-
-
-
-
-
         //Broadcast that results are in
         Utils.sendHistoryBroadcastForUpdate(getApplicationContext());
-
 
 
     }
@@ -125,7 +176,7 @@ public class StockHistoryIntentService extends IntentService{
      * Using OkHttp to get data from HTTP
      *
      * @param url to do API call
-     * @return API call string
+     * @return API return string
      * @throws IOException
      */
     String fetchData(String url) throws IOException {
