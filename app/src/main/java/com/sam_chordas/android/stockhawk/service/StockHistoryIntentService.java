@@ -161,11 +161,11 @@ public class StockHistoryIntentService extends IntentService {
 
 
         //Broadcast a String of history answers
-        ArrayList<String> historyAnswers = new ArrayList<>();
+       /* ArrayList<String> historyAnswers = new ArrayList<>();
         historyAnswers.add("One");
         historyAnswers.add("Two");
         historyAnswers.add("Three");
-
+*/
 
         //Broadcast that results are in
         Utils.sendHistoryBroadcastForUpdate(getApplicationContext());

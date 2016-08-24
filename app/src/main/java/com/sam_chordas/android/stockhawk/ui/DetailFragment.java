@@ -92,21 +92,20 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View fragmentView = inflater.inflate(R.layout.fragment_detail, container, false);
-
-        //TextView (to erase?)
-        //  TextView stockStymbolTextView = (TextView) fragmentView.findViewById(R.id.detail_fragment_stock_symbol);
-        // stockStymbolTextView.setText("The stock symbol name is " + stockSymbolName);
 
         stockHistoryLineChart = (LineChart) fragmentView.findViewById(R.id.stock_history_line_chart);
 
 
+        ////////////////NOW getting data directly from database/////////////////////////
+
+
         ///////////////Try putting dummy points into database then retrieving them//////////////
-    ///////////////////PUtting data into database ///////////////////////////////////////////////////////
+        ///////////////////PUtting data into database ///////////////////////////////////////////////////////
 
         ///Dummy points for database
-        String stockSymbol = "TestStock";
+       // String stockSymbol = "TestStock";
+        String stockSymbol = stockSymbolName; //using the stock symbol name passed in for my dummy data
         String date4 = "2015-03-25";
         String date3 = "2015-03-24";
         String date2 = "2015-03-23";
@@ -128,26 +127,6 @@ public class DetailFragment extends Fragment {
         ContentValues value3 = Utils.makeStockHistoryContentValue(stockSymbol, date3, close3);
         ContentValues value4 = Utils.makeStockHistoryContentValue(stockSymbol, date4, close4);
 
-        /*ContentValues value1 = new ContentValues();
-        value1.put(StockHistoryColumns.SYMBOL, stockSymbol);
-        value1.put(StockHistoryColumns.DATE, date1);
-        value1.put(StockHistoryColumns.CLOSEPRICE, close1);
-
-        ContentValues value2 = new ContentValues();
-        value2.put(StockHistoryColumns.SYMBOL, stockSymbol);
-        value2.put(StockHistoryColumns.DATE, date2);
-        value2.put(StockHistoryColumns.CLOSEPRICE, close2);
-
-        ContentValues value3 = new ContentValues();
-        value3.put(StockHistoryColumns.SYMBOL, stockSymbol);
-        value3.put(StockHistoryColumns.DATE, date3);
-        value3.put(StockHistoryColumns.CLOSEPRICE, close3);
-
-        ContentValues value4 = new ContentValues();
-        value4.put(StockHistoryColumns.SYMBOL, stockSymbol);
-        value4.put(StockHistoryColumns.DATE, date4);
-        value4.put(StockHistoryColumns.CLOSEPRICE, close4);
-*/
 
         //Erase the database for my test
         Context mContext = getContext();
@@ -163,19 +142,33 @@ public class DetailFragment extends Fragment {
         mContext.getContentResolver().insert(stockHistoryUri, value3);
         mContext.getContentResolver().insert(stockHistoryUri, value4);
 
-    ///   ////////////////////////////////getting Data OUT of database//////////////////////////////////////////////////
+        Log.v(LOG_TAG, "LJG - all dummy values should be inserted into database");
+
+        ///   ////////////////////////////////getting Data OUT of database//////////////////////////////////////////////////
+
 
         //Test getting value out of database
-        String value1FromDatabase;
         Cursor databaseTestCursor;
 
-        Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
+
+/////////////////////////Just deleting database to see how the code handles empty database//////////////////////
+        //  mContext.getContentResolver().delete(QuoteProvider.Histories.CONTENT_URI, null, null);
+
+
+        //Get the stock Symbol to graph
+
+
+        // Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
+        Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbolName);
         databaseTestCursor = mContext.getContentResolver().query(uriForSymbol
                 , null
                 , null
                 , null
                 , null); //poosibly have sort order date ascending
 
+
+
+        List<Entry> valsCompany1 = new ArrayList<Entry>(); //list entries for stock for graphing
 
         //Test the response
         if (!databaseTestCursor.moveToFirst()) {
@@ -187,7 +180,10 @@ public class DetailFragment extends Fragment {
 
             //get the first date for setting up x axis
             databaseTestCursor.moveToFirst();
-            String earliestDateInHistory =  databaseTestCursor.getString(databaseTestCursor.getColumnIndex(StockHistoryColumns.DATE));
+            String earliestDateInHistory = databaseTestCursor.getString(databaseTestCursor.getColumnIndex(StockHistoryColumns.DATE));
+
+
+
 
 
             //Loop through all data from cursor
@@ -208,8 +204,7 @@ public class DetailFragment extends Fragment {
                 //convert the Strings to dates
                 int dateDiff = Utils.numberOfDaysSinceFirstDate(earliestDateInHistory, testcursorDate);
 
-               // int newDate = Utils.getDateDiff(earliestDateInHistory, testcursorDate);
-
+                // int newDate = Utils.getDateDiff(earliestDateInHistory, testcursorDate);
 
 
                 Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
@@ -219,8 +214,16 @@ public class DetailFragment extends Fragment {
                         + " ClosePrice:" + testCursorClose);
 
 
+                //  Log.v(LOG_TAG, "Data to put into graph is - Date: " + " ");
 
-              //  Log.v(LOG_TAG, "Data to put into graph is - Date: " + " ");
+
+                //make up new graphing points
+
+                Float xValue = (float) dateDiff;
+                Float yValue = Float.valueOf(testCursorClose);
+
+                Entry stockGraphEntry = new Entry(xValue, yValue); //x,y
+                valsCompany1.add(stockGraphEntry);
 
 
                 databaseTestCursor.moveToNext(); //move to next item
@@ -238,16 +241,15 @@ public class DetailFragment extends Fragment {
 */
 
 
-
+        //Graph from the database instead of dummy points
 
         ////////////////////////////////////Dummy Points to make up //////////////////
-
         //Data point Entry
-        Entry point1 = new Entry(10f, 5f); //x,y
+      /*  Entry point1 = new Entry(10f, 5f); //x,y
         Entry point2 = new Entry(12f, 10f);
         Entry point3 = new Entry(15f, 11f);
         Entry point4 = new Entry(16f, 19f);
-
+*/
         //Data pointEntry with dates
 
 
@@ -273,23 +275,23 @@ public class DetailFragment extends Fragment {
 */
 
 
-      //  float point1Date =  Float.parseFloat("2015-03-25");
+        //  float point1Date =  Float.parseFloat("2015-03-25");
       /*      float point1Date =  startDate;
         float point1ClosePrice = Float.parseFloat("42.700001");
         Entry point1 = new Entry(0f, 5f); //x,y
 */
-       // Entry point1 = new Entry(0f, 5f); //x,y
-     //   Entry point2 = new Entry(2f, 10f);
-     //   Entry point3 = new Entry(5f, 11f);
-     //   Entry point4 = new Entry(6f, 19f);
+        // Entry point1 = new Entry(0f, 5f); //x,y
+        //   Entry point2 = new Entry(2f, 10f);
+        //   Entry point3 = new Entry(5f, 11f);
+        //   Entry point4 = new Entry(6f, 19f);
 
 
         //List containing all the entries for one line
-        List<Entry> valsCompany1 = new ArrayList<Entry>();
+       /* List<Entry> valsCompany1 = new ArrayList<Entry>();
         valsCompany1.add(point1);
         valsCompany1.add(point2);
         valsCompany1.add(point3);
-        valsCompany1.add(point4);
+        valsCompany1.add(point4);*/
 
         //Make a full Line Data set with the list and a String to descripe the
         //dataset (and to use as label)
@@ -370,7 +372,7 @@ public class DetailFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
