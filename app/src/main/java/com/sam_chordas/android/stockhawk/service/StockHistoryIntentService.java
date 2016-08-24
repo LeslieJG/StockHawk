@@ -113,7 +113,9 @@ public class StockHistoryIntentService extends IntentService {
                             String stockDate = individualQuoteJson.getString(getString(R.string.json_date));
                             String stockCloseValue = individualQuoteJson.getString(getString(R.string.json_close));
 
-                            Log.v(LOG_TAG, "From historic data - Symbol:" + stockSymbol + " Date:" + stockDate + " Object:" + i);
+                          //  Log.v(LOG_TAG, "From historic data - Symbol:" + stockSymbol + " Date:" + stockDate + " Object:" + i);
+
+
 
                             //put into database (or assemble into a batch process to add into database
                             //need to figure out which values I already have in database?

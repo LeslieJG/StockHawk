@@ -18,7 +18,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by sam_chordas on 10/8/15.
@@ -69,7 +74,7 @@ public class Utils {
     public static String truncateChange(String change, boolean isPercentChange) {
         Log.v(LOG_TAG, "LJG Utils truncate Change - change value is " + change);
 //LJG trying to deal with null values from API
-        if (change.contains("null")){
+        if (change.contains("null")) {
             return "No Change";
         }
 
@@ -105,7 +110,7 @@ public class Utils {
             //TODO Inserting name here from JSON
             //LJG Delete comments when done
             builder.withValue(QuoteColumns.NAME, jsonObject.getString("Name"));
-           // Log.v(LOG_TAG, "LJG Inserted Name into database is " + jsonObject.getString("Name"));
+            // Log.v(LOG_TAG, "LJG Inserted Name into database is " + jsonObject.getString("Name"));
 
 
             builder.withValue(QuoteColumns.BIDPRICE
@@ -190,9 +195,9 @@ public class Utils {
     //LJG Trying to broadcast that Stock History API data is done
     public static void sendHistoryBroadcastForUpdate(Context context) {
         // Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
-       Intent dataUpdated = new Intent(context.getString(R.string.stock_history_received_intent_key));
-       // Intent dataUpdated = new Intent();
-       // dataUpdated.setAction("FUCK");
+        Intent dataUpdated = new Intent(context.getString(R.string.stock_history_received_intent_key));
+        // Intent dataUpdated = new Intent();
+        // dataUpdated.setAction("FUCK");
         // getApplicationContext().sendBroadcast(new Intent(MyStocksActivity.REFRESH_DATA_INTENT));
         Log.v(LOG_TAG, "In sendHistoryBroadcastForUpdate");
 
@@ -206,22 +211,74 @@ public class Utils {
      * on a given date.
      * To put into Histories Database eventually
      *
-     * @param symbol Stock Symbol String
-     * @param date  Stock Date String
+     * @param symbol     Stock Symbol String
+     * @param date       Stock Date String
      * @param closePrice Stock Closing Price String
      * @return Content Values of the stock on this date
      */
-    public static ContentValues makeStockHistoryContentValue (String symbol, String date, String closePrice){
+    public static ContentValues makeStockHistoryContentValue(String symbol, String date, String closePrice) {
         ContentValues value = new ContentValues();
         value.put(StockHistoryColumns.SYMBOL, symbol);
         value.put(StockHistoryColumns.DATE, date);
         value.put(StockHistoryColumns.CLOSEPRICE, closePrice);
-        return  value;
-            }
+        return value;
+    }
 
 
+    /**
+     * Method used for plotting stock history
+     * Finds the Difference between two dates in days
+     * Used for laying out x-axis for stock history chart
+     *
+     * @param earliestDate String of Reference date ("yyyy-MM-dd")
+     * @param laterDate tring of later date ("yyyy-MM-dd")
+     * @return integer number of days between them
+     */
+    public static int numberOfDaysSinceFirstDate(String earliestDate, String laterDate) {
+        Date dateEarly = convertStringToDate(earliestDate);
+        Date dateLate = convertStringToDate(laterDate);
+
+        TimeUnit timeUnit = TimeUnit.DAYS; //find difference in days
+        long diffOfDays = getDateDiff(dateEarly, dateLate, timeUnit);
+        return (int) diffOfDays;
+    }
 
 
+    /**
+     * Credit based on code stub by citizen conn
+     * At: http://stackoverflow.com/questions/6510724/how-to-convert-java-string-to-date-object
+     *
+     * @param dateAsString The date in the form yyyy-MM-dd
+     * @return Java.Date version of the date
+     */
+    private static Date convertStringToDate(String dateAsString) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date;
+        try {
+            date = df.parse(dateAsString);
+            return date;
+            // String newDateString = df.format(startDate);
+        } catch (ParseException e) {
+            // e.printStackTrace();
+        }
+        return null; //if error return null
+    }
+
+
+    /**
+     * Credit Sebastien Lorber
+     * From: http://stackoverflow.com/questions/1555262/calculating-the-difference-between-two-java-date-instances
+     * Get a diff between two dates
+     *
+     * @param oldestDate the oldest date
+     * @param newestDate the newest date
+     * @param timeUnit   the unit in which you want the diff (eg. TimeUnit.DAYS)
+     * @return the diff value, in the provided unit
+     */
+    private static long getDateDiff(Date oldestDate, Date newestDate, TimeUnit timeUnit) {
+        long diffInMillies = newestDate.getTime() - oldestDate.getTime();
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
 
 
 }

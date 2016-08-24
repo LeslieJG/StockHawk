@@ -103,17 +103,24 @@ public class DetailFragment extends Fragment {
 
 
         ///////////////Try putting dummy points into database then retrieving them//////////////
+    ///////////////////PUtting data into database ///////////////////////////////////////////////////////
 
         ///Dummy points for database
         String stockSymbol = "TestStock";
-        String date1 = "2015-03-25";
-        String date2 = "2015-03-24";
-        String date3 = "2015-03-23";
-        String date4 = "2015-03-22";
+        String date4 = "2015-03-25";
+        String date3 = "2015-03-24";
+        String date2 = "2015-03-23";
+        String date1 = "2015-03-22";
+
+
         String close1 = "42.700001";
         String close2 = "40.100009";
         String close3 = "28.123456";
         String close4 = "11.123456";
+
+        //Make a method to quote days from first date - i.e. first date is zero
+        //next date is 1 etc
+        //to make nice x values for graph
 
         //Make Content Values
         ContentValues value1 = Utils.makeStockHistoryContentValue(stockSymbol, date1, close1);
@@ -156,12 +163,19 @@ public class DetailFragment extends Fragment {
         mContext.getContentResolver().insert(stockHistoryUri, value3);
         mContext.getContentResolver().insert(stockHistoryUri, value4);
 
+    ///   ////////////////////////////////getting Data OUT of database//////////////////////////////////////////////////
+
         //Test getting value out of database
         String value1FromDatabase;
         Cursor databaseTestCursor;
 
         Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
-        databaseTestCursor = mContext.getContentResolver().query(uriForSymbol, null, null, null, null);
+        databaseTestCursor = mContext.getContentResolver().query(uriForSymbol
+                , null
+                , null
+                , null
+                , null); //poosibly have sort order date ascending
+
 
         //Test the response
         if (!databaseTestCursor.moveToFirst()) {
@@ -171,6 +185,12 @@ public class DetailFragment extends Fragment {
             Log.v(LOG_TAG, "Database test cursor is valid and count is " + cursorCount);
 
 
+            //get the first date for setting up x axis
+            databaseTestCursor.moveToFirst();
+            String earliestDateInHistory =  databaseTestCursor.getString(databaseTestCursor.getColumnIndex(StockHistoryColumns.DATE));
+
+
+            //Loop through all data from cursor
             for (int i = 0; i < cursorCount; i++) {
 
                 String testcursorname =
@@ -185,13 +205,22 @@ public class DetailFragment extends Fragment {
 
                 //Loop through database table for all items and put them in log statement
 
+                //convert the Strings to dates
+                int dateDiff = Utils.numberOfDaysSinceFirstDate(earliestDateInHistory, testcursorDate);
+
+               // int newDate = Utils.getDateDiff(earliestDateInHistory, testcursorDate);
+
+
 
                 Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
                         + " Symbol:" + testcursorname
                         + " Date:" + testcursorDate
+                        + " Date diff:" + dateDiff
                         + " ClosePrice:" + testCursorClose);
 
 
+
+              //  Log.v(LOG_TAG, "Data to put into graph is - Date: " + " ");
 
 
                 databaseTestCursor.moveToNext(); //move to next item
