@@ -43,6 +43,22 @@ public class DetailFragment extends Fragment {
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
     private LineChart stockHistoryLineChart;
 
+    /////////////////////Database projection constants///////////////
+    //For making good use of database Projections specify the columns we need
+    private static final String[] STOCK_HISTORY_COLUMNS = {
+            StockHistoryColumns._ID,
+            StockHistoryColumns.SYMBOL,
+            StockHistoryColumns.DATE,
+            StockHistoryColumns.CLOSEPRICE,
+    };
+
+    // These indices are tied to STOCK_HISTORY_COLUMNS.  If STOCK_HISTORY_COLUMNS changes, these must change.
+    static final int COL_STOCK_HISTORY_ID = 0;
+    static final int COL_STOCK_HISTORY_SYMBOL = 1;
+    static final int COL_STOCK_HISTORY_DATE = 2;
+    static final int COL_STOCK_HISTORY_CLOSEPRICE = 3;
+    /////////////////////////////////////////////////////////
+
 
     ////////////**** Default Fragment Stuff ///////////////////////// - can delete if not used
     // TODO: Rename parameter arguments, choose names that match
@@ -178,10 +194,10 @@ public class DetailFragment extends Fragment {
         // Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
         Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
         stockHistoryCursor = mContext.getContentResolver().query(
-                uriForSymbol
-                , null
-                , null
-                , null
+                uriForSymbol //Uri
+                , STOCK_HISTORY_COLUMNS //projection (columns to return) (use nyll for no projection)
+                , null // //selection Clause
+                , null//selection Arguments
                 , null); //poosibly have sort order date ascending
 
 
@@ -197,32 +213,37 @@ public class DetailFragment extends Fragment {
 
             //get the first date for setting up x axis
             stockHistoryCursor.moveToFirst();
-            String earliestDateInHistory = stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
+            // String earliestDateInHistory = stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
+            String earliestDateInHistory = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
 
 
             //Loop through all data from cursor
             for (int i = 0; i < cursorCount; i++) {
-                String testcursorname =
-                        stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.SYMBOL));
-                String testcursorDate =
-                        stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
-                String testCursorClose =
-                        stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.CLOSEPRICE));
-                String testCursorID =
-                        stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns._ID));
+                //  String testcursorname =
+                //         stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.SYMBOL));
+                String testcursorname = stockHistoryCursor.getString(COL_STOCK_HISTORY_SYMBOL);
+                // String testcursorDate =
+                //       stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
+                String testcursorDate = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
+                //  String testCursorClose =
+                //      stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.CLOSEPRICE));
+                String testCursorClose = stockHistoryCursor.getString(COL_STOCK_HISTORY_CLOSEPRICE);
+                // String testCursorID =
+                //      stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns._ID));
+                String testCursorID = stockHistoryCursor.getString(COL_STOCK_HISTORY_ID);
 
                 //Loop through database table for all items and put them in log statement
 
                 //convert the Strings to dates
                 int dateDiff = Utils.numberOfDaysSinceFirstDate(earliestDateInHistory, testcursorDate);
 
-                Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
+            /*    Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
                         + " Symbol:" + testcursorname
                         + " Date:" + testcursorDate
                         + " Date diff:" + dateDiff
                         + " ClosePrice:" + testCursorClose);
 
-
+*/
                 //make up new graphing points
                 Float xValue = (float) dateDiff;
                 Float yValue = Float.valueOf(testCursorClose);

@@ -109,6 +109,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         String stockSymbolClicked = cursor
                                 .getString(cursor.getColumnIndex(QuoteColumns.SYMBOL));
 
+                        //change tp upper case for nicer UI experience
+                        stockSymbolClicked = stockSymbolClicked.toUpperCase();
+
                         Log.v(LOG_TAG, "LJG Click listener - stock symbol is " + stockSymbolClicked );
 
 
