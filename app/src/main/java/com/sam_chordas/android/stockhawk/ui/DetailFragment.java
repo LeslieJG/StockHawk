@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -188,8 +189,16 @@ public class DetailFragment extends Fragment {
 
      */
     private void updateLineChart(LineChart stockLineChart, String stockSymbol) {
+
+        new updateLineChartTask().execute(stockLineChart,stockSymbol);
+
+       //Try to call AsyncTask and see if it works
+
+       /*
         Cursor stockHistoryCursor;
         Context mContext = getContext();
+
+
 
         // Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
         Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
@@ -237,13 +246,13 @@ public class DetailFragment extends Fragment {
                 //convert the Strings to dates
                 int dateDiff = Utils.numberOfDaysSinceFirstDate(earliestDateInHistory, testcursorDate);
 
-            /*    Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
+            *//*    Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
                         + " Symbol:" + testcursorname
                         + " Date:" + testcursorDate
                         + " Date diff:" + dateDiff
                         + " ClosePrice:" + testCursorClose);
 
-*/
+*//*
                 //make up new graphing points
                 Float xValue = (float) dateDiff;
                 Float yValue = Float.valueOf(testCursorClose);
@@ -254,13 +263,13 @@ public class DetailFragment extends Fragment {
             }
         }
 
-/*
+*//*
         QuoteProvider.Quotes.CONTENT_URI, //table name
                 new String[]{"Distinct " + QuoteColumns.SYMBOL}, //projection (columns to return)
                 null, //selection Clause
                 null, //selection Arguments
                 null); //sort order
-*/
+*//*
 
 
         //Make a full Line Data set with the list and a String to descripe the
@@ -299,7 +308,179 @@ public class DetailFragment extends Fragment {
         xAxis.setTextColor(Color.WHITE);
 
         stockHistoryLineChart.invalidate(); //redraws chart
+
+
+        */
     }
+
+
+    /**
+     * class to do updating line chart off the main UI thread
+     *
+     * Ensure that the Linechart is threadsafe somehow so that it is not altered by two asynctasks running at same time
+     * AsyncTask IS threadsafe by definition - all OK here
+     *
+     * params are LineChart, String Stockname
+     */
+    private class updateLineChartTask extends AsyncTask<Object, Void, LineData > {
+        final String LOG_TAG = updateLineChartTask.class.getSimpleName();
+
+        Context mContext = getContext();
+
+        @Override
+        protected LineData doInBackground(Object... params) {
+
+            if (params.length == 0) //no LineChart passed in
+            {
+                Log.e(LOG_TAG, "No LineChart passed in");
+                return null;
+            }
+
+            LineChart stockHistoryLineChart = (LineChart) params[0]; //get the LineChart from the input parameters
+            String stockSymbol = (String) params[1];
+
+            Cursor stockHistoryCursor;
+            Context mContext = getContext();
+
+
+
+            // Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
+            Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
+            stockHistoryCursor = mContext.getContentResolver().query(
+                    uriForSymbol //Uri
+                    , STOCK_HISTORY_COLUMNS //projection (columns to return) (use nyll for no projection)
+                    , null // //selection Clause
+                    , null//selection Arguments
+                    , null); //poosibly have sort order date ascending
+
+
+            List<Entry> stockHistoryDataEntries = new ArrayList<Entry>(); //list entries for stock for graphing
+
+            //Test the response
+            if (!stockHistoryCursor.moveToFirst()) {
+                Log.v(LOG_TAG, "Database test Cursor is empty!");
+            } else {
+                int cursorCount = stockHistoryCursor.getCount();
+                Log.v(LOG_TAG, "Database test cursor is valid and count is " + cursorCount);
+
+
+                //get the first date for setting up x axis
+                stockHistoryCursor.moveToFirst();
+                // String earliestDateInHistory = stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
+                String earliestDateInHistory = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
+
+
+                //Loop through all data from cursor
+                for (int i = 0; i < cursorCount; i++) {
+                    //  String testcursorname =
+                    //         stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.SYMBOL));
+                    String testcursorname = stockHistoryCursor.getString(COL_STOCK_HISTORY_SYMBOL);
+                    // String testcursorDate =
+                    //       stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
+                    String testcursorDate = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
+                    //  String testCursorClose =
+                    //      stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.CLOSEPRICE));
+                    String testCursorClose = stockHistoryCursor.getString(COL_STOCK_HISTORY_CLOSEPRICE);
+                    // String testCursorID =
+                    //      stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns._ID));
+                    String testCursorID = stockHistoryCursor.getString(COL_STOCK_HISTORY_ID);
+
+                    //Loop through database table for all items and put them in log statement
+
+                    //convert the Strings to dates
+                    int dateDiff = Utils.numberOfDaysSinceFirstDate(earliestDateInHistory, testcursorDate);
+
+            /*    Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
+                        + " Symbol:" + testcursorname
+                        + " Date:" + testcursorDate
+                        + " Date diff:" + dateDiff
+                        + " ClosePrice:" + testCursorClose);
+
+*/
+                    //make up new graphing points
+                    Float xValue = (float) dateDiff;
+                    Float yValue = Float.valueOf(testCursorClose);
+
+                    Entry stockGraphEntry = new Entry(xValue, yValue); //x,y
+                    stockHistoryDataEntries.add(stockGraphEntry);
+                    stockHistoryCursor.moveToNext(); //move to next item
+                }
+            }
+
+/*
+        QuoteProvider.Quotes.CONTENT_URI, //table name
+                new String[]{"Distinct " + QuoteColumns.SYMBOL}, //projection (columns to return)
+                null, //selection Clause
+                null, //selection Arguments
+                null); //sort order
+*/
+
+
+            //Make a full Line Data set with the list and a String to descripe the
+            //dataset (and to use as label)
+            LineDataSet setCompany1 = new LineDataSet(stockHistoryDataEntries, "Company 1");
+            setCompany1.setAxisDependency(YAxis.AxisDependency.LEFT);
+            // By calling setAxisDependency(...), the axis the
+            // DataSet should be plotted against is specified.
+
+            //Now we put all the datasets (lines) that we want on our chart
+            //into a list of IDataSets
+            List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+            dataSets.add(setCompany1); //could add the other companies too here
+
+            //now put it all into the final Chart data
+            LineData data = new LineData(dataSets); //gathers all data together
+
+
+
+            //for AsyncTask
+            return data;
+
+
+
+
+
+           // return null;
+        } //params sent in, Progress variable, result types out
+
+
+        //this is called on UI thread
+        @Override
+        protected void onPostExecute(LineData lineData) {
+            super.onPostExecute(lineData);
+
+
+
+
+
+            //put all data into line chart
+            stockHistoryLineChart.setData(lineData); //puts all the data into chart
+
+            //Style the chart
+            // stockHistoryLineChart.setBackgroundColor(Color.WHITE); //sets background colour
+            stockHistoryLineChart.setDescription(stockSymbolName + "   stock history for the past year");//Sets the Chart Description
+            stockHistoryLineChart.setDescriptionColor(Color.YELLOW); //sets the graph description colour
+            stockHistoryLineChart.setDescriptionTextSize(16f); //sets size of Description from 6f to 16f
+            stockHistoryLineChart.setNoDataTextDescription("No Stock History");
+
+            //Style the Axis
+            YAxis leftAxis = stockHistoryLineChart.getAxisLeft();
+            leftAxis.setTextColor(Color.WHITE);
+
+            YAxis rightAxis = stockHistoryLineChart.getAxisRight();
+            rightAxis.setTextColor(Color.WHITE);
+
+            XAxis xAxis = stockHistoryLineChart.getXAxis();
+            xAxis.setTextColor(Color.WHITE);
+
+            stockHistoryLineChart.invalidate(); //redraws chart
+
+
+
+        }
+    }
+
+
 
 
     /*
