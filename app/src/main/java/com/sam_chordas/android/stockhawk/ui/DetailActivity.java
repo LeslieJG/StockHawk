@@ -1,17 +1,11 @@
 package com.sam_chordas.android.stockhawk.ui;
 
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.R;
-import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-import com.sam_chordas.android.stockhawk.data.StockHistoryColumns;
 import com.sam_chordas.android.stockhawk.service.StockHistoryIntentService;
 
 public class DetailActivity extends AppCompatActivity {
@@ -55,8 +49,11 @@ public class DetailActivity extends AppCompatActivity {
             // Being here means we are in animation mode
             supportPostponeEnterTransition();
 
+/*
 
-            ///////////////////////****************************///////////////////////////////////
+            //////////////////////*/
+/****************************//*
+//////////////////////////////////
             //This is where my testing for stock history starts
 
             //LJG Test Stock History Table
@@ -81,7 +78,8 @@ public class DetailActivity extends AppCompatActivity {
 
 
             //LJG or try batch insert
-          /*  ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
+          */
+/*  ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
 
             ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                     QuoteProvider.Histories.CONTENT_URI);
@@ -98,7 +96,8 @@ public class DetailActivity extends AppCompatActivity {
 
             }
 
-*/
+*//*
+
 
             //Now test retrieving stock from history
             Uri databaseQuery = QuoteProvider.Histories.CONTENT_URI;
@@ -108,10 +107,12 @@ public class DetailActivity extends AppCompatActivity {
             stockDateFromDB = stocksFromDbCursor.getString(stocksFromDbCursor.getColumnIndex(StockHistoryColumns.DATE));
            // Log.v(LOG_TAG, "I got the date back from DB! it is " + stockDateFromDB);
 
+*/
 
 
             //Testing Yahoo API Quaery
             Intent stockHistoryIntent = new Intent(this, StockHistoryIntentService.class);
+            stockHistoryIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolName); //pass the IntentService name of stock symbol
             this.startService(stockHistoryIntent);
             //This works
 

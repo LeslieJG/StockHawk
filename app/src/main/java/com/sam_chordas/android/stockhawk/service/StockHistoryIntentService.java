@@ -10,6 +10,7 @@ import android.util.Log;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.Utils;
+import com.sam_chordas.android.stockhawk.ui.DetailActivity;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -44,6 +45,12 @@ public class StockHistoryIntentService extends IntentService {
         Log.d(LOG_TAG, "Stock Intent Service");
 
 
+        //Get the name of stock to look for
+        String stockSymbolForApiCall = intent.getStringExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG);
+      //  Log.v(LOG_TAG, "LJG - the stock symbol passed into intent is " +stockSymbolForApiCall);
+        //Get the dates to look for?????
+
+
         //Check the database and see if I have any stock close info for this stock
         //if yes, just chose the next day AFTer I have (no need to consult database afterwards)
         //download all dates from the day AFTER I have in DB until today's date
@@ -53,7 +60,8 @@ public class StockHistoryIntentService extends IntentService {
         //Build Yahoo API query URL for stock history
         StringBuilder urlStringBuilder = new StringBuilder();
         urlStringBuilder.append("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20%22");
-        urlStringBuilder.append("YHOO"); //replace this with String of Stock Symbol
+       // urlStringBuilder.append("YHOO"); //replace this with String of Stock Symbol
+        urlStringBuilder.append(stockSymbolForApiCall); //replace this with String of Stock Symbol
         urlStringBuilder.append("%22%20and%20startDate%20%3D%20%22");
         urlStringBuilder.append("2015-09-11");//replace with coded start date
         urlStringBuilder.append("%22%20and%20endDate%20%3D%20%22");
