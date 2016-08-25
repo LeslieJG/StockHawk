@@ -4,7 +4,8 @@ import android.app.IntentService;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.OperationApplicationException;
+import android.os.RemoteException;
 import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.R;
@@ -92,6 +93,8 @@ public class StockHistoryIntentService extends IntentService {
         this.getContentResolver().delete(QuoteProvider.Histories.CONTENT_URI, null, null); //delete the database
         Log.v(LOG_TAG, "LJG Delete the database");
 
+
+
         try {
             jsonObject = new JSONObject(getResponse);
             Log.v(LOG_TAG, "LJG JSON StockHistory is OK");
@@ -101,14 +104,12 @@ public class StockHistoryIntentService extends IntentService {
                 int count = Integer.parseInt(queryJsonObject.getString(getString(R.string.json_count)));
                 Log.v(LOG_TAG, "LJG JSON StockHistory count is " + count);
 
-                if (count > 0) { //if there is a count - i.e. if their is historical data
+                if (count > 0) { //if there is a count - i.e. if there is historical data from API
                     Log.v(LOG_TAG, "LJG JSON Stock history count is 1 or more");
 
                     JSONObject resultsJsonObject = queryJsonObject.getJSONObject(getString(R.string.json_results));
                     JSONArray quoteArray = resultsJsonObject.getJSONArray(getString(R.string.json_quote));
                     JSONObject individualQuoteJson = null;
-
-                    // Log.v(LOG_TAG, "quoteArray is " +quoteArray );
 
                     if (quoteArray != null && quoteArray.length() != 0) {
                         Log.v(LOG_TAG, "Quote Array Not null and length is not Zero");
@@ -138,20 +139,34 @@ public class StockHistoryIntentService extends IntentService {
                             //better just to update the dates that I need first
 
 
+                            ContentProviderOperation.Builder batchContentProviderOperationBuilder = ContentProviderOperation.newInsert(
+                                    QuoteProvider.Histories.CONTENT_URI); //Builder to build bulk insert content provider operation
+
+
                             /////////////////
                             //Build content values from this data
                             ContentValues historicCloseContentValue =
                                     Utils.makeStockHistoryContentValue(stockSymbol,stockDate,stockCloseValue);
 
                             //add content values to batch operation (content values list?)
+                            batchContentProviderOperationBuilder.withValues(historicCloseContentValue);
+                            //build the insert batch operation
+                            //batchContentProviderOperationBuilder.build();
+
+                            //add it to the arraylist of batch operations
+                            batchOperations.add(batchContentProviderOperationBuilder.build());
+
+
+
+
 
                             //for now just insert one at a time - Ineffiecient but good to test
-                            Uri uriForInsert = QuoteProvider.Histories.CONTENT_URI;
+                           // Uri uriForInsert = QuoteProvider.Histories.CONTENT_URI;
 
 
                             //Replace this below with a batch operation later
-                            this.getContentResolver().insert(uriForInsert,historicCloseContentValue);
-                            Log.v(LOG_TAG, "LJG Insert one row into database, content value is " + historicCloseContentValue);
+                          //  this.getContentResolver().insert(uriForInsert,historicCloseContentValue);
+                           // Log.v(LOG_TAG, "LJG Insert one row into database, content value is " + historicCloseContentValue);
 
 
                             //   batchOperations.add(buildBatchOperation(jsonObject, context));
@@ -162,6 +177,13 @@ public class StockHistoryIntentService extends IntentService {
 
 
                 }
+
+
+
+
+
+
+
 
 
                /*
@@ -186,6 +208,20 @@ public class StockHistoryIntentService extends IntentService {
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "LJG Stock History String to JSON failed: " + e);
+        }
+
+
+
+        //Build the bulk insert content values operation
+       // batchContentProviderOperationBuilder.build();
+
+        //do the bulk insert
+        try {
+            getContentResolver().applyBatch(QuoteProvider.AUTHORITY, batchOperations);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (OperationApplicationException e) {
+            e.printStackTrace();
         }
 
 
