@@ -67,6 +67,19 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+/*
+
+        //TODO Delete LJG Test - comparing dates
+        String databaseDate = "2016-03-21";
+        String todayDate = "2016-03-20";
+        int diffOfDays = Utils.numberOfDaysSinceFirstDate(databaseDate,todayDate);
+        Log.v(LOG_TAG, "LJG DATE TEST !!!!!! First Date: "+ databaseDate + " , Second Date: "
+        + todayDate + " , Difference between dates is: " + diffOfDays + " days");
+
+*/
+
+
+
 
         isConnected = checkInternetConnected();
         setContentView(R.layout.activity_my_stocks);

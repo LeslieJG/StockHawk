@@ -25,7 +25,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Leslie on 2016-08-23.
@@ -84,8 +83,7 @@ public class StockHistoryIntentService extends IntentService {
                 , StockHistoryColumns.DATE + " DESC LIMIT 1"); //latest date - only one
 
 
-        Log.v(LOG_TAG, "LJG Stock History DateONLY Cursor is " + stockHistoryCursor);
-
+       // Log.v(LOG_TAG, "LJG Stock History DateONLY Cursor is " + stockHistoryCursor);
 
         //String latestDateToGetHistoriesFromApi = null;
         String todaysDate = Utils.getTodayDate();
@@ -103,12 +101,10 @@ public class StockHistoryIntentService extends IntentService {
 
         } else { //There are dates in Database - see what the API call should be
             String latestDateInDatabase = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
-            Date latestDateInDatabaseAsDate = Utils.convertStringToDate(latestDateInDatabase);
-            Date todaysDateAsDate = Utils.convertStringToDate(todaysDate);
-            Boolean isLatestDateNewerThanToday = latestDateInDatabaseAsDate.after(todaysDateAsDate);//Did you change time zones and have dates in database ahead of today's date
 
-            //TODO THis is not working to see if dates are equal
-            if (todaysDateAsDate.equals(latestDateInDatabaseAsDate) || isLatestDateNewerThanToday) {
+
+            //if latest date in database is equal to or ahead of today (i.e. you've changed time zones)
+            if (Utils.numberOfDaysSinceFirstDate(todaysDate,latestDateInDatabase)<= 0 ) {
                 Log.v(LOG_TAG, "database is already up to date - cancelling stock history API call");
                 //if database is ahead of today or equal to today Don't update stocks
                 //If database is up to date - do NOT do API call
@@ -121,12 +117,6 @@ public class StockHistoryIntentService extends IntentService {
             }
         }
 
-
-
-        //Check the database and see if I have any stock close info for this stock
-        //if yes, just chose the next day AFTer I have (no need to consult database afterwards)
-        //download all dates from the day AFTER I have in DB until today's date
-        //THen put all new dates into database
 
 
         //Build Yahoo API query URL for stock history
