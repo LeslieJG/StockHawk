@@ -36,6 +36,7 @@ import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.rest.Utils;
+import com.sam_chordas.android.stockhawk.service.StockHistoryIntentService;
 import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
@@ -125,6 +126,16 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
                         //ensure that the data is loaded into DB
 
+
+
+                        //Launch the StockHistoryIntentService to update the Stock Histories into Database
+
+                        //Start Downloading Stock History from API at the same time as starting the fragment
+                        //so they happen in parallel
+                        //TODO Put this into MyStocksActivity Instead???
+                        Intent stockHistoryIntent = new Intent(getApplicationContext(), StockHistoryIntentService.class);
+                        stockHistoryIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolClicked); //pass the IntentService name of stock symbol
+                        getApplicationContext().startService(stockHistoryIntent);
 
 
 

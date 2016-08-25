@@ -1,12 +1,10 @@
 package com.sam_chordas.android.stockhawk.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.R;
-import com.sam_chordas.android.stockhawk.service.StockHistoryIntentService;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
@@ -49,9 +47,14 @@ public class DetailActivity extends AppCompatActivity {
             //Start Downloading Stock History from API at the same time as starting the fragment
             //so they happen in parallel
             //TODO Put this into MyStocksActivity Instead???
+            //Now in MyStocksActivity in Click Listener
+            /*
             Intent stockHistoryIntent = new Intent(this, StockHistoryIntentService.class);
             stockHistoryIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolName); //pass the IntentService name of stock symbol
             this.startService(stockHistoryIntent);
+            */
+
+
         }
     }
 
