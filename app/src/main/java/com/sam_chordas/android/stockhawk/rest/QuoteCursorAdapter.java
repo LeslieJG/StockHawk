@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -102,7 +103,35 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         Cursor c = getCursor();
         c.moveToPosition(position);
         String symbol = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
+        //delete the stock from Quotes table
         mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
+        Log.v(LOG_TAG, "LJG Deleted "+ symbol + " from Quotes table");
+        //delete the stcok from Histories table
+
+
+        mContext.getContentResolver().delete(QuoteProvider.Histories.withSymbol(symbol), null, null);
+
+       //TODO Delete below lines
+        //Test that it has been deleted
+        Uri uriForSymbol = QuoteProvider.Histories.withSymbol(symbol);
+        Cursor stockHistoryCursor = mContext.getContentResolver().query(
+                uriForSymbol //Uri
+                , null //projection (columns to return) (use nyll for no projection)
+                , null // //selection Clause
+                , null//selection Arguments
+                , null); //poosibly have sort order date ascending
+
+
+        Log.v(LOG_TAG, "LJG Deleted "+ symbol + " from Histories table"
+                + " There are " + stockHistoryCursor.getCount() + " Entries still in Histories Table for this stock");
+        stockHistoryCursor.close();
+
+        //Test Entire Database TODO Delete this
+       Utils.reportNumberOfRowsInHistoriesDatabase(mContext);
+
+
+
+
         notifyItemRemoved(position);
     }
 

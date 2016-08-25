@@ -4,6 +4,8 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -73,7 +75,7 @@ public class Utils {
     }
 
     public static String truncateChange(String change, boolean isPercentChange) {
-        Log.v(LOG_TAG, "LJG Utils truncate Change - change value is " + change);
+      //  Log.v(LOG_TAG, "LJG Utils truncate Change - change value is " + change);
         //LJG trying to deal with null values from API
         if (change.contains("null")) {
             return "No Change";
@@ -297,5 +299,24 @@ public class Utils {
         return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 
+
+
+    ///TODO Delete this function after testing
+    public static void reportNumberOfRowsInHistoriesDatabase(Context mContext){
+        //Test Entire Database
+        Uri uriForSAllHistories = QuoteProvider.Histories.CONTENT_URI;
+        Cursor fullStockHistoryCursor = mContext.getContentResolver().query(
+                uriForSAllHistories //Uri
+                , null //projection (columns to return) (use nyll for no projection)
+                , null // //selection Clause
+                , null//selection Arguments
+                , null); //poosibly have sort order date ascending
+
+
+        Log.v(LOG_TAG, " THe Histories Tables still has " + fullStockHistoryCursor.getCount() + " Rows in it");
+        fullStockHistoryCursor.close();
+
+
+    }
 
 }

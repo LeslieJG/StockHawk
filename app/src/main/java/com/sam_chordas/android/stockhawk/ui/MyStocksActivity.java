@@ -67,19 +67,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-/*
-
-        //TODO Delete LJG Test - comparing dates
-        String databaseDate = "2016-03-21";
-        String todayDate = "2016-03-20";
-        int diffOfDays = Utils.numberOfDaysSinceFirstDate(databaseDate,todayDate);
-        Log.v(LOG_TAG, "LJG DATE TEST !!!!!! First Date: "+ databaseDate + " , Second Date: "
-        + todayDate + " , Difference between dates is: " + diffOfDays + " days");
-
-*/
-
-
-
 
         isConnected = checkInternetConnected();
         setContentView(R.layout.activity_my_stocks);
@@ -104,7 +91,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.stock_swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
-
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
@@ -115,18 +101,18 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     @Override
                     public void onItemClick(View v, int position) {
                         //TODO: LJG do something on item click
-                   //     Log.v(LOG_TAG, "Item Clicked");
+                        //     Log.v(LOG_TAG, "Item Clicked");
 
                         Cursor cursor = mCursorAdapter.getCursor(); //Get the cursor with all the data in it
                         cursor.moveToPosition(position); //move cursor to correct position
-                        //get Stcok symbol
+                        //get Stock symbol
                         String stockSymbolClicked = cursor
                                 .getString(cursor.getColumnIndex(QuoteColumns.SYMBOL));
 
                         //change tp upper case for nicer UI experience
                         stockSymbolClicked = stockSymbolClicked.toUpperCase();
 
-                        Log.v(LOG_TAG, "LJG Click listener - stock symbol is " + stockSymbolClicked );
+                        Log.v(LOG_TAG, "LJG Click listener - stock symbol is " + stockSymbolClicked);
 
 
                         //pass the stock symbol to detail activity to let it know what to look up
@@ -136,9 +122,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         //Make new database for historic data
 
 
-
                         //ensure that the data is loaded into DB
-
 
 
                         //Launch the StockHistoryIntentService to update the Stock Histories into Database
@@ -151,16 +135,11 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         getApplicationContext().startService(stockHistoryIntent);
 
 
-
-
                         //Launch the Detail Activity with explicit intent
-                       // Intent detailActivityIntent = new Intent(this, DetailActivity.class);
-                        Intent detailActivityIntent = new Intent(getApplicationContext() , DetailActivity.class);
+                        // Intent detailActivityIntent = new Intent(this, DetailActivity.class);
+                        Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
                         detailActivityIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolClicked);
                         startActivity(detailActivityIntent);
-
-
-
 
 
                     }
@@ -185,7 +164,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                     // in the DB and proceed accordingly
                                     Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                                             new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
-                                            new String[]{input.toString()}, null);
+                                            //  new String[]{input.toString()}, null);
+                                            new String[]{input.toString().toUpperCase()}, null); //change to upper case to keep both db tables consistent with symbol
 
                                     try {
                                         if (c.getCount() != 0) {
@@ -198,7 +178,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                         } else {
                                             // Add the stock to DB
                                             mServiceIntent.putExtra(getString(R.string.intent_tag), getString(R.string.intent_add));
-                                            mServiceIntent.putExtra(getString(R.string.intent_symbol), input.toString());
+                                            //  mServiceIntent.putExtra(getString(R.string.intent_symbol), input.toString());
+                                            mServiceIntent.putExtra(getString(R.string.intent_symbol), input.toString().toUpperCase()); //change to upper case to keep both db tables consistent with symbol
+
                                             startService(mServiceIntent);
                                         }
                                     } finally {
@@ -244,7 +226,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     protected void onPause() {
-        if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver); //for indicating stock refresh
+        if (dataUpdateReceiver != null)
+            unregisterReceiver(dataUpdateReceiver); //for indicating stock refresh
 
         Log.v(LOG_TAG, "LJG onPause");
         super.onPause();
@@ -261,10 +244,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         //LJG ensure Dataupdate Receiver is available
         if (dataUpdateReceiver == null) { //for indicating stock refresh
             dataUpdateReceiver = new DataUpdateReceiver();
-        //    Log.v(LOG_TAG, "LJG onResume made new DataUpdateReceiver");
+            //    Log.v(LOG_TAG, "LJG onResume made new DataUpdateReceiver");
         }
 
-       // IntentFilter intentFilter = new IntentFilter(REFRESH_DATA_INTENT);
+        // IntentFilter intentFilter = new IntentFilter(REFRESH_DATA_INTENT);
         IntentFilter intentFilter = new IntentFilter(getString(R.string.refresh_data_intent_key));
         registerReceiver(dataUpdateReceiver, intentFilter);
 
@@ -330,10 +313,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This narrows the return to only the stocks that are most current.
         return new CursorLoader(this, QuoteProvider.Quotes.CONTENT_URI,
-              //  new String[]{QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE,
-                       // QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP},
-                new String[]{QuoteColumns._ID, QuoteColumns.SYMBOL,QuoteColumns.NAME, QuoteColumns.BIDPRICE,
-                        QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP },
+                //  new String[]{QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE,
+                // QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP},
+                new String[]{QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.NAME, QuoteColumns.BIDPRICE,
+                        QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP},
                 QuoteColumns.ISCURRENT + " = ?",
                 new String[]{"1"},
                 null);
@@ -358,6 +341,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     public void onRefresh() {
         Log.v(LOG_TAG, "Swipe Refresh");
         updateDbfromAPi();
+        Utils.reportNumberOfRowsInHistoriesDatabase(mContext);//TODO DElete
     }
 
     //stops the refreshing display
@@ -378,7 +362,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
         @Override
         public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(getString(R.string.refresh_data_intent_key))) {
+            if (intent.getAction().equals(getString(R.string.refresh_data_intent_key))) {
                 // Do stuff - maybe update my view based on the changed DB contents
 
                 Log.v(LOG_TAG, "LJG API call done, data updated");
@@ -408,7 +392,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         // GCMTaskService can only schedule tasks, they cannot execute immediately
         mServiceIntent = new Intent(this, StockIntentService.class);
 
-       // mServiceIntent.putExtra("tag", getString(R.string.intent_value_init));//could also use "periodic" either will work
+        // mServiceIntent.putExtra("tag", getString(R.string.intent_value_init));//could also use "periodic" either will work
         mServiceIntent.putExtra(getString(R.string.intent_tag), getString(R.string.intent_init));//could also use "periodic" either will work
 
         // if (isConnected) {
