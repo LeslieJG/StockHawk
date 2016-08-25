@@ -277,11 +277,6 @@ public class DetailFragment extends Fragment {
         XAxis xAxis = stockHistoryLineChart.getXAxis();
         xAxis.setTextColor(Color.WHITE);
 
-        // Limi
-
-        // stockHistoryLineChart.
-
-
         stockHistoryLineChart.invalidate(); //redraws chart
     }
 

@@ -26,17 +26,13 @@ public class DetailActivity extends AppCompatActivity {
             Log.v(LOG_TAG, "LJG onCreate - the stock symbol received in DetailActivity is " + stockSymbolName);
 
 
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
-
+            // Create the detail fragment and add it to the activity using a fragment transaction.
 
             Bundle arguments = new Bundle();
             // arguments.putParcelable(DetailFragment.DETAIL_URI, getIntent().getData());
             //  arguments.putBoolean(DetailFragment.DETAIL_TRANSITION_ANIMATION, true);
 
-
             DetailFragment detailFragment = DetailFragment.newInstance(stockSymbolName);
-
 
             // DetailFragment fragment = new DetailFragment();
             //  fragment.setArguments(arguments);
@@ -49,76 +45,13 @@ public class DetailActivity extends AppCompatActivity {
             // Being here means we are in animation mode
             supportPostponeEnterTransition();
 
-/*
 
-            //////////////////////*/
-/****************************//*
-//////////////////////////////////
-            //This is where my testing for stock history starts
-
-            //LJG Test Stock History Table
-            Context mContext = this;
-
-            //make data values
-            ContentValues contentValues = new ContentValues();
-
-            contentValues.put(StockHistoryColumns.DATE, "2001-09-11");
-            contentValues.put(StockHistoryColumns.CLOSEPRICE, "100");
-            contentValues.put(StockHistoryColumns.SYMBOL, "FYOUTOO");
-
-            //Uri testUri = QuoteProvider.Histories.CONTENT_URI;
-
-            Uri testUri = QuoteProvider.Histories.CONTENT_URI;
-            Log.v(LOG_TAG, "Test URI is " + testUri);
-
-             mContext.getContentResolver().insert(QuoteProvider.Histories.CONTENT_URI,
-                    contentValues);
-            mContext.getContentResolver().insert(testUri, contentValues);
-            Log.v(LOG_TAG, "Inerted test Stock into history");
-
-
-            //LJG or try batch insert
-          */
-/*  ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
-
-            ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
-                    QuoteProvider.Histories.CONTENT_URI);
-            builder.withValue(StockHistoryColumns.DATE, "2001-09-11");
-            builder.withValue(StockHistoryColumns.CLOSEPRICE, "100");
-            builder.withValue(StockHistoryColumns.SYMBOL, "FYOUTOO");
-            batchOperations.add(builder.build());
-
-
-            try {
-                this.getContentResolver().applyBatch(QuoteProvider.AUTHORITY, batchOperations);
-            } catch (RemoteException | OperationApplicationException e) {
-                Log.e(LOG_TAG, "Error applying batch insert", e);
-
-            }
-
-*//*
-
-
-            //Now test retrieving stock from history
-            Uri databaseQuery = QuoteProvider.Histories.CONTENT_URI;
-            Cursor stocksFromDbCursor = mContext.getContentResolver().query(databaseQuery ,null,null,null,null);
-            stocksFromDbCursor.moveToFirst();
-            String stockDateFromDB;
-            stockDateFromDB = stocksFromDbCursor.getString(stocksFromDbCursor.getColumnIndex(StockHistoryColumns.DATE));
-           // Log.v(LOG_TAG, "I got the date back from DB! it is " + stockDateFromDB);
-
-*/
-
-
-            //Testing Yahoo API Quaery
+            //Start Downloading Stock History from API at the same time as starting the fragment
+            //so they happen in parallel
+            //TODO Put this into MyStocksActivity Instead???
             Intent stockHistoryIntent = new Intent(this, StockHistoryIntentService.class);
             stockHistoryIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolName); //pass the IntentService name of stock symbol
             this.startService(stockHistoryIntent);
-            //This works
-
-
-
-
         }
     }
 

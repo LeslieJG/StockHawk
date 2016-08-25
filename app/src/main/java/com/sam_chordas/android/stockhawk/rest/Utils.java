@@ -73,7 +73,7 @@ public class Utils {
 
     public static String truncateChange(String change, boolean isPercentChange) {
         Log.v(LOG_TAG, "LJG Utils truncate Change - change value is " + change);
-//LJG trying to deal with null values from API
+        //LJG trying to deal with null values from API
         if (change.contains("null")) {
             return "No Change";
         }
@@ -99,24 +99,15 @@ public class Utils {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
         try {
-            //String change = jsonObject.getString("Change");
             String change = jsonObject.getString(context.getString(R.string.json_change));
-            // builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString("symbol"));
             builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString(context.getString(R.string.json_symbol)));
             //LJG this is where the "null" bid price comes in
-            //  builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString("Bid")));
-
-
-            //TODO Inserting name here from JSON
-            //LJG Delete comments when done
-            builder.withValue(QuoteColumns.NAME, jsonObject.getString("Name"));
+            builder.withValue(QuoteColumns.NAME, jsonObject.getString(context.getString(R.string.json_name)));
             // Log.v(LOG_TAG, "LJG Inserted Name into database is " + jsonObject.getString("Name"));
-
 
             builder.withValue(QuoteColumns.BIDPRICE
                     , truncateBidPrice(jsonObject.getString(context.getString(R.string.json_bid))));
             builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
-                    //  jsonObject.getString("ChangeinPercent"), true));
                     jsonObject.getString(context.getString(R.string.json_change_in_percent)), true));
             builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
             builder.withValue(QuoteColumns.ISCURRENT, 1);
@@ -144,22 +135,16 @@ public class Utils {
         try {
             jsonObject = new JSONObject(JSON);
             if (jsonObject != null && jsonObject.length() != 0) {
-                // jsonObject = jsonObject.getJSONObject("query");
                 jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_query));
 
-                // int count = Integer.parseInt(jsonObject.getString("count"));
                 int count = Integer.parseInt(jsonObject.getString(context.getString(R.string.json_count)));
 
                 //Invalid User input will just result in one stock being searched - this is the only thing we will look for
                 if (count == 1) {
-                    //  jsonObject = jsonObject.getJSONObject("results")
                     jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
-                            // .getJSONObject("quote");
                             .getJSONObject(context.getString(R.string.json_quote));
-                    // String theBidPrice = jsonObject.getString("Bid");
                     String theBidPrice = jsonObject.getString(context.getString(R.string.json_bid));
 
-                    // if (theBidPrice.equals("null")) { //this is Not a valid stock
                     if (theBidPrice.equals(context.getString(R.string.json_null))) { //this is Not a valid stock
                         //return a toast - Handler needed to show toast on UI thread from non-UI thread
                         Handler handler = new Handler(Looper.getMainLooper());
@@ -185,24 +170,16 @@ public class Utils {
 
     //LJG Trying to broadcast that API data is done
     public static void sendBroadcastForUpdate(Context context) {
-        // Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
         Intent dataUpdated = new Intent(context.getString(R.string.refresh_data_intent_key));
-        // getApplicationContext().sendBroadcast(new Intent(MyStocksActivity.REFRESH_DATA_INTENT));
         context.sendBroadcast(dataUpdated);
 
     }
 
-    //LJG Trying to broadcast that Stock History API data is done
+    //Broadcast that Stock History API data is done - This is received by MyStocksActivity to stop refresh symbol showing
     public static void sendHistoryBroadcastForUpdate(Context context) {
-        // Intent dataUpdated = new Intent(MyStocksActivity.REFRESH_DATA_INTENT);
         Intent dataUpdated = new Intent(context.getString(R.string.stock_history_received_intent_key));
-        // Intent dataUpdated = new Intent();
-        // dataUpdated.setAction("FUCK");
-        // getApplicationContext().sendBroadcast(new Intent(MyStocksActivity.REFRESH_DATA_INTENT));
         Log.v(LOG_TAG, "In sendHistoryBroadcastForUpdate");
-
         context.sendBroadcast(dataUpdated);
-
     }
 
 
@@ -231,7 +208,7 @@ public class Utils {
      * Used for laying out x-axis for stock history chart
      *
      * @param earliestDate String of Reference date ("yyyy-MM-dd")
-     * @param laterDate tring of later date ("yyyy-MM-dd")
+     * @param laterDate    tring of later date ("yyyy-MM-dd")
      * @return integer number of days between them
      */
     public static int numberOfDaysSinceFirstDate(String earliestDate, String laterDate) {
@@ -261,7 +238,7 @@ public class Utils {
         } catch (ParseException e) {
             // e.printStackTrace();
         }
-        return null; //if error return null
+        return null; //if error return null instead of catching ParseException
     }
 
 

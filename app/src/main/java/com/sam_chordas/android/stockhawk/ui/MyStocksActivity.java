@@ -62,10 +62,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private final String LOG_TAG = MyStocksActivity.class.getSimpleName();
 
 
-    //This key is accessed by all classes needing to receive or broadcast that API call done
-    //public static final String REFRESH_DATA_INTENT = "Api_Call_Complete"; //for sending out intent that API call is done
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +75,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         mServiceIntent = new Intent(this, StockIntentService.class);
         if (savedInstanceState == null) {
             // Run the initialize task service so that some stocks appear upon an empty database
-        //    mServiceIntent.putExtra("tag", "init");
             mServiceIntent.putExtra(getString(R.string.intent_tag),
                     getString(R.string.intent_init));
             if (isConnected) {
@@ -107,15 +102,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     public void onItemClick(View v, int position) {
                         //TODO: LJG do something on item click
                    //     Log.v(LOG_TAG, "Item Clicked");
-
-
-                        //LJG get the stock symbol from db and put it in log statement
-                        //eventually pass it to the API call for historic data
-                        //and store that historic data somewhere
-                        //then put into line chart
-                        //then display it
-
-
 
                         Cursor cursor = mCursorAdapter.getCursor(); //Get the cursor with all the data in it
                         cursor.moveToPosition(position); //move cursor to correct position

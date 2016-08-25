@@ -19,27 +19,5 @@ public class StockHistoryColumns {
     public static final String CLOSEPRICE = "close_price_histoty";
     @DataType(DataType.Type.TEXT) @NotNull
     public static final String DATE = "date_history";
-
-
-
-
 }
 
-
-/*
-
-    @DataType(DataType.Type.TEXT) @NotNull
-    public static final String PERCENT_CHANGE = "percent_change";
-    @DataType(DataType.Type.TEXT) @NotNull
-    public static final String NAME = "name";
-    @DataType(DataType.Type.TEXT) @NotNull
-    public static final String CHANGE = "change";
-    @DataType(DataType.Type.TEXT) @NotNull
-    public static final String BIDPRICE = "bid_price";
-    @DataType(DataType.Type.TEXT)
-    public static final String CREATED = "created";
-    @DataType(DataType.Type.INTEGER) @NotNull
-    public static final String ISUP = "is_up";
-    @DataType(DataType.Type.INTEGER) @NotNull
-    public static final String ISCURRENT = "is_current";
-*/

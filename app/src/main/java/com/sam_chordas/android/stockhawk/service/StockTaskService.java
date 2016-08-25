@@ -36,10 +36,6 @@ public class StockTaskService extends GcmTaskService {
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
 
-
-    //public static final String REFRESH_DATA_INTENT = "Api_Call_Complete"; //for sending out intent that API call is done
-
-
     //Constructor
     public StockTaskService() {
     }
@@ -66,11 +62,9 @@ public class StockTaskService extends GcmTaskService {
         StringBuilder urlStringBuilder = new StringBuilder();
         try {
             // Base URL for the Yahoo query
-           // urlStringBuilder.append("https://query.yahooapis.com/v1/public/yql?q=");
             urlStringBuilder.append(mContext.getString(R.string.api_url_query_base));
             urlStringBuilder.append(URLEncoder.encode(mContext.getString(R.string.api_url_query_2)
-                 //   + "in (", "UTF-8"));
-            + "in (", mContext.getString(R.string.utf_8_encoding)));
+                    + "in (", mContext.getString(R.string.utf_8_encoding)));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -92,7 +86,6 @@ public class StockTaskService extends GcmTaskService {
                 // Init task. Populates DB with quotes for the symbols seen below
                 try {
                     urlStringBuilder.append(
-                            // URLEncoder.encode("\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\")", "UTF-8"));
                             URLEncoder.encode("\"" + mContext.getString(R.string.yahoo_stock_symbol) +
                                             "\",\"" + mContext.getString(R.string.apple_stock_symbol) +
                                             "\",\"" + mContext.getString(R.string.google_stock_symbol) +
@@ -100,7 +93,6 @@ public class StockTaskService extends GcmTaskService {
                                             "\")",
                                     mContext.getString(R.string.utf_8_encoding)));
 
-                    //URLEncoder.encode(getString(R.string.yahoo_stock_symbol), "UTF-8"));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -109,27 +101,22 @@ public class StockTaskService extends GcmTaskService {
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++) {
                     mStoredSymbols.append("\"" +
-                            // initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol")) + "\",");
                             initQueryCursor.getString(initQueryCursor.getColumnIndex(QuoteColumns.SYMBOL)) + "\",");
                     initQueryCursor.moveToNext();
                 }
                 mStoredSymbols.replace(mStoredSymbols.length() - 1, mStoredSymbols.length(), ")");
                 try {
-                    // urlStringBuilder.append(URLEncoder.encode(mStoredSymbols.toString(), "UTF-8"));
                     urlStringBuilder.append(URLEncoder.encode(mStoredSymbols.toString(),
                             mContext.getString(R.string.utf_8_encoding)));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
-            // } else if (params.getTag().equals("add")) {
         } else if (params.getTag().equals(mContext.getString(R.string.intent_add))) {
             isUpdate = false;
             // get symbol from params.getExtra and build query
-           // String stockInput = params.getExtras().getString("symbol");
             String stockInput = params.getExtras().getString(mContext.getString(R.string.intent_symbol));
             try {
-              //  urlStringBuilder.append(URLEncoder.encode("\"" + stockInput + "\")", "UTF-8"));
                 urlStringBuilder.append(URLEncoder.encode("\"" + stockInput + "\")",
                         mContext.getString(R.string.utf_8_encoding)));
             } catch (UnsupportedEncodingException e) {
@@ -137,10 +124,8 @@ public class StockTaskService extends GcmTaskService {
             }
         }
         // finalize the URL for the API query.
-       // urlStringBuilder.append("&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables."
-                urlStringBuilder.append(mContext.getString(R.string.api_url_query_3)
-               // + "org%2Falltableswithkeys&callback=");
-        + mContext.getString(R.string.api_url_query_4));
+        urlStringBuilder.append(mContext.getString(R.string.api_url_query_3)
+                + mContext.getString(R.string.api_url_query_4));
 
         String urlString;
         String getResponse;
@@ -162,7 +147,7 @@ public class StockTaskService extends GcmTaskService {
                     }
 
                     //Log the value of output for debuggin
-                 //   Log.v(LOG_TAG, "The JSON response is "+ getResponse);
+                    //   Log.v(LOG_TAG, "The JSON response is "+ getResponse);
 
                     //if data is valid, ONLY then try to put it into Database and pass get the JSON
                     Boolean stockValid = Utils.isStockValid(getResponse, mContext);
@@ -186,4 +171,5 @@ public class StockTaskService extends GcmTaskService {
         Utils.sendBroadcastForUpdate(mContext);
 
         return result;
-    }}
+    }
+}

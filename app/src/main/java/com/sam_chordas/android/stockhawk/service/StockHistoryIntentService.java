@@ -48,7 +48,7 @@ public class StockHistoryIntentService extends IntentService {
 
         //Get the name of stock to look for
         String stockSymbolForApiCall = intent.getStringExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG);
-      //  Log.v(LOG_TAG, "LJG - the stock symbol passed into intent is " +stockSymbolForApiCall);
+        //  Log.v(LOG_TAG, "LJG - the stock symbol passed into intent is " +stockSymbolForApiCall);
         //Get the dates to look for?????
 
 
@@ -61,8 +61,7 @@ public class StockHistoryIntentService extends IntentService {
         //Build Yahoo API query URL for stock history
         StringBuilder urlStringBuilder = new StringBuilder();
         urlStringBuilder.append("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20%22");
-       // urlStringBuilder.append("YHOO"); //replace this with String of Stock Symbol
-        urlStringBuilder.append(stockSymbolForApiCall); //replace this with String of Stock Symbol
+        urlStringBuilder.append(stockSymbolForApiCall); //String of Stock Symbol
         urlStringBuilder.append("%22%20and%20startDate%20%3D%20%22");
         urlStringBuilder.append("2015-09-11");//replace with coded start date
         urlStringBuilder.append("%22%20and%20endDate%20%3D%20%22");
@@ -93,6 +92,7 @@ public class StockHistoryIntentService extends IntentService {
         this.getContentResolver().delete(QuoteProvider.Histories.CONTENT_URI, null, null); //delete the database
         Log.v(LOG_TAG, "LJG Delete the database");
 
+        //TODO make a intent service that will delete the Stock histories of stocks that are deleted from Quotes database
 
 
         try {
@@ -121,23 +121,11 @@ public class StockHistoryIntentService extends IntentService {
                         // for (int i = 0; i < quoteArray.length(); i++) { //loop forwards - how API delivers it (dates descending)
                         for (int i = quoteArrayLength - 1; i >= 0; i--) { //loop backwards - ascending date
                             individualQuoteJson = quoteArray.getJSONObject(i);
-                            //  Log.v(LOG_TAG, "Individual Quote is "+ individualQuoteJson);
 
                             //get the indivual parts that I want to keep
                             String stockSymbol = individualQuoteJson.getString(getString(R.string.json_symbol_for_historical_data));
                             String stockDate = individualQuoteJson.getString(getString(R.string.json_date));
                             String stockCloseValue = individualQuoteJson.getString(getString(R.string.json_close));
-
-                            //  Log.v(LOG_TAG, "From historic data - Symbol:" + stockSymbol + " Date:" + stockDate + " Object:" + i);
-
-
-                            //put into database (or assemble into a batch process to add into database
-                            //need to figure out which values I already have in database?
-                            //or just empty the database?
-
-                            //temporarily empty the database of all of that symbol
-                            //better just to update the dates that I need first
-
 
                             ContentProviderOperation.Builder batchContentProviderOperationBuilder = ContentProviderOperation.newInsert(
                                     QuoteProvider.Histories.CONTENT_URI); //Builder to build bulk insert content provider operation
@@ -146,89 +134,37 @@ public class StockHistoryIntentService extends IntentService {
                             /////////////////
                             //Build content values from this data
                             ContentValues historicCloseContentValue =
-                                    Utils.makeStockHistoryContentValue(stockSymbol,stockDate,stockCloseValue);
+                                    Utils.makeStockHistoryContentValue(stockSymbol, stockDate, stockCloseValue);
 
                             //add content values to batch operation (content values list?)
                             batchContentProviderOperationBuilder.withValues(historicCloseContentValue);
-                            //build the insert batch operation
-                            //batchContentProviderOperationBuilder.build();
 
+                          /*  ContentProviderOperation contentProviderOperation =
+                                    batchContentProviderOperationBuilder.build();
+                            */
                             //add it to the arraylist of batch operations
                             batchOperations.add(batchContentProviderOperationBuilder.build());
-
-
-
-
-
-                            //for now just insert one at a time - Ineffiecient but good to test
-                           // Uri uriForInsert = QuoteProvider.Histories.CONTENT_URI;
-
-
-                            //Replace this below with a batch operation later
-                          //  this.getContentResolver().insert(uriForInsert,historicCloseContentValue);
-                           // Log.v(LOG_TAG, "LJG Insert one row into database, content value is " + historicCloseContentValue);
-
-
-                            //   batchOperations.add(buildBatchOperation(jsonObject, context));
                         }
-
-
                     }
-
-
                 }
-
-
-
-
-
-
-
-
-
-               /*
-                if (count == 1) {
-                    jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
-                            .getJSONObject(context.getString(R.string.json_quote));
-                    batchOperations.add(buildBatchOperation(jsonObject, context)); //add result to
-                } else {
-                    resultsArray = jsonObject.getJSONObject(context.getString(R.string.json_results))
-                            .getJSONArray(context.getString(R.string.json_quote));
-
-                    if (resultsArray != null && resultsArray.length() != 0) {
-                        for (int i = 0; i < resultsArray.length(); i++) {
-                            jsonObject = resultsArray.getJSONObject(i);
-                            batchOperations.add(buildBatchOperation(jsonObject, context));
-                        }
-                    }
-                }*/
-
-
             }
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "LJG Stock History String to JSON failed: " + e);
         }
 
-
-
         //Build the bulk insert content values operation
-       // batchContentProviderOperationBuilder.build();
-
         //do the bulk insert
         try {
-            getContentResolver().applyBatch(QuoteProvider.AUTHORITY, batchOperations);
+            getContentResolver().applyBatch(QuoteProvider.AUTHORITY, batchOperations); //do Bulk insert of all stock history info
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (OperationApplicationException e) {
             e.printStackTrace();
         }
 
-
-        //Broadcast that results are in
+        //Broadcast that results are in - so that the line chart can grab new data and update
         Utils.sendHistoryBroadcastForUpdate(getApplicationContext());
-
-
     }
 
 
@@ -247,6 +183,5 @@ public class StockHistoryIntentService extends IntentService {
         Response response = client.newCall(request).execute();
         return response.body().string();
     }
-
 
 }
