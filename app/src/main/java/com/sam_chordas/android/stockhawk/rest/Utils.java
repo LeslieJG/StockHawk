@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -202,6 +203,11 @@ public class Utils {
     }
 
 
+
+
+
+
+
     /**
      * Method used for plotting stock history
      * Finds the Difference between two dates in days
@@ -222,13 +228,47 @@ public class Utils {
 
 
     /**
+     *
+     * @param date String of reference day
+     * @param offsetDays Number of days to offset (+ adds to date, - subtracts from date)
+     * @return
+     */
+    public static String getDateOffset (String date, int offsetDays){
+
+
+        Date incomingDate = convertStringToDate(date);
+       // String dt = "2008-01-01";  // Start date
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        c.setTime(incomingDate);
+        c.add(Calendar.DATE, offsetDays);  // number of days to add
+        String referenceDate = df.format(c.getTime());  // dt is now the new date
+        return referenceDate;
+    }
+
+
+    /**
+     * Get's today's date
+     * @return String = today's date in yyyy-MM-dd format
+     */
+    public static String getTodayDate(){
+        Date today = Calendar.getInstance().getTime(); //get current date!!!!
+        //make it a string
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String todayDate = df.format(today);
+
+        return todayDate;
+    }
+
+
+    /**
      * Credit based on code stub by citizen conn
      * At: http://stackoverflow.com/questions/6510724/how-to-convert-java-string-to-date-object
      *
      * @param dateAsString The date in the form yyyy-MM-dd
      * @return Java.Date version of the date
      */
-    private static Date convertStringToDate(String dateAsString) {
+    public static Date convertStringToDate(String dateAsString) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date;
         try {

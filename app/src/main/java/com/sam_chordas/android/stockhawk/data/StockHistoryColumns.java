@@ -16,7 +16,7 @@ public class StockHistoryColumns {
     @DataType(DataType.Type.TEXT) @NotNull
     public static final String SYMBOL = "symbol_history";
     @DataType(DataType.Type.TEXT) @NotNull
-    public static final String CLOSEPRICE = "close_price_histoty";
+    public static final String CLOSEPRICE = "close_price_history";
     @DataType(DataType.Type.TEXT) @NotNull
     public static final String DATE = "date_history";
 }
