@@ -1,7 +1,6 @@
 package com.sam_chordas.android.stockhawk.ui;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -96,245 +95,7 @@ public class DetailFragment extends Fragment {
 
         stockHistoryLineChart = (LineChart) fragmentView.findViewById(R.id.stock_history_line_chart);
 
-
-        ////////////////NOW getting data directly from database/////////////////////////
-
-
-        ///////////////Try putting dummy points into database then retrieving them//////////////
-        ///////////////////PUtting data into database ///////////////////////////////////////////////////////
-
-        ///Dummy points for database
-       // String stockSymbol = "TestStock";
-        String stockSymbol = stockSymbolName; //using the stock symbol name passed in for my dummy data
-        String date4 = "2015-03-25";
-        String date3 = "2015-03-24";
-        String date2 = "2015-03-23";
-        String date1 = "2015-03-22";
-
-
-        String close1 = "42.700001";
-        String close2 = "40.100009";
-        String close3 = "28.123456";
-        String close4 = "11.123456";
-
-        //Make a method to quote days from first date - i.e. first date is zero
-        //next date is 1 etc
-        //to make nice x values for graph
-
-        //Make Content Values
-        ContentValues value1 = Utils.makeStockHistoryContentValue(stockSymbol, date1, close1);
-        ContentValues value2 = Utils.makeStockHistoryContentValue(stockSymbol, date2, close2);
-        ContentValues value3 = Utils.makeStockHistoryContentValue(stockSymbol, date3, close3);
-        ContentValues value4 = Utils.makeStockHistoryContentValue(stockSymbol, date4, close4);
-
-
-        //Erase the database for my test
-        Context mContext = getContext();
-        mContext.getContentResolver().delete(QuoteProvider.Histories.CONTENT_URI, null, null);
-
-        //put into database - This will get moved off UI thread!
-        Uri stockHistoryUri = QuoteProvider.Histories.CONTENT_URI;
-
-
-        //Put values into database
-        mContext.getContentResolver().insert(stockHistoryUri, value1);
-        mContext.getContentResolver().insert(stockHistoryUri, value2);
-        mContext.getContentResolver().insert(stockHistoryUri, value3);
-        mContext.getContentResolver().insert(stockHistoryUri, value4);
-
-        Log.v(LOG_TAG, "LJG - all dummy values should be inserted into database");
-
-        ///   ////////////////////////////////getting Data OUT of database//////////////////////////////////////////////////
-
-
-        //Test getting value out of database
-        Cursor databaseTestCursor;
-
-
-/////////////////////////Just deleting database to see how the code handles empty database//////////////////////
-        //  mContext.getContentResolver().delete(QuoteProvider.Histories.CONTENT_URI, null, null);
-
-
-        //Get the stock Symbol to graph
-
-
-        // Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
-        Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbolName);
-        databaseTestCursor = mContext.getContentResolver().query(uriForSymbol
-                , null
-                , null
-                , null
-                , null); //poosibly have sort order date ascending
-
-
-
-        List<Entry> valsCompany1 = new ArrayList<Entry>(); //list entries for stock for graphing
-
-        //Test the response
-        if (!databaseTestCursor.moveToFirst()) {
-            Log.v(LOG_TAG, "Database test Cursor is empty!");
-        } else {
-            int cursorCount = databaseTestCursor.getCount();
-            Log.v(LOG_TAG, "Database test cursor is valid and count is " + cursorCount);
-
-
-            //get the first date for setting up x axis
-            databaseTestCursor.moveToFirst();
-            String earliestDateInHistory = databaseTestCursor.getString(databaseTestCursor.getColumnIndex(StockHistoryColumns.DATE));
-
-
-
-
-
-            //Loop through all data from cursor
-            for (int i = 0; i < cursorCount; i++) {
-
-                String testcursorname =
-                        databaseTestCursor.getString(databaseTestCursor.getColumnIndex(StockHistoryColumns.SYMBOL));
-                String testcursorDate =
-                        databaseTestCursor.getString(databaseTestCursor.getColumnIndex(StockHistoryColumns.DATE));
-                String testCursorClose =
-                        databaseTestCursor.getString(databaseTestCursor.getColumnIndex(StockHistoryColumns.CLOSEPRICE));
-                String testCursorID =
-                        databaseTestCursor.getString(databaseTestCursor.getColumnIndex(StockHistoryColumns._ID));
-
-
-                //Loop through database table for all items and put them in log statement
-
-                //convert the Strings to dates
-                int dateDiff = Utils.numberOfDaysSinceFirstDate(earliestDateInHistory, testcursorDate);
-
-                // int newDate = Utils.getDateDiff(earliestDateInHistory, testcursorDate);
-
-
-                Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
-                        + " Symbol:" + testcursorname
-                        + " Date:" + testcursorDate
-                        + " Date diff:" + dateDiff
-                        + " ClosePrice:" + testCursorClose);
-
-
-                //  Log.v(LOG_TAG, "Data to put into graph is - Date: " + " ");
-
-
-                //make up new graphing points
-
-                Float xValue = (float) dateDiff;
-                Float yValue = Float.valueOf(testCursorClose);
-
-                Entry stockGraphEntry = new Entry(xValue, yValue); //x,y
-                valsCompany1.add(stockGraphEntry);
-
-
-                databaseTestCursor.moveToNext(); //move to next item
-
-            }
-
-        }
-
-/*
-        QuoteProvider.Quotes.CONTENT_URI, //table name
-                new String[]{"Distinct " + QuoteColumns.SYMBOL}, //projection (columns to return)
-                null, //selection Clause
-                null, //selection Arguments
-                null); //sort order
-*/
-
-
-        //Graph from the database instead of dummy points
-
-        ////////////////////////////////////Dummy Points to make up //////////////////
-        //Data point Entry
-      /*  Entry point1 = new Entry(10f, 5f); //x,y
-        Entry point2 = new Entry(12f, 10f);
-        Entry point3 = new Entry(15f, 11f);
-        Entry point4 = new Entry(16f, 19f);
-*/
-        //Data pointEntry with dates
-
-
-//            String dateString = "30/09/2014";
-//            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-        //TODO LJG Leslie start here tomorrow!!!!!! - WOrking on converting date and displaying it in Linegraph
-/*
-
-            String dateString = "2015-03-25";
-           SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-            Date date = null;
-            try {
-                date = sdf.parse(dateString);
-            } catch (java.text.ParseException e) {
-                e.printStackTrace();
-            }
-
-            long startDate = date.getTime();
-            Log.v(LOG_TAG, "The test date as long is " + stockSymbol.toString());
-
-*/
-
-
-        //  float point1Date =  Float.parseFloat("2015-03-25");
-      /*      float point1Date =  startDate;
-        float point1ClosePrice = Float.parseFloat("42.700001");
-        Entry point1 = new Entry(0f, 5f); //x,y
-*/
-        // Entry point1 = new Entry(0f, 5f); //x,y
-        //   Entry point2 = new Entry(2f, 10f);
-        //   Entry point3 = new Entry(5f, 11f);
-        //   Entry point4 = new Entry(6f, 19f);
-
-
-        //List containing all the entries for one line
-       /* List<Entry> valsCompany1 = new ArrayList<Entry>();
-        valsCompany1.add(point1);
-        valsCompany1.add(point2);
-        valsCompany1.add(point3);
-        valsCompany1.add(point4);*/
-
-        //Make a full Line Data set with the list and a String to descripe the
-        //dataset (and to use as label)
-        LineDataSet setCompany1 = new LineDataSet(valsCompany1, "Company 1");
-        setCompany1.setAxisDependency(YAxis.AxisDependency.LEFT);
-        // By calling setAxisDependency(...), the axis the
-        // DataSet should be plotted against is specified.
-
-        //Now we put all the datasets (lines) that we want on our chart
-        //into a list of IDataSets
-        List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(setCompany1); //could add the other companies too here
-
-        //now put it all into the final Chart data
-        LineData data = new LineData(dataSets); //gathers all data together
-
-        //put all data into line chart
-
-        stockHistoryLineChart.setData(data); //puts all the data into chart
-
-        //Style the chart
-        // stockHistoryLineChart.setBackgroundColor(Color.WHITE); //sets background colour
-        stockHistoryLineChart.setDescription(stockSymbolName + "   stock history for the past year");//Sets the Chart Description
-        stockHistoryLineChart.setDescriptionColor(Color.YELLOW); //sets the graph description colour
-        stockHistoryLineChart.setDescriptionTextSize(16f); //sets size of Description from 6f to 16f
-        stockHistoryLineChart.setNoDataTextDescription("No Stock History");
-
-        //Style the Axis
-        YAxis leftAxis = stockHistoryLineChart.getAxisLeft();
-        leftAxis.setTextColor(Color.WHITE);
-
-        YAxis rightAxis = stockHistoryLineChart.getAxisRight();
-        rightAxis.setTextColor(Color.WHITE);
-
-        XAxis xAxis = stockHistoryLineChart.getXAxis();
-        xAxis.setTextColor(Color.WHITE);
-
-        // Limi
-
-        // stockHistoryLineChart.
-
-
-        stockHistoryLineChart.invalidate(); //redraws chart
+        updateLineChart(stockHistoryLineChart, stockSymbolName);
 
 
         // return inflater.inflate(R.layout.fragment_detail, container, false);
@@ -372,7 +133,7 @@ public class DetailFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
@@ -404,6 +165,127 @@ public class DetailFragment extends Fragment {
         super.onPause();
     }
 
+
+    /*
+    Method to access database and update the linechart - best to move off UI thread eventually
+
+
+     */
+    private void updateLineChart(LineChart stockLineChart, String stockSymbol) {
+        Cursor stockHistoryCursor;
+        Context mContext = getContext();
+
+        // Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
+        Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
+        stockHistoryCursor = mContext.getContentResolver().query(
+                uriForSymbol
+                , null
+                , null
+                , null
+                , null); //poosibly have sort order date ascending
+
+
+        List<Entry> stockHistoryDataEntries = new ArrayList<Entry>(); //list entries for stock for graphing
+
+        //Test the response
+        if (!stockHistoryCursor.moveToFirst()) {
+            Log.v(LOG_TAG, "Database test Cursor is empty!");
+        } else {
+            int cursorCount = stockHistoryCursor.getCount();
+            Log.v(LOG_TAG, "Database test cursor is valid and count is " + cursorCount);
+
+
+            //get the first date for setting up x axis
+            stockHistoryCursor.moveToFirst();
+            String earliestDateInHistory = stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
+
+
+            //Loop through all data from cursor
+            for (int i = 0; i < cursorCount; i++) {
+                String testcursorname =
+                        stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.SYMBOL));
+                String testcursorDate =
+                        stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
+                String testCursorClose =
+                        stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.CLOSEPRICE));
+                String testCursorID =
+                        stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns._ID));
+
+                //Loop through database table for all items and put them in log statement
+
+                //convert the Strings to dates
+                int dateDiff = Utils.numberOfDaysSinceFirstDate(earliestDateInHistory, testcursorDate);
+
+                Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
+                        + " Symbol:" + testcursorname
+                        + " Date:" + testcursorDate
+                        + " Date diff:" + dateDiff
+                        + " ClosePrice:" + testCursorClose);
+
+
+                //make up new graphing points
+                Float xValue = (float) dateDiff;
+                Float yValue = Float.valueOf(testCursorClose);
+
+                Entry stockGraphEntry = new Entry(xValue, yValue); //x,y
+                stockHistoryDataEntries.add(stockGraphEntry);
+                stockHistoryCursor.moveToNext(); //move to next item
+            }
+        }
+
+/*
+        QuoteProvider.Quotes.CONTENT_URI, //table name
+                new String[]{"Distinct " + QuoteColumns.SYMBOL}, //projection (columns to return)
+                null, //selection Clause
+                null, //selection Arguments
+                null); //sort order
+*/
+
+
+        //Make a full Line Data set with the list and a String to descripe the
+        //dataset (and to use as label)
+        LineDataSet setCompany1 = new LineDataSet(stockHistoryDataEntries, "Company 1");
+        setCompany1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        // By calling setAxisDependency(...), the axis the
+        // DataSet should be plotted against is specified.
+
+        //Now we put all the datasets (lines) that we want on our chart
+        //into a list of IDataSets
+        List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+        dataSets.add(setCompany1); //could add the other companies too here
+
+        //now put it all into the final Chart data
+        LineData data = new LineData(dataSets); //gathers all data together
+
+        //put all data into line chart
+        stockHistoryLineChart.setData(data); //puts all the data into chart
+
+        //Style the chart
+        // stockHistoryLineChart.setBackgroundColor(Color.WHITE); //sets background colour
+        stockHistoryLineChart.setDescription(stockSymbolName + "   stock history for the past year");//Sets the Chart Description
+        stockHistoryLineChart.setDescriptionColor(Color.YELLOW); //sets the graph description colour
+        stockHistoryLineChart.setDescriptionTextSize(16f); //sets size of Description from 6f to 16f
+        stockHistoryLineChart.setNoDataTextDescription("No Stock History");
+
+        //Style the Axis
+        YAxis leftAxis = stockHistoryLineChart.getAxisLeft();
+        leftAxis.setTextColor(Color.WHITE);
+
+        YAxis rightAxis = stockHistoryLineChart.getAxisRight();
+        rightAxis.setTextColor(Color.WHITE);
+
+        XAxis xAxis = stockHistoryLineChart.getXAxis();
+        xAxis.setTextColor(Color.WHITE);
+
+        // Limi
+
+        // stockHistoryLineChart.
+
+
+        stockHistoryLineChart.invalidate(); //redraws chart
+    }
+
+
     /*
          //LJG before returning result let the SwipreRefresh know that the refresh is done
             Receives call that API call is done
@@ -423,8 +305,11 @@ public class DetailFragment extends Fragment {
                 //mSwipeLayout.setRefreshing(false);
                 // stopRefresh();
 
+                updateLineChart(stockHistoryLineChart, stockSymbolName); //update linechart with new database info
 
             }
         }
     }
+
+
 }
