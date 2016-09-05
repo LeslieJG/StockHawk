@@ -395,7 +395,7 @@ public class DetailFragment extends Fragment {
 
 
     /*
-         //LJG before returning result let the SwipreRefresh know that the refresh is done
+         //
             Receives call that API call is done
             Used to let UI refresh symbol know that refresh is done now.
             Credit: http://stackoverflow.com/users/574859/maximumgoat

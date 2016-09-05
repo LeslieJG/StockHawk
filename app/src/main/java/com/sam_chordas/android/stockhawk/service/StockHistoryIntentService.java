@@ -68,9 +68,6 @@ public class StockHistoryIntentService extends IntentService {
 
         //Get the name of stock to look for
         String stockSymbol = intent.getStringExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG);
-        //  Log.v(LOG_TAG, "LJG - the stock symbol passed into intent is " +stockSymbol);
-        //Get the dates to look for?????
-
 
         //Check for days already in database
         Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
@@ -85,7 +82,6 @@ public class StockHistoryIntentService extends IntentService {
 
        // Log.v(LOG_TAG, "LJG Stock History DateONLY Cursor is " + stockHistoryCursor);
 
-        //String latestDateToGetHistoriesFromApi = null;
         String todaysDate = Utils.getTodayDate();
         String latestDateToGetHistoriesFromApi = todaysDate;
         String earliestDateToGetHistoriesFromApi = null;
@@ -94,7 +90,6 @@ public class StockHistoryIntentService extends IntentService {
         if (!stockHistoryCursor.moveToFirst()) { //No dates in database for that stock symbol
 
             //Go back a year for API call
-           // latestDateToGetHistoriesFromApi = todaysDate;
             earliestDateToGetHistoriesFromApi = Utils.getDateOffset(todaysDate, -365); //go back a full year in history
             Log.v(LOG_TAG, "LJG Stock History DateONLY Cursor is EMPTY!!!!! - APi call goes back a whole year from "
                     + earliestDateToGetHistoriesFromApi + " to " + latestDateToGetHistoriesFromApi);
@@ -150,13 +145,6 @@ public class StockHistoryIntentService extends IntentService {
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
         JSONObject jsonObject = null;
         JSONArray resultsArray = null;
-
-        //TODO Delete below line soon
-       // this.getContentResolver().delete(QuoteProvider.Histories.CONTENT_URI, null, null); //delete the database
-       // Log.v(LOG_TAG, "LJG Delete the database");
-
-        //TODO make a intent service that will delete the Stock histories of stocks that are deleted from Quotes database
-
 
         try {
             jsonObject = new JSONObject(getResponse);

@@ -42,19 +42,6 @@ public class DetailActivity extends AppCompatActivity {
 
             // Being here means we are in animation mode
             supportPostponeEnterTransition();
-
-
-            //Start Downloading Stock History from API at the same time as starting the fragment
-            //so they happen in parallel
-            //TODO Put this into MyStocksActivity Instead???
-            //Now in MyStocksActivity in Click Listener
-            /*
-            Intent stockHistoryIntent = new Intent(this, StockHistoryIntentService.class);
-            stockHistoryIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolName); //pass the IntentService name of stock symbol
-            this.startService(stockHistoryIntent);
-            */
-
-
         }
     }
 

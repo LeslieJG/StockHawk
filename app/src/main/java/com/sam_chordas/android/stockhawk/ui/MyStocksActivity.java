@@ -129,7 +129,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
                         //Start Downloading Stock History from API at the same time as starting the fragment
                         //so they happen in parallel
-                        //TODO Put this into MyStocksActivity Instead???
                         Intent stockHistoryIntent = new Intent(getApplicationContext(), StockHistoryIntentService.class);
                         stockHistoryIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolClicked); //pass the IntentService name of stock symbol
                         getApplicationContext().startService(stockHistoryIntent);
