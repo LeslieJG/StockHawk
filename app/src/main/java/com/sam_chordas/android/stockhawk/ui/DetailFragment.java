@@ -25,6 +25,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.data.StockHistoryColumns;
+import com.sam_chordas.android.stockhawk.library_helper.TestFormatter;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 
 import java.util.ArrayList;
@@ -111,6 +112,7 @@ public class DetailFragment extends Fragment {
         View fragmentView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         stockHistoryLineChart = (LineChart) fragmentView.findViewById(R.id.stock_history_line_chart);
+        stockHistoryLineChart.getXAxis().setValueFormatter(new TestFormatter());
 
         updateLineChart(stockHistoryLineChart, stockSymbolName);
 
@@ -120,6 +122,7 @@ public class DetailFragment extends Fragment {
 
 
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -150,7 +153,7 @@ public class DetailFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
@@ -190,9 +193,9 @@ public class DetailFragment extends Fragment {
      */
     private void updateLineChart(LineChart stockLineChart, String stockSymbol) {
 
-        new updateLineChartTask().execute(stockLineChart,stockSymbol);
+        new updateLineChartTask().execute(stockLineChart, stockSymbol);
 
-       //Try to call AsyncTask and see if it works
+        //Try to call AsyncTask and see if it works
 
        /*
         Cursor stockHistoryCursor;
@@ -316,13 +319,13 @@ public class DetailFragment extends Fragment {
 
     /**
      * class to do updating line chart off the main UI thread
-     *
+     * <p/>
      * Ensure that the Linechart is threadsafe somehow so that it is not altered by two asynctasks running at same time
      * AsyncTask IS threadsafe by definition - all OK here
-     *
+     * <p/>
      * params are LineChart, String Stockname
      */
-    private class updateLineChartTask extends AsyncTask<Object, Void, LineData > {
+    private class updateLineChartTask extends AsyncTask<Object, Void, LineData> {
         final String LOG_TAG = updateLineChartTask.class.getSimpleName();
 
         Context mContext = getContext();
@@ -341,7 +344,6 @@ public class DetailFragment extends Fragment {
 
             Cursor stockHistoryCursor;
             Context mContext = getContext();
-
 
 
             // Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
@@ -369,20 +371,21 @@ public class DetailFragment extends Fragment {
                 // String earliestDateInHistory = stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
                 String earliestDateInHistory = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
 
+                //move cursor back to beginning to iterate through cursor
+                // stockHistoryCursor.moveToPrevious();
 
-                //Loop through all data from cursor
-                for (int i = 0; i < cursorCount; i++) {
-                    //  String testcursorname =
-                    //         stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.SYMBOL));
+                do {
+
+                    //{
+
+
+                    //Loop through all data from cursor
+                    // for (int i = 0; i < cursorCount; i++) {
+
+
                     String testcursorname = stockHistoryCursor.getString(COL_STOCK_HISTORY_SYMBOL);
-                    // String testcursorDate =
-                    //       stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
                     String testcursorDate = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
-                    //  String testCursorClose =
-                    //      stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.CLOSEPRICE));
                     String testCursorClose = stockHistoryCursor.getString(COL_STOCK_HISTORY_CLOSEPRICE);
-                    // String testCursorID =
-                    //      stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns._ID));
                     String testCursorID = stockHistoryCursor.getString(COL_STOCK_HISTORY_ID);
 
                     //Loop through database table for all items and put them in log statement
@@ -404,7 +407,9 @@ public class DetailFragment extends Fragment {
                     Entry stockGraphEntry = new Entry(xValue, yValue); //x,y
                     stockHistoryDataEntries.add(stockGraphEntry);
                     stockHistoryCursor.moveToNext(); //move to next item
-                }
+                } while (stockHistoryCursor.moveToNext());
+
+
             }
 
 /*
@@ -418,7 +423,7 @@ public class DetailFragment extends Fragment {
 
             //Make a full Line Data set with the list and a String to descripe the
             //dataset (and to use as label)
-            LineDataSet setCompany1 = new LineDataSet(stockHistoryDataEntries, "Company 1");
+            LineDataSet setCompany1 = new LineDataSet(stockHistoryDataEntries, stockSymbol);
             setCompany1.setAxisDependency(YAxis.AxisDependency.LEFT);
             // By calling setAxisDependency(...), the axis the
             // DataSet should be plotted against is specified.
@@ -432,15 +437,12 @@ public class DetailFragment extends Fragment {
             LineData data = new LineData(dataSets); //gathers all data together
 
 
-
+            stockHistoryCursor.close(); //close cursor before leaving method
             //for AsyncTask
             return data;
 
 
-
-
-
-           // return null;
+            // return null;
         } //params sent in, Progress variable, result types out
 
 
@@ -448,9 +450,6 @@ public class DetailFragment extends Fragment {
         @Override
         protected void onPostExecute(LineData lineData) {
             super.onPostExecute(lineData);
-
-
-
 
 
             //put all data into line chart
@@ -476,11 +475,8 @@ public class DetailFragment extends Fragment {
             stockHistoryLineChart.invalidate(); //redraws chart
 
 
-
         }
     }
-
-
 
 
     /*
