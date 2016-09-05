@@ -70,7 +70,7 @@ public class DetailFragment extends Fragment {
     ////////////**** Default Fragment Stuff ///////////////////////// - can delete if not used
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String STOCK_SYMBOL = "stock_symbol_param";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
@@ -95,7 +95,7 @@ public class DetailFragment extends Fragment {
     public static DetailFragment newInstance(String stockSymbolName) { //, String param2
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, stockSymbolName);
+        args.putString(STOCK_SYMBOL, stockSymbolName);
         // args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -105,11 +105,11 @@ public class DetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            stockSymbolName = getArguments().getString(ARG_PARAM1);
+            stockSymbolName = getArguments().getString(STOCK_SYMBOL);
             //  mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        mStockHistoryDateAxisFormatter = new TestFormatter();
+      //  mStockHistoryDateAxisFormatter = new TestFormatter();
     }
 
     @Override
@@ -118,12 +118,13 @@ public class DetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_detail, container, false);
 
+        //assign the line chart
         stockHistoryLineChart = (LineChart) fragmentView.findViewById(R.id.stock_history_line_chart);
 
 
 
 
-        stockHistoryLineChart.getXAxis().setValueFormatter(new TestFormatter());
+       // stockHistoryLineChart.getXAxis().setValueFormatter(new TestFormatter());
 
         updateLineChart(stockHistoryLineChart, stockSymbolName);
 
@@ -265,28 +266,17 @@ public class DetailFragment extends Fragment {
 
 
                 //get the first date for setting up x axis
-                stockHistoryCursor.moveToFirst();
-                // String earliestDateInHistory = stockHistoryCursor.getString(stockHistoryCursor.getColumnIndex(StockHistoryColumns.DATE));
-                String earliestDateInHistory = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
+                stockHistoryCursor.moveToFirst(); //TODO: Is this needed - already moved cursor to first for If Statement
+
+                //String earliestDateInHistory = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
 
 
                 //pass back earliest date to allow for x-axis formatting later on
-                mEarliestDateInStockHistory = earliestDateInHistory; //TODO: Clean this up - to difficult to reference -just use ONE variable
-
-               // mStockHistoryDateAxisFormatter.setInitialDate(earliestDateInHistory);
-
-                //Create the formatter with the initial date info
-               // stockHistoryLineChart.getXAxis().setValueFormatter(new TestFormatter());
-
-
-                //move cursor back to beginning to iterate through cursor
-                // stockHistoryCursor.moveToPrevious();
+               // mEarliestDateInStockHistory = earliestDateInHistory; //TODO: Clean this up - to difficult to reference -just use ONE variable
+                mEarliestDateInStockHistory = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
+                Log.v(LOG_TAG, "Earliest date in cursor history is " + mEarliestDateInStockHistory);
 
                 do {
-
-                    //{
-
-
                     //Loop through all data from cursor
                     // for (int i = 0; i < cursorCount; i++) {
 
@@ -299,7 +289,8 @@ public class DetailFragment extends Fragment {
                     //Loop through database table for all items and put them in log statement
 
                     //convert the Strings to dates
-                    int dateDiff = Utils.numberOfDaysSinceFirstDate(earliestDateInHistory, testcursorDate);
+                  //  int dateDiff = Utils.numberOfDaysSinceFirstDate(earliestDateInHistory, testcursorDate);
+                    int dateDiff = Utils.numberOfDaysSinceFirstDate(mEarliestDateInStockHistory, testcursorDate);
 
             /*    Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
                         + " Symbol:" + testcursorname
@@ -316,18 +307,7 @@ public class DetailFragment extends Fragment {
                     stockHistoryDataEntries.add(stockGraphEntry);
                   //  stockHistoryCursor.moveToNext(); //move to next item
                 } while (stockHistoryCursor.moveToNext());
-
-
             }
-
-/*
-        QuoteProvider.Quotes.CONTENT_URI, //table name
-                new String[]{"Distinct " + QuoteColumns.SYMBOL}, //projection (columns to return)
-                null, //selection Clause
-                null, //selection Arguments
-                null); //sort order
-*/
-
 
             //Make a full Line Data set with the list and a String to descripe the
             //dataset (and to use as label)
@@ -359,6 +339,8 @@ public class DetailFragment extends Fragment {
         protected void onPostExecute(LineData lineData) {
             super.onPostExecute(lineData);
 
+            Log.v(LOG_TAG, "onPostExecute - The earliest date in stock history is " +mEarliestDateInStockHistory);
+
 
             //put all data into line chart
             stockHistoryLineChart.setData(lineData); //puts all the data into chart
@@ -371,7 +353,9 @@ public class DetailFragment extends Fragment {
             stockHistoryLineChart.setNoDataTextDescription("No Stock History");
 
             //setting the MarkerView
+            Log.v(LOG_TAG, "just before MyMarkerView Declared");
             MyMarkerView markView = new MyMarkerView(getContext(),R.layout.marker_view_layout, mEarliestDateInStockHistory);
+            Log.v(LOG_TAG, "Just after MyMarkerView Declared");
             stockHistoryLineChart.setMarkerView(markView);
 
             //Style the Axis
@@ -387,9 +371,16 @@ public class DetailFragment extends Fragment {
            // xAxis.setGranularity(10f);//do not make any more lines that one per date
             xAxis.setGranularity(1f);
             xAxis.setLabelCount(3); //do not show more than 3 (ish) label lines for x Axis - stops dates overlapping
-            //reset the xaxis formatter with the new date if possible
-            stockHistoryLineChart.getXAxis().setValueFormatter(new TestFormatter(stockHistoryLineChart, mEarliestDateInStockHistory));
 
+
+
+            //reset the xaxis formatter with the new date if possible
+            Log.v(LOG_TAG, "Just before declaring new TestFormatter. Earliest date is " + mEarliestDateInStockHistory);
+            mStockHistoryDateAxisFormatter = new TestFormatter(stockHistoryLineChart, mEarliestDateInStockHistory);
+        //    stockHistoryLineChart.getXAxis().setValueFormatter(new TestFormatter(stockHistoryLineChart, mEarliestDateInStockHistory));
+
+            //set the formatter
+            stockHistoryLineChart.getXAxis().setValueFormatter(mStockHistoryDateAxisFormatter);
 
 
             stockHistoryLineChart.invalidate(); //redraws chart

@@ -1,6 +1,8 @@
 package com.sam_chordas.android.stockhawk.library_helper;
 
 
+import android.util.Log;
+
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.AxisValueFormatter;
@@ -10,26 +12,33 @@ import java.text.SimpleDateFormat;
 
 /**
  * Created by Leslie on 2016-09-05.
+ *
+ * X-Axis Formatter for stock detail line chart
  */
 public class TestFormatter implements AxisValueFormatter {
     String mStartDate = null;
+    private static final String LOG_TAG = TestFormatter.class.getSimpleName();
 
     private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MMM-dd");
     // private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MMM");
 
     BarLineChartBase<?> mLineChart = null; //used for refreencing the chart
-    // with the values to be displayed to allow for changing xAxis formatting
-
-
-    //Can create a sonstructor that passes all the data in if needed
-    //or at least the first date of the graph, so the other dates can be created
 
     //Constructor
     public TestFormatter(BarLineChartBase<?> lineChartBase, String initialDate) {
         mLineChart = lineChartBase;
-        mStartDate = initialDate;
+            mStartDate = "2001-01-01";
+        if (initialDate == null) {
+        //put a default initial date here
+
+        } else {
+            mStartDate = initialDate;
+        }
+
+        Log.v(LOG_TAG, "In Constructor - the initial date passed in is " + initialDate);
     }
 
+   //constructor
     public TestFormatter() {
         mStartDate = "2015-01-01"; //default initial date if needed - if none provided
     }
@@ -42,20 +51,18 @@ public class TestFormatter implements AxisValueFormatter {
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
 
-        //Return the value to be displayed instead of value
-
-
-        //  return null;
-        // return "a" + value;
-        // return mStartDate + value;
-
+        Log.v(LOG_TAG, "BLA  getFormattedValue - the x-value passed in is " + value + " and the start date is " + mStartDate);
 
         //dislay the values as dates (as strings)
 
-        String dateToReturn = Utils.getDateOffset(mStartDate, (int) value, mFormat);;
+        //TODO: This errors off at first!!!! When app first Loaded
+       String dateToReturn = Utils.getDateOffset(mStartDate, (int) value, mFormat);;
+
+
+
+
+
         //check how many items displayed
-
-
         /*
         Use the below to change the xAxis labels as you zoom in
         Currently not used
@@ -70,15 +77,14 @@ public class TestFormatter implements AxisValueFormatter {
             // String dateToReturn = String.valueOf(mLineChart.getMaxVisibleCount());
 
         }*/
+
         return dateToReturn;
-
-
-        // return  mStartDate;
+      //  return "BLA";
     }
 
 
     /**
-     * this is only needed if numbers are returned, else return 0
+     * this is only needed if numbers are returned - set to 1, else return 0
      */
     @Override
     public int getDecimalDigits() {
