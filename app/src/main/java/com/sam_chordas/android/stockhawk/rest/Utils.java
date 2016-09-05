@@ -229,7 +229,22 @@ public class Utils {
     }
 
 
+    /*
+    public static String dateGivenStartAndIncrementDays(String earliestDate, int dateIncrement){
+        Date dateEarly = convertStringToDate(earliestDate);
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        c.setTime(dateEarly);
+        c.add(Calendar.DATE, offsetDays);  // number of days to add
+        String referenceDate = df.format(c.getTime());  // dt is now the new date
+        return referenceDate;
+    }
+
+    */
+
     /**
+     *  Provides the date that is a number of days offset from the reference Date
      *
      * @param date String of reference day
      * @param offsetDays Number of days to offset (+ adds to date, - subtracts from date)
@@ -247,6 +262,30 @@ public class Utils {
         String referenceDate = df.format(c.getTime());  // dt is now the new date
         return referenceDate;
     }
+
+    /**
+     * Same as above, but passing in the simple date format
+     * @param date
+     * @param offsetDays
+     * @param df
+     * @return
+     */
+    public static String getDateOffset (String date, int offsetDays, SimpleDateFormat df){
+        Date incomingDate = convertStringToDate(date);
+        // String dt = "2008-01-01";  // Start date
+       // DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        c.setTime(incomingDate);
+        c.add(Calendar.DATE, offsetDays);  // number of days to add
+        String referenceDate = df.format(c.getTime());  // dt is now the new date
+        return referenceDate;
+    }
+
+
+
+
+
+
 
 
     /**
