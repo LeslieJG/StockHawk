@@ -25,6 +25,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.data.StockHistoryColumns;
+import com.sam_chordas.android.stockhawk.library_helper.MyMarkerView;
 import com.sam_chordas.android.stockhawk.library_helper.TestFormatter;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 
@@ -46,6 +47,8 @@ public class DetailFragment extends Fragment {
     private LineChart stockHistoryLineChart;
     String mEarliestDateInStockHistory = null;
     TestFormatter mStockHistoryDateAxisFormatter = null;
+
+    //TODO: LJG update linechart realtiem and redraw as needed (for faster loading of linechart)
 
     /////////////////////Database projection constants///////////////
     //For making good use of database Projections specify the columns we need
@@ -367,6 +370,10 @@ public class DetailFragment extends Fragment {
             stockHistoryLineChart.setDescriptionTextSize(16f); //sets size of Description from 6f to 16f
             stockHistoryLineChart.setNoDataTextDescription("No Stock History");
 
+            //setting the MarkerView
+            MyMarkerView markView = new MyMarkerView(getContext(),R.layout.marker_view_layout, mEarliestDateInStockHistory);
+            stockHistoryLineChart.setMarkerView(markView);
+
             //Style the Axis
             YAxis leftAxis = stockHistoryLineChart.getAxisLeft();
             leftAxis.setTextColor(Color.WHITE);
@@ -382,6 +389,8 @@ public class DetailFragment extends Fragment {
             xAxis.setLabelCount(3); //do not show more than 3 (ish) label lines for x Axis - stops dates overlapping
             //reset the xaxis formatter with the new date if possible
             stockHistoryLineChart.getXAxis().setValueFormatter(new TestFormatter(stockHistoryLineChart, mEarliestDateInStockHistory));
+
+
 
             stockHistoryLineChart.invalidate(); //redraws chart
 
