@@ -12,7 +12,7 @@
         android:id="@+id/line_chart_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stock Chart Title"
+        tools:Text="Stock Chart Title"
         app:layout_columnSpan="3"
         app:layout_columnWeight="1"
         app:layout_gravity="center_horizontal" />
@@ -22,10 +22,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:rotation="-90"
-        android:text="Y-Axis"
+        android:text="Price"
         app:layout_column="1"
         app:layout_columnWeight="1"
         app:layout_gravity="center"
+        android:padding="0dp"
+        android:layout_margin="0dp"
 
 
         />
@@ -48,7 +50,7 @@
         android:id="@+id/line_chart_x_axis_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="X-Axis"
+        android:text="Stock History"
         app:layout_column="2"
         app:layout_columnWeight="1" />
 
