@@ -11,7 +11,7 @@ import com.sam_chordas.android.stockhawk.rest.Utils;
 
 /**
  * Created by Leslie on 2016-09-06.
- * To show the selected stock price and date
+ * To show the selected stock price and date in a popout window
  */
 public class MyMarkerView extends MarkerView {
     private TextView tvStockDate;
@@ -45,7 +45,6 @@ public class MyMarkerView extends MarkerView {
         tvStockDate.setText(currentDate);
         tvStockPrice.setText("$" + e.getY());
 
-      //  tvStockDate.setText(currentDate  + "\n" + " $" + e.getY()); // set the entry-value as the display text
     }
 
     @Override

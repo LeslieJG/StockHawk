@@ -365,6 +365,8 @@ public class DetailFragment extends Fragment {
             YAxis rightAxis = stockHistoryLineChart.getAxisRight();
             rightAxis.setTextColor(Color.WHITE);
 
+
+
             XAxis xAxis = stockHistoryLineChart.getXAxis();
             xAxis.setTextColor(Color.WHITE);
 
@@ -381,6 +383,8 @@ public class DetailFragment extends Fragment {
 
             //set the formatter
             stockHistoryLineChart.getXAxis().setValueFormatter(mStockHistoryDateAxisFormatter);
+
+           // stockHistoryLineChart.setAutoScaleMinMaxEnabled(true); //allow y-axis to change scale to allow financial data left/right scrolling to change the scale as needed
 
 
             stockHistoryLineChart.invalidate(); //redraws chart
@@ -414,6 +418,5 @@ public class DetailFragment extends Fragment {
             }
         }
     }
-
 
 }

@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 
 /**
  * Created by Leslie on 2016-09-05.
- *
+ * <p/>
  * X-Axis Formatter for stock detail line chart
  */
 public class TestFormatter implements AxisValueFormatter {
@@ -20,25 +20,22 @@ public class TestFormatter implements AxisValueFormatter {
     private static final String LOG_TAG = TestFormatter.class.getSimpleName();
 
     private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MMM-dd");
-    // private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MMM");
+
 
     BarLineChartBase<?> mLineChart = null; //used for refreencing the chart
 
     //Constructor
     public TestFormatter(BarLineChartBase<?> lineChartBase, String initialDate) {
         mLineChart = lineChartBase;
-            mStartDate = "2001-01-01";
-        if (initialDate == null) {
-        //put a default initial date here
-
-        } else {
+        mStartDate = "2001-01-01";
+        if (initialDate != null) {
             mStartDate = initialDate;
         }
 
         Log.v(LOG_TAG, "In Constructor - the initial date passed in is " + initialDate);
     }
 
-   //constructor
+    //constructor
     public TestFormatter() {
         mStartDate = "2015-01-01"; //default initial date if needed - if none provided
     }
@@ -50,17 +47,11 @@ public class TestFormatter implements AxisValueFormatter {
     //Value represents the actual number graphed (in my case it starts with 0 and goes up)
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
-
         Log.v(LOG_TAG, "BLA  getFormattedValue - the x-value passed in is " + value + " and the start date is " + mStartDate);
 
         //dislay the values as dates (as strings)
-
-        //TODO: This errors off at first!!!! When app first Loaded
-       String dateToReturn = Utils.getDateOffset(mStartDate, (int) value, mFormat);;
-
-
-
-
+        String dateToReturn = Utils.getDateOffset(mStartDate, (int) value, mFormat);
+        ;
 
         //check how many items displayed
         /*
@@ -79,7 +70,6 @@ public class TestFormatter implements AxisValueFormatter {
         }*/
 
         return dateToReturn;
-      //  return "BLA";
     }
 
 
