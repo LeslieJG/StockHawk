@@ -129,7 +129,7 @@ public class DetailFragment extends Fragment {
         updateLineChart(stockHistoryLineChart, stockSymbolName);
 
 
-        // return inflater.inflate(R.layout.fragment_detail, container, false);
+        // return inflater.inflate(R.layout.fragment_detail_old_gridlayout, container, false);
         return fragmentView;
 
 
@@ -347,7 +347,7 @@ public class DetailFragment extends Fragment {
 
             //Style the chart
             // stockHistoryLineChart.setBackgroundColor(Color.WHITE); //sets background colour
-            stockHistoryLineChart.setDescription(stockSymbolName + "   stock history for the past year");//Sets the Chart Description
+            stockHistoryLineChart.setDescription(stockSymbolName + " stock history for the past year");//Sets the Chart Description
             stockHistoryLineChart.setDescriptionColor(Color.YELLOW); //sets the graph description colour
             stockHistoryLineChart.setDescriptionTextSize(16f); //sets size of Description from 6f to 16f
             stockHistoryLineChart.setNoDataTextDescription("No Stock History");

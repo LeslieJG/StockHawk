@@ -1,15 +1,13 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    app:columnCount="3"
     tools:context="com.sam_chordas.android.stockhawk.ui.DetailFragment">
 
-<!--
 
-    &lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;
+    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/line_chart_title"
         android:layout_width="wrap_content"
@@ -18,7 +16,6 @@
         app:layout_columnSpan="3"
         app:layout_columnWeight="1"
         app:layout_gravity="center_horizontal" />
--->
 
     <TextView
         android:id="@+id/line_chart_y_axis_label"
@@ -26,7 +23,9 @@
         android:layout_height="wrap_content"
         android:rotation="-90"
         android:text="Price"
-        android:layout_gravity="center_vertical"
+        app:layout_column="1"
+        app:layout_columnWeight="1"
+        app:layout_gravity="center"
         android:padding="0dp"
         android:layout_margin="0dp"
 
@@ -34,9 +33,9 @@
         />
 
     <FrameLayout
-        android:layout_height="match_parent"
-    android:layout_width="0dp"
-    android:layout_weight="1" >
+        app:layout_columnSpan="1"
+        app:layout_columnWeight="12"
+        app:layout_rowWeight="1">
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/stock_history_line_chart"
@@ -47,5 +46,12 @@
     </FrameLayout>
 
 
+    <TextView
+        android:id="@+id/line_chart_x_axis_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stock History"
+        app:layout_column="2"
+        app:layout_columnWeight="1" />
 
-</LinearLayout>
+</android.support.v7.widget.GridLayout>
