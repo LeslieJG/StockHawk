@@ -6,4 +6,9 @@
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">240dp</dimen>
+
+    <!-- For the stock_quotes widget -->
+    <dimen name="widget_info_stock_quotes_default_width">40dp</dimen>
+    <dimen name="widget_info_stock_quotes_default_height">40dp</dimen>
+
 </resources>
