@@ -397,7 +397,7 @@ public class DetailFragment extends Fragment {
     /*
          //
             Receives call that API call is done
-            Used to let UI refresh symbol know that refresh is done now.
+
             Credit: http://stackoverflow.com/users/574859/maximumgoat
             from this thread http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
          */

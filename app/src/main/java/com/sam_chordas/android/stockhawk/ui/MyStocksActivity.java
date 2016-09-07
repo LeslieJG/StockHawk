@@ -43,6 +43,8 @@ import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallb
 
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
+    //TODO: Fix no-connection crash wheh going to stock detail
+    //TODO: Make widget
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -129,10 +131,16 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
                         //Start Downloading Stock History from API at the same time as starting the fragment
                         //so they happen in parallel
-                        Intent stockHistoryIntent = new Intent(getApplicationContext(), StockHistoryIntentService.class);
-                        stockHistoryIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolClicked); //pass the IntentService name of stock symbol
-                        getApplicationContext().startService(stockHistoryIntent);
+                        //ONly do this if there is internet!
+                        if (checkInternetConnected()){
+                            Intent stockHistoryIntent = new Intent(getApplicationContext(), StockHistoryIntentService.class);
+                            stockHistoryIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolClicked); //pass the IntentService name of stock symbol
+                            getApplicationContext().startService(stockHistoryIntent);
 
+
+                        } else {
+                            stockHistoryOutOfDateToast();
+                        }
 
                         //Launch the Detail Activity with explicit intent
                         // Intent detailActivityIntent = new Intent(this, DetailActivity.class);
@@ -223,6 +231,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     }
 
 
+
+
     @Override
     protected void onPause() {
         if (dataUpdateReceiver != null)
@@ -266,6 +276,11 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     public void refreshFailedToast() {
         Toast.makeText(mContext, R.string.can_not_refresh_network_toast, Toast.LENGTH_SHORT).show();
+    }
+
+    private void stockHistoryOutOfDateToast() {
+        Toast.makeText(mContext, R.string.stock_history_no_network_toast, Toast.LENGTH_LONG).show();
+
     }
 
     public void restoreActionBar() {

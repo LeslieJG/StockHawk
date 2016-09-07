@@ -19,6 +19,7 @@
     <!-- No Network Toast Messages  [CHAR LIMIT=NONE] -->
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
     <string name="can_not_refresh_network_toast">Can Not Refresh - No Internet Connection</string>
+    <string name="stock_history_no_network_toast">No Network Connection\nStock History May Be Out Of Date!</string>
     <!-- Toast Error Messages-->
     <!-- Not Valid Stcok Toast Message [CHAR LIMIT=NONE]-->
     <string name="toast_error_not_valid_stock_symbol">Not A Valid Stock</string>
@@ -91,6 +92,10 @@
     <string name="stock_value_up">up</string>
     <string name="stock_value_down">down</string>
     <string name="stock_history_line_chart_content_description">Graph of Stock History For The Past Year</string>
+
+
+
+
 
 
 
