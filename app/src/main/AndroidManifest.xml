@@ -56,7 +56,7 @@
         <!-- FOr widget-->
 
         <receiver android:name=".widget.StockQuoteWidgetProvider"
-            android:label="BL BLA">
+            android:label="@string/widget_label">
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>

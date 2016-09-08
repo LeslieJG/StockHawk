@@ -6,6 +6,8 @@
     <string name="action_change_units">Change Units</string>
 
     <string name="detail_name">Stock History</string>
+    <string name="widget_label">@string/app_name</string>
+
 
     <!-- Search For New Stock [CHAR LIMIT=30]-->
     <string name="symbol_search">Symbol Search</string>
