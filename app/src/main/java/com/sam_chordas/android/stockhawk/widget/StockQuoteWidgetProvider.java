@@ -1,25 +1,28 @@
 package com.sam_chordas.android.stockhawk.widget;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.RemoteViews;
-
-import com.sam_chordas.android.stockhawk.R;
-import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
 
 /**
  * Created by Leslie on 2016-09-08.
  */
 public class StockQuoteWidgetProvider extends AppWidgetProvider {
 
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-        //Update all the static widgets
+        //N.B. on Update is called on UI thread. Move it off the UI Thread and put it on intent service
+        context.startService(new Intent(context, StockQuoteWidgetIntentService.class));
+
+
+
+
+
+        /*//Update all the static widgets
         for (int appWidgetID : appWidgetIds) { //go through all the widgets we have
             RemoteViews views = new RemoteViews(
                     context.getPackageName(),
@@ -34,6 +37,8 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetID, views); //update the info in them
 
 
-        }
+        }*/
+
+
     }
 }

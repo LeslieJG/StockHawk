@@ -53,8 +53,7 @@
         <service android:name=".service.StockHistoryIntentService" />
 
 
-        <!-- FOr widget-->
-
+        <!-- For widget-->
         <receiver android:name=".widget.StockQuoteWidgetProvider"
             android:label="@string/widget_label">
 
@@ -67,6 +66,8 @@
                 />
 
         </receiver>
+        <!-- For Widget Intent Provider -->
+        <service android:name=".widget.StockQuoteWidgetIntentService"/>
 
 
 <!--
