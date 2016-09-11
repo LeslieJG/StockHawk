@@ -143,7 +143,10 @@ public class Utils {
                 int count = Integer.parseInt(jsonObject.getString(context.getString(R.string.json_count)));
 
                 //Invalid User input will just result in one stock being searched - this is the only thing we will look for
-                if (count == 1) {
+               if (count == 1) {
+                    //try it for all times this is called
+               // if (true){
+
                     jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
                             .getJSONObject(context.getString(R.string.json_quote));
                     String theBidPrice = jsonObject.getString(context.getString(R.string.json_bid));
@@ -165,7 +168,7 @@ public class Utils {
                 }
             }
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "String to JSON failed: " + e);
+            Log.e(LOG_TAG, "IsValid? String to JSON failed: " + e);
         }
         return true; //stock is valid
     }

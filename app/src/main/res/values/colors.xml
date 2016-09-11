@@ -8,4 +8,9 @@
   <color name="material_grey_700_80percent_opaque">#CC616161</color>
 
   <color name="marker_view">#F5F5F5</color>
+
+  <!-- WIdget Colors -->
+  <color name="widget_background_color">#99424242</color>
+  <color name="widget_text_color">#CC616161</color>
+
 </resources>

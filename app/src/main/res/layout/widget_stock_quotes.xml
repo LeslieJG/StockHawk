@@ -3,14 +3,50 @@
 <!-- The layout for the Stock Quotes Widget
  This is included in xml/widget_info_stock_quptes
  -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/widget">
+
+    tools:layout_width="40dp"
+    tools:layout_height="40dp"
+    android:id="@+id/widget"
+    android:background="@drawable/rounded_corner_square_background">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="LJGZ"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/widget_stcok_symbol"
+        android:textAllCaps="true"
+        android:text="AplL"
+        android:layout_gravity="center_horizontal"
+        tools:text="test"
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$12.55"
+        android:layout_gravity="center_horizontal"
+        tools:text="$44.13"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+0.11"
+        android:layout_gravity="center_horizontal"
+        tools:text="+0.23"
+        />
 
 </LinearLayout>
+
+
+  <!--  android:text="ljge"-->
