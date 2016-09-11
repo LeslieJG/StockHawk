@@ -1,5 +1,6 @@
 package com.sam_chordas.android.stockhawk.widget;
 
+import android.annotation.TargetApi;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -9,6 +10,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.widget.RemoteViews;
 
 import com.sam_chordas.android.stockhawk.R;
@@ -18,7 +22,7 @@ import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
 
 /**
  * Created by Leslie on 2016-09-09.
- *
+ * <p>
  * To Deal with the Widget's onUpdate Method, but OFF the UI thread we are
  * using this intent service
  */
@@ -37,17 +41,17 @@ public class StockQuoteWidgetIntentService extends IntentService {
             QuoteColumns.CHANGE,
             QuoteColumns.BIDPRICE,
             QuoteColumns.ISUP,
-            QuoteColumns.ISCURRENT    };
+            QuoteColumns.ISCURRENT};
 
     // These indices are tied to STOCK_QUOTE_COLUMNS.  If STOCK_QUOTE_COLUMNS changes, these must change.
     static final int COL_STOCK_ID = 0;
-    static final int COL_STOCK_SYMBOL=1;
-    static final int COL_STOCK_PERCENT_CHANGE=2;
-    static final int COL_STOCK_NAME=3;
-    static final int COL_STOCK_CHANGE=4;
-    static final int COL_STOCK_BIDPRICE=5;
-    static final int COL_STOCK_ISUP=6;
-    static final int COL_STOCK_ISCURRENT=7;
+    static final int COL_STOCK_SYMBOL = 1;
+    static final int COL_STOCK_PERCENT_CHANGE = 2;
+    static final int COL_STOCK_NAME = 3;
+    static final int COL_STOCK_CHANGE = 4;
+    static final int COL_STOCK_BIDPRICE = 5;
+    static final int COL_STOCK_ISUP = 6;
+    static final int COL_STOCK_ISCURRENT = 7;
     /////////////////////////////////////////////////////////
 
 
@@ -70,16 +74,29 @@ public class StockQuoteWidgetIntentService extends IntentService {
 
         //Update all the static widgets
         for (int appWidgetID : appWidgetIds) { //go through all the widgets we have
+
+            ///////Set correct Layout Depending on widget size///////
+            //get teh widget's width to assign correct layout
+            int widgetWidth = getWidgetWidth(appWidgetManager, appWidgetID);
+            int defaultWidth = getResources().getDimensionPixelSize(R.dimen.widget_stock_quotes_default_width);
+
+            int layoutId; //to store the layour ID to use depending on widget size
+            if (widgetWidth < defaultWidth) {
+                layoutId = R.layout.widget_stock_quotes_small;
+            } else {
+                layoutId = R.layout.widget_stock_quotes_default_size;
+            }
             RemoteViews views = new RemoteViews(
+                    mContext.getPackageName(), layoutId); //here is the view to use
+
+          /*  RemoteViews views = new RemoteViews(
                     mContext.getPackageName(),
-                    R.layout.widget_stock_quotes); //here is the view to use - TODO Will have to change this when using different sizes
+                    R.layout.widget_stock_quotes_default_size); //here is the view to use
+*/
 
 
 
-            //update the widget view with real data
-
-
-
+            //////update the widget view with real data//////
             //Get a cursor for the data in database
             Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
 
@@ -90,7 +107,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
                     null,
                     QuoteColumns._ID + " ASC"); //sort order
 
-            if (data == null){ //cursor null - something went wrong - don't update Widget
+            if (data == null) { //cursor null - something went wrong - don't update Widget
                 return;
             }
 
@@ -112,7 +129,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
             //display the single stock into the 1x1 widget
 
             views.setTextViewText(R.id.widget_stock_symbol, stockSymbol);
-            views.setTextViewText(R.id.widget_stock_price, stockPrice);
+            views.setTextViewText(R.id.widget_stock_price, "$" + stockPrice);
 
             //TODO will have to change percent change background colour and  + or - sign and also add percent symbol
             views.setTextViewText(R.id.widget_stock_price_change, stockPercentChange);
@@ -121,9 +138,9 @@ public class StockQuoteWidgetIntentService extends IntentService {
             int sdk = Build.VERSION.SDK_INT;
             if (data.getInt(COL_STOCK_ISUP) == 1) { //if stock going up
                 //credit for below line:  http://stackoverflow.com/questions/6201410/how-to-change-widget-layout-background-programatically
-                views.setInt(R.id.widget_stock_price_change, "setBackgroundResource",R.drawable.percent_change_pill_green);
+                views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_green);
             } else {
-                views.setInt(R.id.widget_stock_price_change, "setBackgroundResource",R.drawable.percent_change_pill_red);
+                views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_red);
             }
 
 
@@ -184,14 +201,6 @@ public class StockQuoteWidgetIntentService extends IntentService {
             */
 
 
-
-
-
-
-
-
-
-
             //close cursor when done
             data.close();
 
@@ -207,6 +216,38 @@ public class StockQuoteWidgetIntentService extends IntentService {
         }
 
 
-
     }
+
+
+    /* Credit :Udactiy Sunshine
+    returns widget width in pixels
+     */
+    private int getWidgetWidth(AppWidgetManager appWidgetManager, int appWidgetId) {
+        // Prior to Jelly Bean, widgets were always their default size
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            return getResources().getDimensionPixelSize(R.dimen.widget_stock_quotes_default_width);
+        }
+        // For Jelly Bean and higher devices, widgets can be resized - the current size can be
+        // retrieved from the newly added App Widget Options
+        return getWidgetWidthFromOptions(appWidgetManager, appWidgetId);
+    }
+
+    /*
+    Credit: Udacity Sunshine app
+    returns widget width in pixels
+    This method will calculate the pixel width based on resizable widget
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private int getWidgetWidthFromOptions(AppWidgetManager appWidgetManager, int appWidgetId) {
+        Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
+        if (options.containsKey(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)) {
+            int minWidthDp = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+            // The width returned is in dp, but we'll convert it to pixels to match the other widths
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, minWidthDp,
+                    displayMetrics);
+        }
+        return getResources().getDimensionPixelSize(R.dimen.widget_stock_quotes_default_width);
+    }
+
 }

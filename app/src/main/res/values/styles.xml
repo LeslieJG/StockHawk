@@ -21,4 +21,9 @@
     <item name="android:textAllCaps">true</item>
   </style>
 
+  <style name="WidgetDefaultSizeTextStyle">
+    <item name="android:textSize">20dp</item>
+    <item name="android:textScaleX">0.9</item>
+  </style>
+
 </resources>

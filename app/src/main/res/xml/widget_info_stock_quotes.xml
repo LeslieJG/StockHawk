@@ -2,13 +2,21 @@
 <appwidget-provider
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:initialLayout="@layout/widget_stock_quotes_default_size"
+    android:minHeight="@dimen/widget_stock_quotes_default_height"
+    android:minWidth="@dimen/widget_stock_quotes_default_width"
+
+    android:minResizeHeight="@dimen/widget_stock_quotes_min_resize_height"
+    android:minResizeWidth="@dimen/widget_stock_quotes_min_resize_width"
+
+
+
     android:previewImage="@drawable/happy_face"
-    android:initialLayout="@layout/widget_stock_quotes"
-    android:minHeight="@dimen/widget_info_stock_quotes_default_height"
-    android:minWidth="@dimen/widget_info_stock_quotes_default_width"
+    android:resizeMode="horizontal"
+
     android:updatePeriodMillis="0"
+    tools:ignore="UnusedAttribute"
 
+    />
 
-/>
-
-  <!--  android:initialLayout=""-->
+    <!--  android:initialLayout=""-->

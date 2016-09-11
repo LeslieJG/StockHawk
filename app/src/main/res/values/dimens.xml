@@ -8,7 +8,11 @@
     <dimen name="navigation_drawer_width">240dp</dimen>
 
     <!-- For the stock_quotes widget -->
-    <dimen name="widget_info_stock_quotes_default_width">40dp</dimen>
-    <dimen name="widget_info_stock_quotes_default_height">40dp</dimen>
+    <dimen name="widget_stock_quotes_default_width">110dp</dimen>
+    <dimen name="widget_stock_quotes_default_height">40dp</dimen>
+
+    <dimen name="widget_stock_quotes_min_resize_width">40dp</dimen>
+    <dimen name="widget_stock_quotes_min_resize_height">@dimen/widget_stock_quotes_default_height</dimen>
+
 
 </resources>

@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.R;
@@ -29,7 +30,7 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
         for (int appWidgetID : appWidgetIds) { //go through all the widgets we have
             RemoteViews views = new RemoteViews(
                     context.getPackageName(),
-                    R.layout.widget_stock_quotes); //here is the view to use
+                    R.layout.widget_stock_quotes_default_size); //here is the view to use
 
 
             //Set what happens when you click on a widget
@@ -45,6 +46,14 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
 
     }
 
+
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
+
+        //update it too!
+        context.startService(new Intent(context, StockQuoteWidgetIntentService.class));
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
