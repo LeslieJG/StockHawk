@@ -11,7 +11,7 @@
 
 
 
-    android:previewImage="@drawable/happy_face"
+    android:previewImage="@drawable/stockhawk_widget_preview"
     android:resizeMode="horizontal"
 
     android:updatePeriodMillis="0"
