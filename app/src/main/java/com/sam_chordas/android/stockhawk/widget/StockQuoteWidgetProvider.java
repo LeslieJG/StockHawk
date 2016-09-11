@@ -4,12 +4,15 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+
+import com.sam_chordas.android.stockhawk.R;
 
 /**
  * Created by Leslie on 2016-09-08.
  */
 public class StockQuoteWidgetProvider extends AppWidgetProvider {
-
+    private static final String LOG_TAG = StockQuoteWidgetProvider.class.getSimpleName();
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -40,5 +43,19 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
         }*/
 
 
+    }
+
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        if (intent.getAction().equals(context.getString(R.string.refresh_data_intent_key))) {
+            // Do stuff - maybe update my view based on the changed DB contents
+
+            Log.v(LOG_TAG, "LJG API call done will now update widget");
+            context.startService(new Intent(context, StockQuoteWidgetIntentService.class));
+
+
+        }
     }
 }
