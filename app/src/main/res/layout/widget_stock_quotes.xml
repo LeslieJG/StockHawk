@@ -22,7 +22,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/widget_stcok_symbol"
+        android:id="@+id/widget_stock_symbol"
         android:textAllCaps="true"
         android:text="AplL"
         android:layout_gravity="center_horizontal"
@@ -33,6 +33,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/widget_stock_price"
         android:text="$12.55"
         android:layout_gravity="center_horizontal"
         tools:text="$44.13"
@@ -41,6 +42,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        android:background="@drawable/percent_change_pill"
+        android:textStyle="bold"
+        android:paddingLeft="3dp"
+        android:paddingStart="3dp"
+        android:paddingRight="3dp"
+        android:paddingEnd="3dp"
+        android:id="@+id/widget_stock_price_change"
         android:text="+0.11"
         android:layout_gravity="center_horizontal"
         tools:text="+0.23"
