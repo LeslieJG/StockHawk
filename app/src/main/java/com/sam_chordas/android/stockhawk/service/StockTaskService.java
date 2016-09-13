@@ -96,7 +96,7 @@ public class StockTaskService extends GcmTaskService {
                     e.printStackTrace();
                 }
             } else if (initQueryCursor != null) {
-              //  DatabaseUtils.dumpCursor(initQueryCursor); //TODO THis is where cursor is dumped
+                //  DatabaseUtils.dumpCursor(initQueryCursor); //TODO THis is where cursor is dumped
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++) {
                     mStoredSymbols.append("\"" +
@@ -111,6 +111,9 @@ public class StockTaskService extends GcmTaskService {
                     e.printStackTrace();
                 }
             }
+
+            initQueryCursor.close(); //close cursor when done with it
+
         } else if (params.getTag().equals(mContext.getString(R.string.intent_add))) {
             isUpdate = false;
             // get symbol from params.getExtra and build query

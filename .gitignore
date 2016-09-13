@@ -6,3 +6,9 @@
 /captures
 
 *.iml
+
+
+ app/hs_err_pid3992.log
+        app/hs_err_pid8544.log
+        app/replay_pid8544.log
+        projectFilesBackup/

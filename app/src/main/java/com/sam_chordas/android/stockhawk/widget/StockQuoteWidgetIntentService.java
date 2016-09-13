@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
 
@@ -62,6 +63,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.v(LOG_TAG, "in onHandle Intent for updating widgets");
 
         //Retrieve all of the Stock Quote widget ids: these are the widgets we need to update
         //This was originally done in the stock Quote Widget Provider
@@ -128,12 +130,15 @@ public class StockQuoteWidgetIntentService extends IntentService {
 
             //display the single stock into the 1x1 widget
 
+
             views.setTextViewText(R.id.widget_stock_symbol, stockSymbol);
             views.setTextViewText(R.id.widget_stock_price, "$" + stockPrice);
+            //views.setTextViewText(R.id.widget_stock_price, "$$66");
+            Log.v(LOG_TAG, "Stock Price from DB is " + stockPrice);
+            //TODO: Stock pid price in widget is not always same as displayed in app - solve!!!!
 
-            //TODO will have to change percent change background colour and  + or - sign and also add percent symbol
+
             views.setTextViewText(R.id.widget_stock_price_change, stockPercentChange);
-
             //change the background of stock percent change to red or green depending on whether stock is going up or down
             int sdk = Build.VERSION.SDK_INT;
             if (data.getInt(COL_STOCK_ISUP) == 1) { //if stock going up
