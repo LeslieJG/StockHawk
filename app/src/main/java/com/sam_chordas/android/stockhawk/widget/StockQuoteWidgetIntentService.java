@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -151,8 +152,11 @@ public class StockQuoteWidgetIntentService extends IntentService {
             if (data.getInt(COL_STOCK_ISUP) == 1) { //if stock going up
                 //credit for below line:  http://stackoverflow.com/questions/6201410/how-to-change-widget-layout-background-programatically
                 views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_green);
+                views.setInt(R.id.widget_stock_price_change, "setTextColor", R.color.widget_text_color);
+
             } else {
                 views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_red);
+                views.setInt(R.id.widget_stock_price_change, "setTextColor", Color.WHITE);
             }
 
 
