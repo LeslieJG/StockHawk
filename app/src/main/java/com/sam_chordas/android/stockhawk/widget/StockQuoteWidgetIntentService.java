@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -77,6 +78,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
         //Update all the static widgets
         for (int appWidgetID : appWidgetIds) { //go through all the widgets we have
 
+            Log.v(LOG_TAG, "Widget ID to update is " + appWidgetID);
             ///////Set correct Layout Depending on widget size///////
             //get teh widget's width to assign correct layout
             int widgetWidth = getWidgetWidth(appWidgetManager, appWidgetID);
@@ -100,7 +102,9 @@ public class StockQuoteWidgetIntentService extends IntentService {
 
             //////update the widget view with real data//////
             //Get a cursor for the data in database
-            Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
+            //Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
+            Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol("YHOO"); //use the general Content Uri for now to get all stock quotes
+
 
             //data should have the entire contents of the quote Cursor Database in it
             Cursor data = getContentResolver().query(stockQuoteUri, //uri
@@ -108,6 +112,9 @@ public class StockQuoteWidgetIntentService extends IntentService {
                     null,
                     null,
                     QuoteColumns._ID + " ASC"); //sort order
+
+            //TODO Dump the cursor to see what's in DB
+            DatabaseUtils.dumpCursor(data);
 
             if (data == null) { //cursor null - something went wrong - don't update Widget
                 return;
@@ -134,7 +141,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
             views.setTextViewText(R.id.widget_stock_symbol, stockSymbol);
             views.setTextViewText(R.id.widget_stock_price, "$" + stockPrice);
             //views.setTextViewText(R.id.widget_stock_price, "$$66");
-            Log.v(LOG_TAG, "Stock Price from DB is " + stockPrice);
+            Log.v(LOG_TAG, "Stock Price from DB is " + stockPrice + " symbol is " + stockSymbol + " percent change is " + stockPercentChange);
             //TODO: Stock pid price in widget is not always same as displayed in app - solve!!!!
 
 

@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -43,6 +45,9 @@ public class StockTaskService extends GcmTaskService {
         mContext = context;
     }
 
+    /*
+    Method for ???LJG - getting API call data perhaps?
+     */
     String fetchData(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
@@ -52,6 +57,10 @@ public class StockTaskService extends GcmTaskService {
         return response.body().string();
     }
 
+
+    /*
+    LJG Over Ridden method for GcmTaskService
+     */
     @Override
     public int onRunTask(TaskParams params) {
         Cursor initQueryCursor;
@@ -96,7 +105,14 @@ public class StockTaskService extends GcmTaskService {
                     e.printStackTrace();
                 }
             } else if (initQueryCursor != null) {
-                //  DatabaseUtils.dumpCursor(initQueryCursor); //TODO THis is where cursor is dumped
+
+                 // DatabaseUtils.dumpCursor(initQueryCursor); //TODO THis is where cursor is dumped
+                //Get a full list of DB here and dump it out to logcat
+                Log.v(LOG_TAG, "LJG Dumping full database BEFORE it is updated");
+                dumpFullDbToLogcat(mContext);
+
+
+
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++) {
                     mStoredSymbols.append("\"" +
@@ -144,8 +160,12 @@ public class StockTaskService extends GcmTaskService {
                     if (isUpdate) {
 
                         contentValues.put(QuoteColumns.ISCURRENT, 0);
+                        Log.v(LOG_TAG, "LJG Updating database");
                         mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                                 null, null);
+
+                        Log.v(LOG_TAG, "Dump database After UPDATING");
+                        dumpFullDbToLogcat(mContext);
                     }
 
                     //Log the value of output for debuggin
@@ -156,6 +176,20 @@ public class StockTaskService extends GcmTaskService {
                     if (stockValid) { //ONLY update if stock is valid
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse, mContext));
+
+
+                        //TODO For debugging - do a bd Query and get the full database and see what's in it
+                       /* Log.v(LOG_TAG, "LJG Dumping Entire Database for debugging AFTER entire DB is updated!");
+                        Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
+                        Cursor dbTestCursor = mContext.getContentResolver().query(stockQuoteUri, null, null, null, null);
+                        DatabaseUtils.dumpCursor(dbTestCursor);
+                        dbTestCursor.close();*/
+                        Log.v(LOG_TAG, "LJG Dumping Entire Database for debugging AFTER entire DB is updated!");
+                        dumpFullDbToLogcat(mContext);
+                        //////////////end debugging - delete above lines when done //////////////
+
+
+
                     } else {  //stock NOT valid!!!! - delete this else!!!!
                     }
 
@@ -174,4 +208,18 @@ public class StockTaskService extends GcmTaskService {
 
         return result;
     }
+
+
+
+    private void dumpFullDbToLogcat(Context mContext){
+
+        //TODO For debugging - do a bd Query and get the full database and see what's in it
+
+        Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
+        Cursor dbTestCursor = mContext.getContentResolver().query(stockQuoteUri, null, null, null, null);
+        DatabaseUtils.dumpCursor(dbTestCursor);
+        dbTestCursor.close();
+        //////////////end debugging - delete above lines when done //////////////
+    }
+
 }

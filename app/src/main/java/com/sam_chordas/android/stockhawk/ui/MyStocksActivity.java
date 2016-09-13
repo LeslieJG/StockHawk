@@ -408,6 +408,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
         // mServiceIntent.putExtra("tag", getString(R.string.intent_value_init));//could also use "periodic" either will work
         mServiceIntent.putExtra(getString(R.string.intent_tag), getString(R.string.intent_init));//could also use "periodic" either will work
+       // mServiceIntent.putExtra(getString(R.string.intent_tag), "periodic");//could also use "periodic" either will work
 
         // if (isConnected) {
         if (checkInternetConnected()) {

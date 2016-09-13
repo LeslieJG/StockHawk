@@ -61,7 +61,7 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
         if (intent.getAction().equals(context.getString(R.string.refresh_data_intent_key))) {
             // Do stuff - maybe update my view based on the changed DB contents
 
-            Log.v(LOG_TAG, "LJG API call done will now update widget");
+            Log.v(LOG_TAG, "onREceive - LJG API call done will now update widget");
             context.startService(new Intent(context, StockQuoteWidgetIntentService.class));
 
 
