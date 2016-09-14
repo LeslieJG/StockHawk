@@ -42,6 +42,11 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity implements Adap
     }
 */
 
+    //TODO: Make readio buttons be symbol list from app
+    //Store widget ID and App SYmbol Name as key value pair in pref
+    //ensure this key value pair is deleted when widget is deleted!
+    //
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +60,8 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity implements Adap
         // Set the view layout resource to use for this configure class
         setContentView(R.layout.widget_configure);
 
+
+        ////////////////////SPinner/////////////////
         Spinner spinner = (Spinner) findViewById(R.id.widget_spinner);
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -68,6 +75,11 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity implements Adap
 
         //allow spinner to handle selection events
         spinner.setOnItemSelectedListener(this);
+////////////////////////Spinner//////////////////////
+
+
+
+
 
 
         //Get the Make widget Button

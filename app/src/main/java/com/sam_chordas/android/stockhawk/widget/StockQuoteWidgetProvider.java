@@ -47,6 +47,8 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
     }
 
 
+
+
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
@@ -54,6 +56,8 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
         //update it too!
         context.startService(new Intent(context, StockQuoteWidgetIntentService.class));
     }
+
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -66,5 +70,23 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
 
 
         }
+
+
+    }
+
+    //TODO Delete the shared pref key value pair of widget id and symbol for widget
+    //when deleting widget
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        super.onDeleted(context, appWidgetIds);
+
+        Log.v(LOG_TAG, "LJG Deleted a Widget");
+        Log.v(LOG_TAG, "LJG Number of widgets deleted is " + appWidgetIds.length);
+        Log.v(LOG_TAG, "LJG Deleted Widget ID is " + appWidgetIds[0]);
+
+        //delete the widget id passed in
+      /*  Toast.makeText(context, "Number of Widgets being deleted is  " + appWidgetIds.length,
+                Toast.LENGTH_LONG);
+*/
     }
 }

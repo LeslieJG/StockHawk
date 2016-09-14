@@ -74,6 +74,10 @@
     <string name="json_name" translatable="false">Name</string>
 
 
+    <!-- Shared Preferences File Name-->
+    <string name="preference_file_name" translatable="false">com.sam_chordas.android.stockhawk.PREFERENCE_FILE_KEY</string>
+    
+    
     <!-- No Usages - Delete-->
     <string name="action_example">Example action</string>
 
