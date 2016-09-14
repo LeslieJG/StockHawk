@@ -2,6 +2,8 @@ package com.sam_chordas.android.stockhawk.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,8 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.data.QuoteColumns;
+import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 
 /**
  * Created by Leslie on 2016-09-12.
@@ -35,12 +39,25 @@ import com.sam_chordas.android.stockhawk.R;
 public class StockQuoteWidgetConfigure extends AppCompatActivity {
     private static final String LOG_TAG = StockQuoteWidgetConfigure.class.getSimpleName();
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID; //for storing the widget Id of the widget we are making
+    int mButtonId; //to store the row ID of the cursor of the button pressed (to allow to symbol lookup from the cursor later on)
 
-    //default constructor
-    /*StockQuoteWidgetConfigure(){
-       super();
-    }
-*/
+    //For cursor projections
+    /////////////////////Database projection constants///////////////
+    //For making good use of database Projections specify the columns we need
+    private static final String[] STOCK_QUOTE_COLUMNS = {
+            QuoteColumns._ID,
+            QuoteColumns.SYMBOL,
+            QuoteColumns.NAME,
+            };
+
+    // These indices are tied to STOCK_QUOTE_COLUMNS.  If STOCK_QUOTE_COLUMNS changes, these must change.
+    static final int COL_STOCK_ID = 0;
+    static final int COL_STOCK_SYMBOL = 1;
+    static final int COL_STOCK_NAME = 2;
+
+    /////////////////////////////////////////////////////////
+
+
 
     //TODO: Make readio buttons be symbol list from app
     //Store widget ID and App SYmbol Name as key value pair in pref
@@ -60,24 +77,6 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
         // Set the view layout resource to use for this configure class
         setContentView(R.layout.widget_configure);
 
-/*
-
-        ////////////////////SPinner/////////////////
-        Spinner spinner = (Spinner) findViewById(R.id.widget_spinner);
-// Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.planets_array, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-
-
-
-        //allow spinner to handle selection events
-        spinner.setOnItemSelectedListener(this);
-////////////////////////Spinner//////////////////////
-*/
 
 
         //Radio Buttons
@@ -85,6 +84,10 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) { //TODO set a memeber variable wit the actual radio button pressed - deal with the widget when final make widget button pressed
+
+                Log.v(LOG_TAG, "ID of button checked is " + checkedId);
+                mButtonId = checkedId; //sets the Button ID to be the same as Database
+               /*
                 switch (checkedId) {
                     case 99:
                         Log.v(LOG_TAG, "Button 1 pressed");
@@ -92,16 +95,57 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                     case 100:
                         Log.v(LOG_TAG, "Button 2 pressed");
                         break;
-
                 }
-
-
-            }
+*/            }
         });
 
 
+
+        //get the list of stocks from Database
+
+        //data should have the entire contents of the quote Cursor Database in it
+        Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI;
+        final Cursor data = getContentResolver().query(stockQuoteUri, //uri
+                STOCK_QUOTE_COLUMNS, //projection
+                null,
+                null,
+                QuoteColumns._ID + " ASC"); //sort order
+
+
+
+
+        if (data !=null) {
+            while (data.moveToNext()){//do a loop of all cursor items
+                //get the row id of cursor
+                int cursorRow = data.getPosition();
+                Log.v(LOG_TAG, "Cursor Position is " + cursorRow);
+                mButtonId = cursorRow; //to know which button is finally selected
+
+                RadioButton radioButton = new RadioButton(getApplicationContext());
+                radioButton.setText(data.getString(COL_STOCK_SYMBOL));
+                //int testID = 99;
+
+                //radioButton.setId(data.getInt(COL_STOCK_ID)); //use the ID from the database to make a unique ID. THen just look up that ID for populating the database
+                radioButton.setId(cursorRow); //use the ID from the
+
+
+                //  radioButton.setOnClickListener(onRadioButtonClicked);
+                radioGroup.addView(radioButton);
+
+
+            }
+        }
+
+        //in the loop make a radio button for each row in cursor
+        //make the id of button same as _ID of database (ensures no duplication)
+        //add each button to radioGroup
+
+
+
+       // data.close(); //close cursor
+
         //make a redio button (will be in a loop later on
-        RadioButton radioButton = new RadioButton(getApplicationContext());
+       /* RadioButton radioButton = new RadioButton(getApplicationContext());
         radioButton.setText("Button 1");
         //int testID = 99;
         radioButton.setId(99); //use the ID from the database to make a unique ID. THen just look up that ID for populating the database
@@ -114,7 +158,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
         // int testID = 99;
         radioButton.setId(100);
         //  radioButton.setOnClickListener(onRadioButtonClicked);
-        radioGroup.addView(radioButton);
+        radioGroup.addView(radioButton);*/
 
 
         //Get the Make widget Button
@@ -126,13 +170,24 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                         , Toast.LENGTH_SHORT).show();
 
                 //pass the info to Shared Pref
+                //Pass the Symbol into Shared Pref
+                //find out which row the stock symbol is on - Just get the Cursor Row id NOT the db _ID
+              //
+                data.moveToPosition(mButtonId);
+                 String widgetStockSymbol = data.getString(COL_STOCK_SYMBOL);
+                Log.v(LOG_TAG, "The widget symbol selected finally is " + widgetStockSymbol);
+
                 //or get info from shared pref
+
+
 
 
                 // Make sure we pass back the original appWidgetId
                 Intent resultValue = new Intent();
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
                 setResult(RESULT_OK, resultValue);
+
+                data.close(); //ensure that the cursor is closed before leaving the Configure Activity
                 finish();
 
             }
@@ -172,30 +227,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
 
     }
 
-/*
 
-
-    public void onRadioButtonClicked (View view){
-        // Is the button now checked?
-
-        Log.v(LOG_TAG, "Radio Button Checked");
-        boolean checked = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.radio_pirates:
-                if (checked)
-                    // Pirates are the best
-                    break;
-            case R.id.radio_ninjas:
-                if (checked)
-                    // Ninjas rule
-                    break;
-            case 99:
-                Log.v(LOG_TAG, "Button 1 ID 99 clicked");
-                break;
-        }
-    }*/
 /*
 
     */
@@ -227,4 +259,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
 
     //save this widget ID and the stock symbol to update it with to shared pref, so it can be
     // looked up when the widgets are being updated later on.
+
+
+
 }
