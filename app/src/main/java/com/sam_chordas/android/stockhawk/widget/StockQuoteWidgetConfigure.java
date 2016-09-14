@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.sam_chordas.android.stockhawk.R;
@@ -32,7 +32,7 @@ import com.sam_chordas.android.stockhawk.R;
  * <p>
  * Modelled after https://android.googlesource.com/platform/development/+/master/samples/ApiDemos/src/com/example/android/apis/appwidget/ExampleAppWidgetConfigure.java
  */
-public class StockQuoteWidgetConfigure extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class StockQuoteWidgetConfigure extends AppCompatActivity {
     private static final String LOG_TAG = StockQuoteWidgetConfigure.class.getSimpleName();
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID; //for storing the widget Id of the widget we are making
 
@@ -60,6 +60,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity implements Adap
         // Set the view layout resource to use for this configure class
         setContentView(R.layout.widget_configure);
 
+/*
 
         ////////////////////SPinner/////////////////
         Spinner spinner = (Spinner) findViewById(R.id.widget_spinner);
@@ -76,10 +77,44 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity implements Adap
         //allow spinner to handle selection events
         spinner.setOnItemSelectedListener(this);
 ////////////////////////Spinner//////////////////////
+*/
 
 
+        //Radio Buttons
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.widget_radio_group);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) { //TODO set a memeber variable wit the actual radio button pressed - deal with the widget when final make widget button pressed
+                switch (checkedId) {
+                    case 99:
+                        Log.v(LOG_TAG, "Button 1 pressed");
+                        break;
+                    case 100:
+                        Log.v(LOG_TAG, "Button 2 pressed");
+                        break;
+
+                }
 
 
+            }
+        });
+
+
+        //make a redio button (will be in a loop later on
+        RadioButton radioButton = new RadioButton(getApplicationContext());
+        radioButton.setText("Button 1");
+        //int testID = 99;
+        radioButton.setId(99); //use the ID from the database to make a unique ID. THen just look up that ID for populating the database
+        //  radioButton.setOnClickListener(onRadioButtonClicked);
+        radioGroup.addView(radioButton);
+
+
+        radioButton = new RadioButton(getApplicationContext());
+        radioButton.setText("Button 2");
+        // int testID = 99;
+        radioButton.setId(100);
+        //  radioButton.setOnClickListener(onRadioButtonClicked);
+        radioGroup.addView(radioButton);
 
 
         //Get the Make widget Button
@@ -87,7 +122,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity implements Adap
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
-                Toast.makeText(getBaseContext(),"Button Clicked"
+                Toast.makeText(getBaseContext(), "Button Clicked"
                         , Toast.LENGTH_SHORT).show();
 
                 //pass the info to Shared Pref
@@ -102,9 +137,6 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity implements Adap
 
             }
         });
-
-
-
 
 
 //other stuff here
@@ -138,22 +170,39 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity implements Adap
         mAppWidgetPrefix.setText(loadTitlePref(ExampleAppWidgetConfigure.this, mAppWidgetId));
 */
 
-
-
-
-
-
-
-
-
-
-
     }
 
+/*
 
-    /*
+
+    public void onRadioButtonClicked (View view){
+        // Is the button now checked?
+
+        Log.v(LOG_TAG, "Radio Button Checked");
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_pirates:
+                if (checked)
+                    // Pirates are the best
+                    break;
+            case R.id.radio_ninjas:
+                if (checked)
+                    // Ninjas rule
+                    break;
+            case 99:
+                Log.v(LOG_TAG, "Button 1 ID 99 clicked");
+                break;
+        }
+    }*/
+/*
+
+    */
+/*
     To Listen for Item Selected in Spinner
-     */
+     *//*
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -162,13 +211,16 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity implements Adap
 
     }
 
-    /*
+    */
+/*
     What to do if nothing selected
-     */
+     *//*
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+*/
 
 
     //other methods like click listers here

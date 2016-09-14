@@ -73,7 +73,7 @@
         android:textSize="40sp"
         />
 
-
+<!--
 
         <android.support.v7.widget.AppCompatSpinner
             android:layout_width="wrap_content"
@@ -82,12 +82,17 @@
             android:id="@+id/widget_spinner">
 
 
-        </android.support.v7.widget.AppCompatSpinner>
+        </android.support.v7.widget.AppCompatSpinner>-->
 
         <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/widget_radio_group">
+
+            <!-- Add the radio Button programmatically -->
+<!--
+
             <RadioButton android:id="@+id/radio_pirates"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -98,6 +103,10 @@
                 android:layout_height="wrap_content"
                 android:text="ninjas"
                 android:onClick="onRadioButtonClicked"/>
+
+-->
+
+
         </RadioGroup>
 
 
