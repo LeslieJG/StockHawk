@@ -57,7 +57,8 @@ public class Utils {
                     if (resultsArray != null && resultsArray.length() != 0) {
                         for (int i = 0; i < resultsArray.length(); i++) {
                             jsonObject = resultsArray.getJSONObject(i);
-                            batchOperations.add(buildBatchOperation(jsonObject, context));
+                           // batchOperations.add(buildBatchOperationUpdate(jsonObject, context));
+                            batchOperations.add(buildBatchOperation(jsonObject, context)); //add result to
                         }
                     }
                 }
@@ -97,8 +98,13 @@ public class Utils {
         return change;
     }
 
+
+
+
+
     public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject, Context context) {
 
+        //TODO Here is where db is told to insert, should be told to update if many additions
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
         try {
@@ -125,6 +131,58 @@ public class Utils {
         }
         return builder.build();
     }
+
+/*
+
+    */
+/**
+     * TODO: THis is my attempt at just updating
+     * NOT inserting new info
+     * @param jsonObject
+     * @param context
+     * @return
+     *//*
+
+    public static ContentProviderOperation buildBatchOperationUpdate (JSONObject jsonObject, Context context) {
+
+        //TODO Here is where db is told to insert, should be told to update if many additions
+        //get the id to update
+        Uri uriForUpdate = null;
+        try {
+            uriForUpdate = QuoteProvider.Quotes.withSymbol(jsonObject.getString(context.getString(R.string.json_symbol)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ContentProviderOperation.Builder builder = ContentProviderOperation.newUpdate(
+                uriForUpdate);
+        try {
+            String change = jsonObject.getString(context.getString(R.string.json_change));
+            builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString(context.getString(R.string.json_symbol)));
+            //LJG this is where the "null" bid price comes in
+            builder.withValue(QuoteColumns.NAME, jsonObject.getString(context.getString(R.string.json_name)));
+            // Log.v(LOG_TAG, "LJG Inserted Name into database is " + jsonObject.getString("Name"));
+
+            builder.withValue(QuoteColumns.BIDPRICE
+                    , truncateBidPrice(jsonObject.getString(context.getString(R.string.json_bid))));
+            builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
+                    jsonObject.getString(context.getString(R.string.json_change_in_percent)), true));
+            builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
+            builder.withValue(QuoteColumns.ISCURRENT, 1);
+            if (change.charAt(0) == '-') {
+                builder.withValue(QuoteColumns.ISUP, 0);
+            } else {
+                builder.withValue(QuoteColumns.ISUP, 1);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return builder.build();
+    }
+
+
+*/
 
 
     /**

@@ -100,7 +100,6 @@ public class StockQuoteWidgetIntentService extends IntentService {
 */
 
 
-
             //////update the widget view with real data//////
             //Get a cursor for the data in database
             //Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
@@ -117,7 +116,9 @@ public class StockQuoteWidgetIntentService extends IntentService {
             //TODO Dump the cursor to see what's in DB
             DatabaseUtils.dumpCursor(data);
 
-            if (data == null) { //cursor null - something went wrong - don't update Widget
+            if (data == null) { //cursor null - something went wrong - don't update Widget\
+                Log.v(LOG_TAG, "Cursor data is NULL");
+
                 return;
             }
 
@@ -125,96 +126,71 @@ public class StockQuoteWidgetIntentService extends IntentService {
                 //it means there are no stocks to show in widget - what to do???
                 // TODO what to show in widget if no stocks in database?
                 //Do that here
+                Log.v(LOG_TAG, "Cursor data is ZERO data");
+                //Log.v(LOG_TAG, "")
 
-            }
+                //change view to error view
+               /* views = new RemoteViews(
+                        mContext.getPackageName(), R.id.widget_error); //here is the view to use - Gives defulat widget error meesage!!!
+*/
+                if (widgetWidth < defaultWidth) {
+                    layoutId = R.layout.widget_error_small;
+                } else {
+                    layoutId = R.layout.widget_error_default_size;
+                }
 
-            //we have stocks
-
-            //for now just show the first stock
-            //TODO Make a stock selector for the widget and show that stock - for now just show first stock in db
-            String stockSymbol = data.getString(COL_STOCK_SYMBOL);
-            String stockPrice = data.getString(COL_STOCK_BIDPRICE);
-            String stockPercentChange = data.getString(COL_STOCK_PERCENT_CHANGE);
-
-            //display the single stock into the 1x1 widget
-
-
-            views.setTextViewText(R.id.widget_stock_symbol, stockSymbol);
-            views.setTextViewText(R.id.widget_stock_price, "$" + stockPrice);
-            //views.setTextViewText(R.id.widget_stock_price, "$$66");
-            Log.v(LOG_TAG, "Stock Price from DB is " + stockPrice + " symbol is " + stockSymbol + " percent change is " + stockPercentChange);
-            //TODO: Stock pid price in widget is not always same as displayed in app - solve!!!!
+                views = new RemoteViews(
+                        mContext.getPackageName(), layoutId);
 
 
-            views.setTextViewText(R.id.widget_stock_price_change, stockPercentChange);
-            //change the background of stock percent change to red or green depending on whether stock is going up or down
-            int sdk = Build.VERSION.SDK_INT;
-            if (data.getInt(COL_STOCK_ISUP) == 1) { //if stock going up
-                //credit for below line:  http://stackoverflow.com/questions/6201410/how-to-change-widget-layout-background-programatically
-                views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_green);
-                views.setInt(R.id.widget_stock_price_change, "setTextColor", R.color.widget_text_color);
+               // views.setTextViewText(R.id.widget_error_text)
+               /* views.setTextViewText(R.id.widget_stock_symbol, "No Stock in App. Delete Widget"); //should display error message here
+                views.setTextViewText(R.id.widget_stock_price, "");
+                views.setTextViewText(R.id.widget_stock_price_change, "");*/
+                //  appWidgetManager.updateAppWidget(appWidgetID, views); //update the info in widgets
+                //  data.close();
 
-            } else {
-                views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_red);
-                views.setInt(R.id.widget_stock_price_change, "setTextColor", Color.WHITE);
+                //  continue; //skips out of current iteration of loop only
+                //allows other iterations to update other widgets
+            } else {//we have stocks
+
+
+                //for now just show the first stock
+                //TODO Make a stock selector for the widget and show that stock - for now just show first stock in db
+                String stockSymbol = data.getString(COL_STOCK_SYMBOL);
+                String stockPrice = data.getString(COL_STOCK_BIDPRICE);
+                String stockPercentChange = data.getString(COL_STOCK_PERCENT_CHANGE);
+
+                //display the single stock into the 1x1 widget
+
+
+                views.setTextViewText(R.id.widget_stock_symbol, stockSymbol);
+                views.setTextViewText(R.id.widget_stock_price, "$" + stockPrice);
+                //views.setTextViewText(R.id.widget_stock_price, "$$66");
+                Log.v(LOG_TAG, "Stock Price from DB is " + stockPrice + " symbol is " + stockSymbol + " percent change is " + stockPercentChange);
+                //TODO: Stock pid price in widget is not always same as displayed in app - solve!!!!
+
+
+                views.setTextViewText(R.id.widget_stock_price_change, stockPercentChange);
+                //change the background of stock percent change to red or green depending on whether stock is going up or down
+                int sdk = Build.VERSION.SDK_INT;
+                if (data.getInt(COL_STOCK_ISUP) == 1) { //if stock going up
+                    //credit for below line:  http://stackoverflow.com/questions/6201410/how-to-change-widget-layout-background-programatically
+                    views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_green);
+                    views.setInt(R.id.widget_stock_price_change, "setTextColor", R.color.widget_text_color);
+
+                } else {
+                    views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_red);
+                    views.setInt(R.id.widget_stock_price_change, "setTextColor", Color.WHITE);
+                }
+
+
             }
 
 
             //TODO Add content descriptions to widget as well - later
 
 
-/*
-            String stockSymbol = cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL));
-            String stockName = cursor.getString(cursor.getColumnIndex(QuoteColumns.NAME));
-            viewHolder.symbol.setText(stockSymbol);
-            viewHolder.symbol.setContentDescription(stockName);
-
-            String stockBidPrice = cursor.getString(cursor.getColumnIndex(QuoteColumns.BIDPRICE));
-            viewHolder.bidPrice.setText(stockBidPrice);
-            viewHolder.bidPrice.setContentDescription(mContext.getString(R.string.bid_price_content_description, stockBidPrice));
-
-            int sdk = Build.VERSION.SDK_INT;
-            if (cursor.getInt(cursor.getColumnIndex(QuoteColumns.ISUP)) == 1) {
-                if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
-                    viewHolder.change.setBackgroundDrawable(
-                            mContext.getResources().getDrawable(R.drawable.percent_change_pill_green));
-                } else {
-                    viewHolder.change.setBackground(
-                            mContext.getResources().getDrawable(R.drawable.percent_change_pill_green));
-                }
-            } else {
-                if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
-                    viewHolder.change.setBackgroundDrawable(
-                            mContext.getResources().getDrawable(R.drawable.percent_change_pill_red));
-                } else {
-                    viewHolder.change.setBackground(
-                            mContext.getResources().getDrawable(R.drawable.percent_change_pill_red));
-                }
-            }
-            if (Utils.showPercent) {
-                String stockPercentChange = cursor.getString(cursor.getColumnIndex(QuoteColumns.PERCENT_CHANGE));
-                viewHolder.change.setText(stockPercentChange);
-                viewHolder.change.setContentDescription(mContext
-                        .getString(R.string.percent_change_content_description
-                                , stockPercentChange
-                                , stockChangeUpOrDown(stockPercentChange)));
-
-
-            } else {
-
-                String stockChange = cursor.getString(cursor.getColumnIndex(QuoteColumns.CHANGE));
-                viewHolder.change.setText(stockChange);
-                viewHolder.change.setContentDescription(mContext
-                        .getString(R.string.stock_change_content_description
-                                , stockChange
-                                , stockChangeUpOrDown(stockChange)));
-            }
-
-
-
-
-
-            */
 
 
             //close cursor when done
