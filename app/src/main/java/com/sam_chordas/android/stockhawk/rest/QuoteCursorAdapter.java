@@ -1,6 +1,7 @@
 package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -18,6 +19,7 @@ import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperAdapter;
 import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperViewHolder;
+import com.sam_chordas.android.stockhawk.widget.StockQuoteWidgetIntentService;
 
 /**
  * Created by sam_chordas on 10/6/15.
@@ -108,10 +110,13 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
         Log.v(LOG_TAG, "LJG Deleted "+ symbol + " from Quotes table");
         //delete the stcok from Histories table
+       // mContext.getContentResolver().delete(QuoteProvider.Histories.withSymbol(symbol), null, null);
+
+//TODO Update the widgets so that any stocks using this info will show error
+        mContext.startService(new Intent(mContext, StockQuoteWidgetIntentService.class));
 
 
-        mContext.getContentResolver().delete(QuoteProvider.Histories.withSymbol(symbol), null, null);
-
+        //////////////////Delete these at end///////////////////
        //TODO Delete below lines
         //Test that it has been deleted
         Uri uriForSymbol = QuoteProvider.Histories.withSymbol(symbol);
@@ -121,15 +126,14 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
                 , null // //selection Clause
                 , null//selection Arguments
                 , null); //poosibly have sort order date ascending
-
-
         Log.v(LOG_TAG, "LJG Deleted "+ symbol + " from Histories table"
                 + " There are " + stockHistoryCursor.getCount() + " Entries still in Histories Table for this stock");
         stockHistoryCursor.close();
 
+
         //Test Entire Database TODO Delete this
        Utils.reportNumberOfRowsInHistoriesDatabase(mContext);
-
+        ///////////////////////////End of stuff to delete//////////////////
 
 
 
