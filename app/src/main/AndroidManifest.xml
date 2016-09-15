@@ -40,7 +40,8 @@
         </activity>
 
 
-        <activity android:name=".widget.StockQuoteWidgetConfigure">
+        <activity android:name=".widget.StockQuoteWidgetConfigure"
+            android:theme="@style/AppTheme.PopUpTheme">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>

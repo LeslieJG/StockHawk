@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -76,6 +77,24 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
 
         // Set the view layout resource to use for this configure class
         setContentView(R.layout.widget_configure);
+
+        //Make this screen a PopUp Screen on top of home screen
+        //Credit for Popup: https://www.youtube.com/watch?v=fn5OlqQuOCk
+        //change dimensions of this activity to 80% of screen size
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+
+        getWindow().setLayout( (int)(width * 0.80), (int)(height*0.70));
+
+
+
+
+
+
+
 
         // Find the widget id from the intent.
         Intent intent = getIntent();

@@ -1,126 +1,33 @@
-
-<!--
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/widget_configure_relative_layout">
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Widget Configuration Activity"
-        android:id="@+id/widget_configure_textview_1"
-        android:layout_alignParentTop="true"/>
+        android:text="Choose Widget Stock"
+        android:gravity="center_horizontal"
+        android:textSize="30sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="You Better see this text"
-        android:textSize="40sp"
-        android:layout_below="@+id/widget_configure_textview_1"
-        android:id="@+id/widget_configure_textview_2"
-        />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/widget_radio_group"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/widget_spinner"
-        android:layout_below="@id/widget_configure_textview_2"
-
-        >
-
-
-    </android.support.v7.widget.AppCompatSpinner>
+        android:orientation="vertical" />
 
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-
-
-
         android:id="@+id/widget_configure_button"
-        android:layout_alignParentBottom="true"/>
-
-</RelativeLayout>
--->
-
-
-
-
-
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Widget Configuration Activity"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="You Better see this text"
-        android:textSize="40sp"
-        />
-
-<!--
-
-        <android.support.v7.widget.AppCompatSpinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/widget_spinner">
-
-
-        </android.support.v7.widget.AppCompatSpinner>-->
-
-        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/widget_radio_group">
-
-            <!-- Add the radio Button programmatically -->
-<!--
-
-            <RadioButton android:id="@+id/radio_pirates"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="pirates"
-                android:onClick="onRadioButtonClicked"/>
-            <RadioButton android:id="@+id/radio_ninjas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ninjas"
-                android:onClick="onRadioButtonClicked"/>
-
--->
-
-
-        </RadioGroup>
-
-
-
-
-
-    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
         android:layout_gravity="center_horizontal"
 
 
-        android:id="@+id/widget_configure_button"/>
+        android:text="Make Widget" />
 
 </LinearLayout>
 
