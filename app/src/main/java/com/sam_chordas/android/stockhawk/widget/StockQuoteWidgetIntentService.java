@@ -227,7 +227,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
     /*
     For setting the widget to the error view
      */
-    private RemoteViews makeWidgetErrorView(Context mContext, int widgetWidth, int defaultWidth) {
+   /* private RemoteViews makeWidgetErrorView(Context mContext, int widgetWidth, int defaultWidth) {
 
         int layoutId;
         if (widgetWidth < defaultWidth) {
@@ -239,7 +239,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
         return new RemoteViews(
                 mContext.getPackageName(), layoutId);
 
-    }
+    }*/
 
 
     /* Credit :Udactiy Sunshine

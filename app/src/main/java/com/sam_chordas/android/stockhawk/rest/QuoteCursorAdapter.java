@@ -106,15 +106,16 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         Cursor c = getCursor();
         c.moveToPosition(position);
         String symbol = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
+
         //delete the stock from Quotes table
         mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
         Log.v(LOG_TAG, "LJG Deleted "+ symbol + " from Quotes table");
+
         //delete the stcok from Histories table
-       // mContext.getContentResolver().delete(QuoteProvider.Histories.withSymbol(symbol), null, null);
+        mContext.getContentResolver().delete(QuoteProvider.Histories.withSymbol(symbol), null, null);
 
-//TODO Update the widgets so that any stocks using this info will show error
+        //Update the widgets so that any stocks using this info will show error
         mContext.startService(new Intent(mContext, StockQuoteWidgetIntentService.class));
-
 
         //////////////////Delete these at end///////////////////
        //TODO Delete below lines
@@ -134,7 +135,6 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         //Test Entire Database TODO Delete this
        Utils.reportNumberOfRowsInHistoriesDatabase(mContext);
         ///////////////////////////End of stuff to delete//////////////////
-
 
 
         notifyItemRemoved(position);

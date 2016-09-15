@@ -12,6 +12,7 @@ import com.sam_chordas.android.stockhawk.rest.Utils;
 /**
  * Created by Leslie on 2016-09-06.
  * To show the selected stock price and date in a popout window
+ * In MPAndroidChart used for stock history
  */
 public class MyMarkerView extends MarkerView {
     private TextView tvStockDate;

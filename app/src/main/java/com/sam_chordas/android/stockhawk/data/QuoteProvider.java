@@ -79,7 +79,4 @@ public class QuoteProvider {
       return buildUri(Path.HISTORIES, symbol);
     }
   }
-
-
-
 }
