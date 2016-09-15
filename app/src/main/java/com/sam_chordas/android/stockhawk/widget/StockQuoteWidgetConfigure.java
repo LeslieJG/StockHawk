@@ -39,7 +39,7 @@ import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 public class StockQuoteWidgetConfigure extends AppCompatActivity {
     private static final String LOG_TAG = StockQuoteWidgetConfigure.class.getSimpleName();
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID; //for storing the widget Id of the widget we are making
-    int mButtonId; //to store the row ID of the cursor of the button pressed (to allow to symbol lookup from the cursor later on)
+    int mCursorRowId; //to store the row ID of the cursor of the button pressed (to allow to symbol lookup from the cursor later on)
 
     //For cursor projections
     /////////////////////Database projection constants///////////////
@@ -77,7 +77,19 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
         // Set the view layout resource to use for this configure class
         setContentView(R.layout.widget_configure);
 
+        // Find the widget id from the intent.
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            mAppWidgetId = extras.getInt(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID); //default is invalid widget id
+        }
 
+
+        // If they gave us an intent without the widget id, just bail.
+        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            finish();
+        }
 
         //Radio Buttons
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.widget_radio_group);
@@ -86,7 +98,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) { //TODO set a memeber variable wit the actual radio button pressed - deal with the widget when final make widget button pressed
 
                 Log.v(LOG_TAG, "ID of button checked is " + checkedId);
-                mButtonId = checkedId; //sets the Button ID to be the same as Database
+                mCursorRowId = checkedId; //sets the Button ID to be the same as Database
                /*
                 switch (checkedId) {
                     case 99:
@@ -119,7 +131,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                 //get the row id of cursor
                 int cursorRow = data.getPosition();
                 Log.v(LOG_TAG, "Cursor Position is " + cursorRow);
-                mButtonId = cursorRow; //to know which button is finally selected
+                mCursorRowId = cursorRow; //to know which button is finally selected
 
                 RadioButton radioButton = new RadioButton(getApplicationContext());
                 radioButton.setText(data.getString(COL_STOCK_SYMBOL));
@@ -173,12 +185,17 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                 //Pass the Symbol into Shared Pref
                 //find out which row the stock symbol is on - Just get the Cursor Row id NOT the db _ID
               //
-                data.moveToPosition(mButtonId);
+                data.moveToPosition(mCursorRowId);
                  String widgetStockSymbol = data.getString(COL_STOCK_SYMBOL);
                 Log.v(LOG_TAG, "The widget symbol selected finally is " + widgetStockSymbol);
                 //TODO PUT the above into shared pref
                 //Key will be "WIDGET + mAppWidgetId"
                 //Value will be app symbol  ---> widgetStockSymbol
+
+                //Puts the Stock symbol into shared prefs with Widget ID as key
+
+                //TODO Debug line below
+                WidgetUtils.addWidgetIdToSharedPrefs(getApplicationContext(), mAppWidgetId, data.getString(COL_STOCK_SYMBOL) );
 
                 //use these to look up widget details in Widget Intent Service
 
@@ -200,71 +217,10 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
         });
 
 
-//other stuff here
-
-/*
-
-        // Find the EditText
-        mAppWidgetPrefix = (EditText)findViewById(R.id.appwidget_prefix);
-        // Bind the action for the save button.
-        findViewById(R.id.save_button).setOnClickListener(mOnClickListener);
-
-
-*/
-
-
-        // Find the widget id from the intent.
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID); //default is invalid widget id
-        }
-
-
-        // If they gave us an intent without the widget id, just bail.
-        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            finish();
-        }
-
-        /*
-        mAppWidgetPrefix.setText(loadTitlePref(ExampleAppWidgetConfigure.this, mAppWidgetId));
-*/
 
     }
 
 
-/*
-
-    */
-/*
-    To Listen for Item Selected in Spinner
-     *//*
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-        Toast.makeText(getBaseContext(),"The position clicked is " + position
-                , Toast.LENGTH_SHORT).show();
-
-    }
-
-    */
-/*
-    What to do if nothing selected
-     *//*
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-*/
-
-
-    //other methods like click listers here
-
-    //save this widget ID and the stock symbol to update it with to shared pref, so it can be
-    // looked up when the widgets are being updated later on.
 
 
 

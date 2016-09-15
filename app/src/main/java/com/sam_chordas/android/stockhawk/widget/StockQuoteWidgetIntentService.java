@@ -103,15 +103,28 @@ public class StockQuoteWidgetIntentService extends IntentService {
             //////update the widget view with real data//////
             //Get a cursor for the data in database
             //Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
-            Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol("YHOO"); //use the general Content Uri for now to get all stock quotes
+
+           Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol("YHOO"); //use the general Content Uri for now to get all stock quotes
+
+            //TODO This is where I get symbol from prefs
+            //Use the Stock symbol associated with the widgetID
+          //  String stockSymbolFromPrefs = WidgetUtils.getWidgetSymbolFromWidgetId(mContext, appWidgetID);
+           // Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol(stockSymbolFromPrefs); //use the general Content Uri for now to get all stock quotes
 
 
             //data should have the entire contents of the quote Cursor Database in it
-            Cursor data = getContentResolver().query(stockQuoteUri, //uri
+                       Cursor data = getContentResolver().query(stockQuoteUri, //uri
                     STOCK_QUOTE_COLUMNS, //projection
                     null,
                     null,
                     QuoteColumns._ID + " ASC"); //sort order
+
+/*
+            Cursor data = getContentResolver().query(stockQuoteUri, //uri
+                    STOCK_QUOTE_COLUMNS, //projection
+                    null,
+                    null,
+                    null); //sort order - should just have ONE row*/
 
             //TODO Dump the cursor to see what's in DB
             DatabaseUtils.dumpCursor(data);
