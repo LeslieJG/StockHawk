@@ -176,6 +176,12 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                 data.moveToPosition(mButtonId);
                  String widgetStockSymbol = data.getString(COL_STOCK_SYMBOL);
                 Log.v(LOG_TAG, "The widget symbol selected finally is " + widgetStockSymbol);
+                //TODO PUT the above into shared pref
+                //Key will be "WIDGET + mAppWidgetId"
+                //Value will be app symbol  ---> widgetStockSymbol
+
+                //use these to look up widget details in Widget Intent Service
+
 
                 //or get info from shared pref
 
