@@ -101,7 +101,15 @@
 
 
 
+    <!-- Widget Strings -->
+    <string name="widget_configure_choose_stock">Choose Widget Stock</string>
+    <string name="widget_configure_make_widget_button">Make Widget</string>
+    <string name="widget_error_message_small">Widget Error!<xliff:g>\n</xliff:g>Delete Widget!</string>
+    <string name="widget_error_message_default_size">Widget Error!<xliff:g>\n</xliff:g>This Stock no longer in App!<xliff:g>\n</xliff:g>Delete This Widget!</string>
 
+    <!-- Stock History -->
+    <string name="stock_history_y_axis_label">Price</string>
+    <string name="stock_history_marker_stock_price">$<xliff:g example="233.02" id="stock_price">%1$s</xliff:g></string>
 
 
 

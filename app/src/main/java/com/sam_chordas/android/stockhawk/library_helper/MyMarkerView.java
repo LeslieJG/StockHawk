@@ -44,9 +44,10 @@ public class MyMarkerView extends MarkerView {
         int dateOffset = (int) e.getX();
         String currentDate = Utils.getDateOffset(startDate, dateOffset);
         tvStockDate.setText(currentDate);
-        tvStockPrice.setText("$" + e.getY());
-
-    }
+        // tvStockPrice.setText("$" + e.getY());
+        //format price to 2 decimal places only
+        tvStockPrice.setText(getContext().getString(R.string.stock_history_marker_stock_price, String.format("%.2f", e.getY())));
+            }
 
     @Override
     public int getXOffset(float xpos) {

@@ -6,7 +6,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Choose Widget Stock"
+        android:text="@string/widget_configure_choose_stock"
         android:gravity="center_horizontal"
         android:textSize="30sp" />
 
@@ -27,7 +27,7 @@
         android:layout_gravity="center_horizontal"
 
 
-        android:text="Make Widget" />
+        android:text="@string/widget_configure_make_widget_button" />
 
 </LinearLayout>
 
