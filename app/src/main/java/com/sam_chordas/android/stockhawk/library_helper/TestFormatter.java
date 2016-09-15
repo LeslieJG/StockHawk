@@ -20,7 +20,8 @@ public class TestFormatter implements AxisValueFormatter {
     private static final String LOG_TAG = TestFormatter.class.getSimpleName();
 
     private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MMM-dd");
-
+    //LJG  TODO Confirm This for date formatting
+    //private SimpleDateFormat mFormat =  (SimpleDateFormat) SimpleDateFormat.getDateInstance();
 
     BarLineChartBase<?> mLineChart = null; //used for refreencing the chart
 

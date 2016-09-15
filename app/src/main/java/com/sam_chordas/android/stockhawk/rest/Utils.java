@@ -295,7 +295,9 @@ public class Utils {
      */
     public static String getDateOffset (String date, int offsetDays){
         Date incomingDate = convertStringToDate(date);
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+       DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        //TODO LJG Confirm this is better for date format
+       // DateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
         Calendar c = Calendar.getInstance();
         c.setTime(incomingDate);
         c.add(Calendar.DATE, offsetDays);  // number of days to add
@@ -334,6 +336,8 @@ public class Utils {
         Date today = Calendar.getInstance().getTime(); //get current date!!!!
         //make it a string
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        //TODO COnfirm this is better for date instance
+       // DateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
         String todayDate = df.format(today);
 
         return todayDate;
@@ -349,6 +353,8 @@ public class Utils {
      */
     public static Date convertStringToDate(String dateAsString) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        //TODO COnfirm this is better for date instance
+        //DateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
         Date date;
         try {
             date = df.parse(dateAsString);
