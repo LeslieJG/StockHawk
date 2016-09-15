@@ -94,17 +94,16 @@ public class StockQuoteWidgetIntentService extends IntentService {
             RemoteViews views = new RemoteViews(
                     mContext.getPackageName(), layoutId); //here is the view to use
 
-          /*  RemoteViews views = new RemoteViews(
-                    mContext.getPackageName(),
-                    R.layout.widget_stock_quotes_default_size); //here is the view to use
-*/
-
 
             //////update the widget view with real data//////
             //Get a cursor for the data in database
             //Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
 
-           Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol("YHOO"); //use the general Content Uri for now to get all stock quotes
+          // Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol("YHOO"); //use the general Content Uri for now to get all stock quotes
+
+            String stockSymbolForWidget = WidgetUtils.getWidgetSymbolFromWidgetId(mContext, appWidgetID);
+            Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol(stockSymbolForWidget);
+            Log.v(LOG_TAG, "LJG Updating widget. Id:" + appWidgetID + " Symbol:" + stockSymbolForWidget);
 
             //TODO This is where I get symbol from prefs
             //Use the Stock symbol associated with the widgetID
@@ -146,6 +145,9 @@ public class StockQuoteWidgetIntentService extends IntentService {
                /* views = new RemoteViews(
                         mContext.getPackageName(), R.id.widget_error); //here is the view to use - Gives defulat widget error meesage!!!
 */
+
+                //views = makeWidgetErrorView(mContext, widgetWidth, defaultWidth);
+
                 if (widgetWidth < defaultWidth) {
                     layoutId = R.layout.widget_error_small;
                 } else {
@@ -154,7 +156,6 @@ public class StockQuoteWidgetIntentService extends IntentService {
 
                 views = new RemoteViews(
                         mContext.getPackageName(), layoutId);
-
 
                // views.setTextViewText(R.id.widget_error_text)
                /* views.setTextViewText(R.id.widget_stock_symbol, "No Stock in App. Delete Widget"); //should display error message here
@@ -220,6 +221,23 @@ public class StockQuoteWidgetIntentService extends IntentService {
 
         }
 
+
+    }
+
+    /*
+    For setting the widget to the error view
+     */
+    private RemoteViews makeWidgetErrorView(Context mContext, int widgetWidth, int defaultWidth) {
+
+        int layoutId;
+        if (widgetWidth < defaultWidth) {
+            layoutId = R.layout.widget_error_small;
+        } else {
+            layoutId = R.layout.widget_error_default_size;
+        }
+
+        return new RemoteViews(
+                mContext.getPackageName(), layoutId);
 
     }
 

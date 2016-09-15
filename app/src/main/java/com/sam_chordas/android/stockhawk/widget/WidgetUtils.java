@@ -31,7 +31,7 @@ public class WidgetUtils {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(
                context.getString(R.string.widget_id_pref_key) + widgetId, stockSymbol);
-       editor.commit(); //commit is for synchronus adding - use so that it is known to
+       editor.apply(); //apply instead of commit for immediate adding- use so that it is known to
         // be added before it is accessed by widget provider
     }
 

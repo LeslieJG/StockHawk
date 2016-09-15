@@ -188,21 +188,26 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                 data.moveToPosition(mCursorRowId);
                  String widgetStockSymbol = data.getString(COL_STOCK_SYMBOL);
                 Log.v(LOG_TAG, "The widget symbol selected finally is " + widgetStockSymbol);
-                //TODO PUT the above into shared pref
-                //Key will be "WIDGET + mAppWidgetId"
-                //Value will be app symbol  ---> widgetStockSymbol
-
-                //Puts the Stock symbol into shared prefs with Widget ID as key
-
-                //TODO Debug line below
+                //put widget ID and symbol into sharedPreferences
                 WidgetUtils.addWidgetIdToSharedPrefs(getApplicationContext(), mAppWidgetId, data.getString(COL_STOCK_SYMBOL) );
-
                 //use these to look up widget details in Widget Intent Service
 
 
-                //or get info from shared pref
 
+                //It is the responsibility of the configuration Activity to request
+                // an update from the AppWidgetManager when the App Widget is first
+                // created. However, onUpdate() will be called for subsequent
+                // updates—it is only skipped the first time.
+                //So call the update Here
 
+                //TODO: Ensure widget is updated!
+               /* AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+                RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(),
+                        R.layout.widget_stock_quotes_default_size);
+                appWidgetManager.updateAppWidget(mAppWidgetId, views);*/
+
+                //trying to just start the intent service instead to see if that works!
+                getApplicationContext().startService(new Intent(getApplicationContext(), StockQuoteWidgetIntentService.class));
 
 
                 // Make sure we pass back the original appWidgetId
@@ -211,6 +216,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                 setResult(RESULT_OK, resultValue);
 
                 data.close(); //ensure that the cursor is closed before leaving the Configure Activity
+
                 finish();
 
             }
