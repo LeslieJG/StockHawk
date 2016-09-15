@@ -30,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by sam_chordas on 10/8/15.
+ *
+ * Other Utility Methods Added By Leslie G
  */
 public class Utils {
 
@@ -76,8 +78,7 @@ public class Utils {
     }
 
     public static String truncateChange(String change, boolean isPercentChange) {
-      //  Log.v(LOG_TAG, "LJG Utils truncate Change - change value is " + change);
-        //LJG trying to deal with null values from API
+        //deal with null values from API
         if (change.contains("null")) {
             return "No Change";
         }
@@ -99,12 +100,9 @@ public class Utils {
     }
 
 
-
-
-
     public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject, Context context) {
 
-        //TODO Here is where db is told to insert, should be told to update if many additions
+        //Here is where db is told to insert, should be told to update data already in Db - Do this in a future update
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
         try {
@@ -202,10 +200,7 @@ public class Utils {
 
                 //Invalid User input will just result in one stock being searched - this is the only thing we will look for
                if (count == 1) {
-                    //try it for all times this is called
-               // if (true){
-
-                    jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
+                   jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
                             .getJSONObject(context.getString(R.string.json_quote));
                     String theBidPrice = jsonObject.getString(context.getString(R.string.json_bid));
 
@@ -290,19 +285,6 @@ public class Utils {
     }
 
 
-    /*
-    public static String dateGivenStartAndIncrementDays(String earliestDate, int dateIncrement){
-        Date dateEarly = convertStringToDate(earliestDate);
-
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar c = Calendar.getInstance();
-        c.setTime(dateEarly);
-        c.add(Calendar.DATE, offsetDays);  // number of days to add
-        String referenceDate = df.format(c.getTime());  // dt is now the new date
-        return referenceDate;
-    }
-
-    */
 
     /**
      *  Provides the date that is a number of days offset from the reference Date
@@ -312,10 +294,7 @@ public class Utils {
      * @return
      */
     public static String getDateOffset (String date, int offsetDays){
-
-
         Date incomingDate = convertStringToDate(date);
-       // String dt = "2008-01-01";  // Start date
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         c.setTime(incomingDate);
@@ -333,8 +312,6 @@ public class Utils {
      */
     public static String getDateOffset (String date, int offsetDays, SimpleDateFormat df){
         Date incomingDate = convertStringToDate(date);
-        // String dt = "2008-01-01";  // Start date
-       // DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         c.setTime(incomingDate);
         c.add(Calendar.DATE, offsetDays);  // number of days to add
@@ -376,9 +353,8 @@ public class Utils {
         try {
             date = df.parse(dateAsString);
             return date;
-            // String newDateString = df.format(startDate);
         } catch (ParseException e) {
-            // e.printStackTrace();
+         //   e.printStackTrace();
         }
         return null; //if error return null instead of catching ParseException
     }
@@ -418,5 +394,4 @@ public class Utils {
 
 
     }
-
 }

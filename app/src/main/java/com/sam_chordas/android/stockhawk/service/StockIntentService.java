@@ -30,13 +30,8 @@ public class StockIntentService extends IntentService {
         args.putString(getString(R.string.intent_symbol), intent.getStringExtra(getString(R.string.intent_symbol)));
     }
 
-
-
-
-
     // We can call OnRunTask from the intent service to force it to run immediately instead of
     // scheduling a task.
     stockTaskService.onRunTask(new TaskParams(intent.getStringExtra(getString(R.string.intent_tag)), args));
-
   }
 }

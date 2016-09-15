@@ -45,9 +45,6 @@ public class StockTaskService extends GcmTaskService {
         mContext = context;
     }
 
-    /*
-    Method for ???LJG - getting API call data perhaps?
-     */
     String fetchData(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
@@ -59,7 +56,7 @@ public class StockTaskService extends GcmTaskService {
 
 
     /*
-    LJG Over Ridden method for GcmTaskService
+    Over Ridden method for GcmTaskService
      */
     @Override
     public int onRunTask(TaskParams params) {
@@ -106,10 +103,10 @@ public class StockTaskService extends GcmTaskService {
                 }
             } else if (initQueryCursor != null) {
 
-                 // DatabaseUtils.dumpCursor(initQueryCursor); //TODO THis is where cursor is dumped
+                 // DatabaseUtils.dumpCursor(initQueryCursor);
                 //Get a full list of DB here and dump it out to logcat
-                Log.v(LOG_TAG, "LJG Dumping full database BEFORE it is updated");
-                dumpFullDbToLogcat(mContext);
+                /*Log.v(LOG_TAG, "LJG Dumping full database BEFORE it is updated");
+                dumpFullDbToLogcat(mContext);*/
 
 
 
