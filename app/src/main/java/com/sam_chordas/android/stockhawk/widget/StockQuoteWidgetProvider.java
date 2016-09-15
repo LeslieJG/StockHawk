@@ -80,6 +80,10 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
 
+
+        //remove the widgetId from shared prefs - no longer need to keep track of it
+        WidgetUtils.removeWidgetIdFromSharedPrefs(context, appWidgetIds[0]);
+
         Log.v(LOG_TAG, "LJG Deleted a Widget");
         Log.v(LOG_TAG, "LJG Number of widgets deleted is " + appWidgetIds.length);
         Log.v(LOG_TAG, "LJG Deleted Widget ID is " + appWidgetIds[0]);
