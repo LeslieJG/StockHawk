@@ -46,9 +46,6 @@ public class StockHistoryIntentService extends IntentService {
     static final int COL_STOCK_HISTORY_DATE = 0;
     /////////////////////////////////////////////////////////
 
-    //TODO close ALL cursors in app!!!!!
-
-
     public StockHistoryIntentService() {
         super("StockHistoryIntentService");
     }
@@ -60,7 +57,6 @@ public class StockHistoryIntentService extends IntentService {
 
         //Check for days already in database
         Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
-
         Cursor stockHistoryCursor = this.getContentResolver().query(
                 uriForSymbol //Uri
                 , STOCK_HISTORY_COLUMNS //projection (columns to return) (use null for no projection)
@@ -76,29 +72,17 @@ public class StockHistoryIntentService extends IntentService {
         try {
             //examine the cursor and see what the latest date in the StockHistory Table is
             if (!stockHistoryCursor.moveToFirst()) { //No dates in database for that stock symbol
-
-                //Go back a year for API call
-                earliestDateToGetHistoriesFromApi = Utils.getDateOffset(todaysDate, -365); //go back a full year in history
-                Log.v(LOG_TAG, "LJG Stock History DateONLY Cursor is EMPTY!!!!! - APi call goes back a whole year from "
-                        + earliestDateToGetHistoriesFromApi + " to " + latestDateToGetHistoriesFromApi);
-
+                earliestDateToGetHistoriesFromApi = Utils.getDateOffset(todaysDate, -365); //go back a full year in history for API call
             } else { //There are dates in Database - see what the API call should be
                 String latestDateInDatabase = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
 
 
-                //if latest date in database is equal to or ahead of today (i.e. you've changed time zones)
                 if (Utils.numberOfDaysSinceFirstDate(todaysDate, latestDateInDatabase) <= 0) {
-                    Log.v(LOG_TAG, "database is already up to date - cancelling stock history API call");
-                    //if database is ahead of today or equal to today Don't update stocks
+                    //if latest date in database is equal to or ahead of today (i.e. you've changed time zones)
                     //If database is up to date - do NOT do API call
-
-
                     return;
                 } else { //do the API call from one day after the latest date in database
-                    // latestDateToGetHistoriesFromApi = todaysDate;
                     earliestDateToGetHistoriesFromApi = Utils.getDateOffset(latestDateInDatabase, +1); //do API call for one day after what is in database
-                    Log.v(LOG_TAG, "LJG Stock HistoryAPI call goes from "
-                            + earliestDateToGetHistoriesFromApi + " to " + latestDateToGetHistoriesFromApi);
                 }
             }
         } finally {
@@ -111,10 +95,8 @@ public class StockHistoryIntentService extends IntentService {
         urlStringBuilder.append("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20%22");
         urlStringBuilder.append(stockSymbol); //String of Stock Symbol
         urlStringBuilder.append("%22%20and%20startDate%20%3D%20%22");
-        // urlStringBuilder.append("2015-09-11");//replace with coded start date
         urlStringBuilder.append(earliestDateToGetHistoriesFromApi);//replace with coded start date
         urlStringBuilder.append("%22%20and%20endDate%20%3D%20%22");
-        //urlStringBuilder.append("2016-08-23"); //replace with coded end date
         urlStringBuilder.append(latestDateToGetHistoriesFromApi); //replace with coded end date
         urlStringBuilder.append("%22&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys");
 
@@ -124,7 +106,6 @@ public class StockHistoryIntentService extends IntentService {
             urlString = urlStringBuilder.toString();
             try {
                 getResponse = fetchData(urlString);
-                // Log.v(LOG_TAG, "LJG The JSON for history is " + getResponse);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -132,40 +113,30 @@ public class StockHistoryIntentService extends IntentService {
 
 
         //Now get the JSON from the fetchData string
-        String tester = getResponse;
-
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
         JSONObject jsonObject = null;
-        JSONArray resultsArray = null;
-
         try {
             jsonObject = new JSONObject(getResponse);
-            Log.v(LOG_TAG, "LJG JSON StockHistory is OK");
             if (jsonObject != null && jsonObject.length() != 0) {
                 JSONObject queryJsonObject = jsonObject.getJSONObject(getString(R.string.json_query));
 
                 int count = Integer.parseInt(queryJsonObject.getString(getString(R.string.json_count)));
-                Log.v(LOG_TAG, "LJG JSON StockHistory count is " + count);
-
                 if (count > 0) { //if there is a count - i.e. if there is historical data from API
-                    Log.v(LOG_TAG, "LJG JSON Stock history count is 1 or more");
-
+                    //Log.v(LOG_TAG, "LJG JSON Stock history count is 1 or more");
                     JSONObject resultsJsonObject = queryJsonObject.getJSONObject(getString(R.string.json_results));
                     JSONArray quoteArray = resultsJsonObject.getJSONArray(getString(R.string.json_quote));
                     JSONObject individualQuoteJson = null;
 
                     if (quoteArray != null && quoteArray.length() != 0) {
-                        Log.v(LOG_TAG, "Quote Array Not null and length is not Zero");
-
+                       // Log.v(LOG_TAG, "Quote Array Not null and length is not Zero");
                         int quoteArrayLength = quoteArray.length();
-                        Log.v(LOG_TAG, "Quote array Length is " + quoteArrayLength);
+                       // Log.v(LOG_TAG, "Quote array Length is " + quoteArrayLength);
 
                         //do the for loop backwards to put the data in date ascending order (oldest to newest)
-                        // for (int i = 0; i < quoteArray.length(); i++) { //loop forwards - how API delivers it (dates descending)
                         for (int i = quoteArrayLength - 1; i >= 0; i--) { //loop backwards - ascending date
                             individualQuoteJson = quoteArray.getJSONObject(i);
 
-                            //get the indivual parts that I want to keep
+                            //get the indivual parts to keep
                             String stockSymbolFromJson = individualQuoteJson.getString(getString(R.string.json_symbol_for_historical_data));
                             String stockDate = individualQuoteJson.getString(getString(R.string.json_date));
                             String stockCloseValue = individualQuoteJson.getString(getString(R.string.json_close));
