@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
@@ -52,6 +53,7 @@ public class StockHistoryIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.v(LOG_TAG, "In stock History Intent Service");
         //Get the name of stock to look for
         String stockSymbol = intent.getStringExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG);
 
@@ -64,6 +66,9 @@ public class StockHistoryIntentService extends IntentService {
                 , null//selection Arguments - get the latest date ONLY
                 // , null); //poosibly have sort order date ascending
                 , StockHistoryColumns.DATE + " DESC LIMIT 1"); //latest date - only one
+
+        Log.v(LOG_TAG, "Dumping the stock history cursor - it may be null");
+        DatabaseUtils.dumpCursor(stockHistoryCursor);
 
         String todaysDate = Utils.getTodayDate();
         String latestDateToGetHistoriesFromApi = todaysDate;

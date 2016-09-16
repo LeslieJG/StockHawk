@@ -28,7 +28,7 @@ public class TestFormatter implements AxisValueFormatter {
     //Constructor
     public TestFormatter(BarLineChartBase<?> lineChartBase, String initialDate) {
         mLineChart = lineChartBase;
-        mStartDate = "2001-01-01";
+        mStartDate = "2016-01-01";
         if (initialDate != null) {
             mStartDate = initialDate;
         }
@@ -38,7 +38,7 @@ public class TestFormatter implements AxisValueFormatter {
 
     //constructor
     public TestFormatter() {
-        mStartDate = "2015-01-01"; //default initial date if needed - if none provided
+        mStartDate = "2016-01-01"; //default initial date if needed - if none provided
     }
 
     public void setInitialDate(String initialDate) {
