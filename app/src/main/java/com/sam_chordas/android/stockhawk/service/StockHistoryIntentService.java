@@ -117,47 +117,50 @@ public class StockHistoryIntentService extends IntentService {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(getResponse);
-            if (jsonObject != null && jsonObject.length() != 0) {
-                JSONObject queryJsonObject = jsonObject.getJSONObject(getString(R.string.json_query));
+            // if (jsonObject != null && jsonObject.length() != 0) {
+            if (jsonObject != null) {
+                if (jsonObject.length() != 0) {
+                    JSONObject queryJsonObject = jsonObject.getJSONObject(getString(R.string.json_query));
 
-                int count = Integer.parseInt(queryJsonObject.getString(getString(R.string.json_count)));
-                if (count > 0) { //if there is a count - i.e. if there is historical data from API
-                    //Log.v(LOG_TAG, "LJG JSON Stock history count is 1 or more");
-                    JSONObject resultsJsonObject = queryJsonObject.getJSONObject(getString(R.string.json_results));
-                    JSONArray quoteArray = resultsJsonObject.getJSONArray(getString(R.string.json_quote));
-                    JSONObject individualQuoteJson = null;
+                    int count = Integer.parseInt(queryJsonObject.getString(getString(R.string.json_count)));
+                    if (count > 0) { //if there is a count - i.e. if there is historical data from API
+                        //Log.v(LOG_TAG, "LJG JSON Stock history count is 1 or more");
+                        JSONObject resultsJsonObject = queryJsonObject.getJSONObject(getString(R.string.json_results));
+                        JSONArray quoteArray = resultsJsonObject.getJSONArray(getString(R.string.json_quote));
+                        JSONObject individualQuoteJson = null;
 
-                    if (quoteArray != null && quoteArray.length() != 0) {
-                       // Log.v(LOG_TAG, "Quote Array Not null and length is not Zero");
-                        int quoteArrayLength = quoteArray.length();
-                       // Log.v(LOG_TAG, "Quote array Length is " + quoteArrayLength);
+                        if (quoteArray != null && quoteArray.length() != 0) {
+                            // Log.v(LOG_TAG, "Quote Array Not null and length is not Zero");
+                            int quoteArrayLength = quoteArray.length();
+                            // Log.v(LOG_TAG, "Quote array Length is " + quoteArrayLength);
 
-                        //do the for loop backwards to put the data in date ascending order (oldest to newest)
-                        for (int i = quoteArrayLength - 1; i >= 0; i--) { //loop backwards - ascending date
-                            individualQuoteJson = quoteArray.getJSONObject(i);
+                            //do the for loop backwards to put the data in date ascending order (oldest to newest)
+                            for (int i = quoteArrayLength - 1; i >= 0; i--) { //loop backwards - ascending date
+                                individualQuoteJson = quoteArray.getJSONObject(i);
 
-                            //get the indivual parts to keep
-                            String stockSymbolFromJson = individualQuoteJson.getString(getString(R.string.json_symbol_for_historical_data));
-                            String stockDate = individualQuoteJson.getString(getString(R.string.json_date));
-                            String stockCloseValue = individualQuoteJson.getString(getString(R.string.json_close));
+                                //get the indivual parts to keep
+                                String stockSymbolFromJson = individualQuoteJson.getString(getString(R.string.json_symbol_for_historical_data));
+                                String stockDate = individualQuoteJson.getString(getString(R.string.json_date));
+                                String stockCloseValue = individualQuoteJson.getString(getString(R.string.json_close));
 
-                            ContentProviderOperation.Builder batchContentProviderOperationBuilder = ContentProviderOperation.newInsert(
-                                    QuoteProvider.Histories.CONTENT_URI); //Builder to build bulk insert content provider operation
+                                ContentProviderOperation.Builder batchContentProviderOperationBuilder = ContentProviderOperation.newInsert(
+                                        QuoteProvider.Histories.CONTENT_URI); //Builder to build bulk insert content provider operation
 
 
-                            /////////////////
-                            //Build content values from this data
-                            ContentValues historicCloseContentValue =
-                                    Utils.makeStockHistoryContentValue(stockSymbolFromJson, stockDate, stockCloseValue);
+                                /////////////////
+                                //Build content values from this data
+                                ContentValues historicCloseContentValue =
+                                        Utils.makeStockHistoryContentValue(stockSymbolFromJson, stockDate, stockCloseValue);
 
-                            //add content values to batch operation (content values list?)
-                            batchContentProviderOperationBuilder.withValues(historicCloseContentValue);
+                                //add content values to batch operation (content values list?)
+                                batchContentProviderOperationBuilder.withValues(historicCloseContentValue);
 
                           /*  ContentProviderOperation contentProviderOperation =
                                     batchContentProviderOperationBuilder.build();
                             */
-                            //add it to the arraylist of batch operations
-                            batchOperations.add(batchContentProviderOperationBuilder.build());
+                                //add it to the arraylist of batch operations
+                                batchOperations.add(batchContentProviderOperationBuilder.build());
+                            }
                         }
                     }
                 }

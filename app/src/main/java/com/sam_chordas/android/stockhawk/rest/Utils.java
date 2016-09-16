@@ -73,7 +73,10 @@ public class Utils {
 
     //LJG this is what really errors off - who calls it
     public static String truncateBidPrice(String bidPrice) {
-        bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
+        if (bidPrice != null) {
+            bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
+                }
+
         return bidPrice;
     }
 
@@ -130,9 +133,7 @@ public class Utils {
         return builder.build();
     }
 
-/*
 
-    */
 /**
      * TODO: THis is my attempt at just updating
      * NOT inserting new info
