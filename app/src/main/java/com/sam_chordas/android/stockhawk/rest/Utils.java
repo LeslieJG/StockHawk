@@ -74,9 +74,11 @@ public class Utils {
     //LJG this is what really errors off - who calls it
     public static String truncateBidPrice(String bidPrice) {
         Log.v(LOG_TAG, "truncateBidPrice - bidprice is " + bidPrice);
-        if (bidPrice != null) {
+        if (!bidPrice.contains("null")) {
             bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
-                }
+                } else {
+            bidPrice = "Retry";
+        }
 
         return bidPrice;
     }

@@ -37,6 +37,8 @@ public class StockTaskService extends GcmTaskService {
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
 
+
+
     //Constructor
     public StockTaskService() {
     }
@@ -60,6 +62,8 @@ public class StockTaskService extends GcmTaskService {
      */
     @Override
     public int onRunTask(TaskParams params) {
+        Log.v(LOG_TAG, "LJG Starting onRunTask");
+
         Cursor initQueryCursor;
         if (mContext == null) {
             mContext = this;
@@ -201,6 +205,8 @@ public class StockTaskService extends GcmTaskService {
         //LJG before returning result let the SwipreRefresh know that the refresh is done
         //Credit: http://stackoverflow.com/users/574859/maximumgoat
         //from this thread http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
+
+        Log.v(LOG_TAG, "LJG Stock Task Service Done - will send broadcast for update");
         Utils.sendBroadcastForUpdate(mContext);
 
         return result;
