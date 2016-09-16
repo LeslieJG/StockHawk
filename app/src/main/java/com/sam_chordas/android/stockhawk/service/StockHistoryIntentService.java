@@ -41,17 +41,9 @@ public class StockHistoryIntentService extends IntentService {
     /////////////////////Database projection constants///////////////
     //For making good use of database Projections specify the columns we need
     private static final String[] STOCK_HISTORY_COLUMNS = {
-            StockHistoryColumns._ID,
-            StockHistoryColumns.SYMBOL,
-            StockHistoryColumns.DATE,
-            StockHistoryColumns.CLOSEPRICE,
-    };
-
+            StockHistoryColumns.DATE};
     // These indices are tied to STOCK_HISTORY_COLUMNS.  If STOCK_HISTORY_COLUMNS changes, these must change.
-    static final int COL_STOCK_HISTORY_ID = 0;
-    static final int COL_STOCK_HISTORY_SYMBOL = 1;
-    static final int COL_STOCK_HISTORY_DATE = 2;
-    static final int COL_STOCK_HISTORY_CLOSEPRICE = 3;
+    static final int COL_STOCK_HISTORY_DATE = 0;
     /////////////////////////////////////////////////////////
 
     //TODO close ALL cursors in app!!!!!
@@ -63,55 +55,55 @@ public class StockHistoryIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(LOG_TAG, "Stock Intent Service");
-
-
         //Get the name of stock to look for
         String stockSymbol = intent.getStringExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG);
 
         //Check for days already in database
         Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
+
         Cursor stockHistoryCursor = this.getContentResolver().query(
                 uriForSymbol //Uri
-                , STOCK_HISTORY_COLUMNS //projection (columns to return) (use nyll for no projection)
+                , STOCK_HISTORY_COLUMNS //projection (columns to return) (use null for no projection)
                 , null // //selection Clause
                 , null//selection Arguments - get the latest date ONLY
                 // , null); //poosibly have sort order date ascending
                 , StockHistoryColumns.DATE + " DESC LIMIT 1"); //latest date - only one
 
-
-       // Log.v(LOG_TAG, "LJG Stock History DateONLY Cursor is " + stockHistoryCursor);
-
         String todaysDate = Utils.getTodayDate();
         String latestDateToGetHistoriesFromApi = todaysDate;
         String earliestDateToGetHistoriesFromApi = null;
 
-        //examine the cursor and see what the latest date in the StockHistory Table is
-        if (!stockHistoryCursor.moveToFirst()) { //No dates in database for that stock symbol
+        try {
+            //examine the cursor and see what the latest date in the StockHistory Table is
+            if (!stockHistoryCursor.moveToFirst()) { //No dates in database for that stock symbol
 
-            //Go back a year for API call
-            earliestDateToGetHistoriesFromApi = Utils.getDateOffset(todaysDate, -365); //go back a full year in history
-            Log.v(LOG_TAG, "LJG Stock History DateONLY Cursor is EMPTY!!!!! - APi call goes back a whole year from "
-                    + earliestDateToGetHistoriesFromApi + " to " + latestDateToGetHistoriesFromApi);
-
-        } else { //There are dates in Database - see what the API call should be
-            String latestDateInDatabase = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
-
-
-            //if latest date in database is equal to or ahead of today (i.e. you've changed time zones)
-            if (Utils.numberOfDaysSinceFirstDate(todaysDate,latestDateInDatabase)<= 0 ) {
-                Log.v(LOG_TAG, "database is already up to date - cancelling stock history API call");
-                //if database is ahead of today or equal to today Don't update stocks
-                //If database is up to date - do NOT do API call
-                return;
-            } else { //do the API call from one day after the latest date in database
-               // latestDateToGetHistoriesFromApi = todaysDate;
-                earliestDateToGetHistoriesFromApi = Utils.getDateOffset(latestDateInDatabase, +1); //do API call for one day after what is in database
-                Log.v(LOG_TAG, "LJG Stock HistoryAPI call goes from "
+                //Go back a year for API call
+                earliestDateToGetHistoriesFromApi = Utils.getDateOffset(todaysDate, -365); //go back a full year in history
+                Log.v(LOG_TAG, "LJG Stock History DateONLY Cursor is EMPTY!!!!! - APi call goes back a whole year from "
                         + earliestDateToGetHistoriesFromApi + " to " + latestDateToGetHistoriesFromApi);
-            }
-        }
 
+            } else { //There are dates in Database - see what the API call should be
+                String latestDateInDatabase = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
+
+
+                //if latest date in database is equal to or ahead of today (i.e. you've changed time zones)
+                if (Utils.numberOfDaysSinceFirstDate(todaysDate, latestDateInDatabase) <= 0) {
+                    Log.v(LOG_TAG, "database is already up to date - cancelling stock history API call");
+                    //if database is ahead of today or equal to today Don't update stocks
+                    //If database is up to date - do NOT do API call
+
+
+                    return;
+                } else { //do the API call from one day after the latest date in database
+                    // latestDateToGetHistoriesFromApi = todaysDate;
+                    earliestDateToGetHistoriesFromApi = Utils.getDateOffset(latestDateInDatabase, +1); //do API call for one day after what is in database
+                    Log.v(LOG_TAG, "LJG Stock HistoryAPI call goes from "
+                            + earliestDateToGetHistoriesFromApi + " to " + latestDateToGetHistoriesFromApi);
+                }
+            }
+        } finally {
+            stockHistoryCursor.close();
+        }
 
 
         //Build Yahoo API query URL for stock history
@@ -119,7 +111,7 @@ public class StockHistoryIntentService extends IntentService {
         urlStringBuilder.append("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20%22");
         urlStringBuilder.append(stockSymbol); //String of Stock Symbol
         urlStringBuilder.append("%22%20and%20startDate%20%3D%20%22");
-       // urlStringBuilder.append("2015-09-11");//replace with coded start date
+        // urlStringBuilder.append("2015-09-11");//replace with coded start date
         urlStringBuilder.append(earliestDateToGetHistoriesFromApi);//replace with coded start date
         urlStringBuilder.append("%22%20and%20endDate%20%3D%20%22");
         //urlStringBuilder.append("2016-08-23"); //replace with coded end date
@@ -216,6 +208,8 @@ public class StockHistoryIntentService extends IntentService {
 
         //Broadcast that results are in - so that the line chart can grab new data and update
         Utils.sendHistoryBroadcastForUpdate(getApplicationContext());
+
+
     }
 
 
