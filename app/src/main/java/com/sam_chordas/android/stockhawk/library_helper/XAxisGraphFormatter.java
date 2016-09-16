@@ -15,9 +15,9 @@ import java.text.SimpleDateFormat;
  * <p/>
  * X-Axis Formatter for stock detail line chart
  */
-public class TestFormatter implements AxisValueFormatter {
+public class XAxisGraphFormatter implements AxisValueFormatter {
     String mStartDate = null;
-    private static final String LOG_TAG = TestFormatter.class.getSimpleName();
+    private static final String LOG_TAG = XAxisGraphFormatter.class.getSimpleName();
 
     private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MMM-dd");
 
@@ -26,7 +26,7 @@ public class TestFormatter implements AxisValueFormatter {
     BarLineChartBase<?> mLineChart = null; //used for refreencing the chart
 
     //Constructor
-    public TestFormatter(BarLineChartBase<?> lineChartBase, String initialDate) {
+    public XAxisGraphFormatter(BarLineChartBase<?> lineChartBase, String initialDate) {
         mLineChart = lineChartBase;
         mStartDate = "2016-01-01";
         if (initialDate != null) {
@@ -37,7 +37,7 @@ public class TestFormatter implements AxisValueFormatter {
     }
 
     //constructor
-    public TestFormatter() {
+    public XAxisGraphFormatter() {
         mStartDate = "2016-01-01"; //default initial date if needed - if none provided
     }
 
@@ -52,7 +52,7 @@ public class TestFormatter implements AxisValueFormatter {
 
         //dislay the values as dates (as strings)
         String dateToReturn = Utils.getDateOffset(mStartDate, (int) value, mFormat);
-        ;
+
 
         //check how many items displayed
         /*

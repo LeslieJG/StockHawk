@@ -26,7 +26,7 @@ import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.data.StockHistoryColumns;
 import com.sam_chordas.android.stockhawk.library_helper.MyMarkerView;
-import com.sam_chordas.android.stockhawk.library_helper.TestFormatter;
+import com.sam_chordas.android.stockhawk.library_helper.XAxisGraphFormatter;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class DetailFragment extends Fragment {
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
     private LineChart stockHistoryLineChart;
     String mEarliestDateInStockHistory = null;
-    TestFormatter mStockHistoryDateAxisFormatter = null;
+    XAxisGraphFormatter mStockHistoryDateAxisFormatter = null;
 
     /////////////////////Database projection constants///////////////
     //For making good use of database Projections specify the columns we need
@@ -250,8 +250,8 @@ public class DetailFragment extends Fragment {
             xAxis.setLabelCount(3); //do not show more than 3 (ish) label lines for x Axis - stops dates overlapping
 
             //reset the xaxis formatter with the new date if possible
-            // Log.v(LOG_TAG, "Just before declaring new TestFormatter. Earliest date is " + mEarliestDateInStockHistory);
-            mStockHistoryDateAxisFormatter = new TestFormatter(stockHistoryLineChart, mEarliestDateInStockHistory);
+            // Log.v(LOG_TAG, "Just before declaring new XAxisGraphFormatter. Earliest date is " + mEarliestDateInStockHistory);
+            mStockHistoryDateAxisFormatter = new XAxisGraphFormatter(stockHistoryLineChart, mEarliestDateInStockHistory);
 
             //set the formatter
             stockHistoryLineChart.getXAxis().setValueFormatter(mStockHistoryDateAxisFormatter);
