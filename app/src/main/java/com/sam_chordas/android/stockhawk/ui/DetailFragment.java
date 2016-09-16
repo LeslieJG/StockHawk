@@ -54,17 +54,13 @@ public class DetailFragment extends Fragment {
     /////////////////////Database projection constants///////////////
     //For making good use of database Projections specify the columns we need
     private static final String[] STOCK_HISTORY_COLUMNS = {
-            StockHistoryColumns._ID,
-            StockHistoryColumns.SYMBOL,
             StockHistoryColumns.DATE,
             StockHistoryColumns.CLOSEPRICE,
     };
 
     // These indices are tied to STOCK_HISTORY_COLUMNS.  If STOCK_HISTORY_COLUMNS changes, these must change.
-    static final int COL_STOCK_HISTORY_ID = 0;
-    static final int COL_STOCK_HISTORY_SYMBOL = 1;
-    static final int COL_STOCK_HISTORY_DATE = 2;
-    static final int COL_STOCK_HISTORY_CLOSEPRICE = 3;
+    static final int COL_STOCK_HISTORY_DATE = 0;
+    static final int COL_STOCK_HISTORY_CLOSEPRICE = 1;
     /////////////////////////////////////////////////////////
 
     public DetailFragment() {
@@ -78,7 +74,7 @@ public class DetailFragment extends Fragment {
      * @param stockSymbolName Parameter 1.
      * @return A new instance of fragment DetailFragment.
      */
-    public static DetailFragment newInstance(String stockSymbolName) { //, String param2
+    public static DetailFragment newInstance(String stockSymbolName) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
         args.putString(STOCK_SYMBOL, stockSymbolName);
@@ -140,9 +136,7 @@ public class DetailFragment extends Fragment {
     /**
      * class to do updating line chart off the main UI thread
      * <p/>
-     * Ensure that the Linechart is threadsafe somehow so that it is not altered by two asynctasks running at same time
-     * AsyncTask IS threadsafe by definition - all OK here
-     * <p/>
+     * <p>
      * params are LineChart, String Stockname
      */
     private class updateLineChartTask extends AsyncTask<Object, Void, LineData> {
@@ -152,7 +146,7 @@ public class DetailFragment extends Fragment {
         protected LineData doInBackground(Object... params) {
             if (params.length == 0) //no LineChart passed in
             {
-                Log.e(LOG_TAG, "No LineChart passed in");
+                // Log.e(LOG_TAG, "No LineChart passed in");
                 return null;
             }
 
@@ -162,8 +156,6 @@ public class DetailFragment extends Fragment {
             Cursor stockHistoryCursor;
             Context mContext = getContext();
 
-
-            // Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
             Uri uriForSymbol = QuoteProvider.Histories.withSymbol(stockSymbol);
             stockHistoryCursor = mContext.getContentResolver().query(
                     uriForSymbol //Uri
@@ -176,57 +168,33 @@ public class DetailFragment extends Fragment {
 
             //Test the response
             if (!stockHistoryCursor.moveToFirst()) {
-                Log.v(LOG_TAG, "Database test Cursor is empty!");
+                //Log.v(LOG_TAG, "Database test Cursor is empty!");
             } else {
                 int cursorCount = stockHistoryCursor.getCount();
-                Log.v(LOG_TAG, "Database test cursor is valid and count is " + cursorCount);
+                // Log.v(LOG_TAG, "Database test cursor is valid and count is " + cursorCount);
 
-
-                //get the first date for setting up x axis
-                stockHistoryCursor.moveToFirst(); //TODO: Is this needed - already moved cursor to first for If Statement
-
-                //String earliestDateInHistory = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
-
-
-                //pass back earliest date to allow for x-axis formatting later on
-                // mEarliestDateInStockHistory = earliestDateInHistory; //TODO: Clean this up - to difficult to reference -just use ONE variable
+                stockHistoryCursor.moveToFirst();     //get the first date for setting up x axis
                 mEarliestDateInStockHistory = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
-                Log.v(LOG_TAG, "Earliest date in cursor history is " + mEarliestDateInStockHistory);
+                //Log.v(LOG_TAG, "Earliest date in cursor history is " + mEarliestDateInStockHistory);
 
-                do {
-                    //Loop through all data from cursor
-                    // for (int i = 0; i < cursorCount; i++) {
+                do { //Loop through all data from cursor
+                    String stockHistoryDate = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
+                    String stockHistoryClosePrice = stockHistoryCursor.getString(COL_STOCK_HISTORY_CLOSEPRICE);
 
+                    //convert the Strings to date difference from first date - so graph starts at x=0
+                    int dateDiff = Utils.numberOfDaysSinceFirstDate(mEarliestDateInStockHistory, stockHistoryDate);
 
-                    String testcursorname = stockHistoryCursor.getString(COL_STOCK_HISTORY_SYMBOL);
-                    String testcursorDate = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
-                    String testCursorClose = stockHistoryCursor.getString(COL_STOCK_HISTORY_CLOSEPRICE);
-                    String testCursorID = stockHistoryCursor.getString(COL_STOCK_HISTORY_ID);
-
-                    //Loop through database table for all items and put them in log statement
-
-                    //convert the Strings to dates
-                    //  int dateDiff = Utils.numberOfDaysSinceFirstDate(earliestDateInHistory, testcursorDate);
-                    int dateDiff = Utils.numberOfDaysSinceFirstDate(mEarliestDateInStockHistory, testcursorDate);
-
-            /*    Log.v(LOG_TAG, "Database read is _ID:" + testCursorID
-                        + " Symbol:" + testcursorname
-                        + " Date:" + testcursorDate
-                        + " Date diff:" + dateDiff
-                        + " ClosePrice:" + testCursorClose);
-
-*/
                     //make up new graphing points
                     Float xValue = (float) dateDiff;
-                    Float yValue = Float.valueOf(testCursorClose);
+                    Float yValue = Float.valueOf(stockHistoryClosePrice);
 
                     Entry stockGraphEntry = new Entry(xValue, yValue); //x,y
                     stockHistoryDataEntries.add(stockGraphEntry);
-                    //  stockHistoryCursor.moveToNext(); //move to next item
-                } while (stockHistoryCursor.moveToNext());
+                }
+                while (stockHistoryCursor.moveToNext()); //move to next row in cursor if there is one
             }
 
-            //Make a full Line Data set with the list and a String to descripe the
+            //Make a full Line Data set with the list and a String to describe the
             //dataset (and to use as label)
             LineDataSet setCompany1 = new LineDataSet(stockHistoryDataEntries, stockSymbol);
             setCompany1.setAxisDependency(YAxis.AxisDependency.LEFT);
@@ -241,25 +209,18 @@ public class DetailFragment extends Fragment {
             //now put it all into the final Chart data
             LineData data = new LineData(dataSets); //gathers all data together
 
-
             stockHistoryCursor.close(); //close cursor before leaving method
             //for AsyncTask
             return data;
-
-
-            // return null;
-        } //params sent in, Progress variable, result types out
+        }
 
 
         //this is called on UI thread
         @Override
         protected void onPostExecute(LineData lineData) {
             super.onPostExecute(lineData);
+            //Log.v(LOG_TAG, "onPostExecute - The earliest date in stock history is " + mEarliestDateInStockHistory);
 
-            Log.v(LOG_TAG, "onPostExecute - The earliest date in stock history is " + mEarliestDateInStockHistory);
-
-
-            //put all data into line chart
             stockHistoryLineChart.setData(lineData); //puts all the data into chart
 
             //Style the chart
@@ -282,37 +243,31 @@ public class DetailFragment extends Fragment {
             YAxis rightAxis = stockHistoryLineChart.getAxisRight();
             rightAxis.setTextColor(Color.WHITE);
 
-
             XAxis xAxis = stockHistoryLineChart.getXAxis();
             xAxis.setTextColor(Color.WHITE);
 
-            // xAxis.setGranularity(10f);//do not make any more lines that one per date
-            xAxis.setGranularity(1f);
+            xAxis.setGranularity(1f);//do not make any more lines that one per date
             xAxis.setLabelCount(3); //do not show more than 3 (ish) label lines for x Axis - stops dates overlapping
 
-
             //reset the xaxis formatter with the new date if possible
-            Log.v(LOG_TAG, "Just before declaring new TestFormatter. Earliest date is " + mEarliestDateInStockHistory);
+            // Log.v(LOG_TAG, "Just before declaring new TestFormatter. Earliest date is " + mEarliestDateInStockHistory);
             mStockHistoryDateAxisFormatter = new TestFormatter(stockHistoryLineChart, mEarliestDateInStockHistory);
-            //    stockHistoryLineChart.getXAxis().setValueFormatter(new TestFormatter(stockHistoryLineChart, mEarliestDateInStockHistory));
 
             //set the formatter
             stockHistoryLineChart.getXAxis().setValueFormatter(mStockHistoryDateAxisFormatter);
 
             // stockHistoryLineChart.setAutoScaleMinMaxEnabled(true); //allow y-axis to change scale to allow financial data left/right scrolling to change the scale as needed
-
-
             stockHistoryLineChart.invalidate(); //redraws chart
         }
     }
 
 
-        /*
-            Receives call that API call is done for stock history
-            Then updates the stock history
-            Credit: http://stackoverflow.com/users/574859/maximumgoat
-            from this thread http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
-         */
+    /*
+        Receives call that API call is done for stock history
+        Then updates the stock history
+        Credit: http://stackoverflow.com/users/574859/maximumgoat
+        from this thread http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
+     */
     private class StockHistoryReceiver extends BroadcastReceiver {
         private final String LOG_TAG = StockHistoryReceiver.class.getSimpleName();
 
