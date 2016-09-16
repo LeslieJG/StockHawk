@@ -58,7 +58,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
 
     /////////////////////////////////////////////////////////
 
-
+//TODO Laura says make widget choices in alphabetical order
 
     //TODO: Make readio buttons be symbol list from app
     //Store widget ID and App SYmbol Name as key value pair in pref
@@ -140,7 +140,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                 STOCK_QUOTE_COLUMNS, //projection
                 null,
                 null,
-                QuoteColumns._ID + " ASC"); //sort order
+                QuoteColumns.SYMBOL + " ASC"); //sort order
 
 
 
