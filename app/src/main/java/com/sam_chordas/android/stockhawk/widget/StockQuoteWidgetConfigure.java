@@ -188,13 +188,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                 // updates—it is only skipped the first time.
                 //So call the update Here
 
-                //TODO: Ensure widget is updated!
-               /* AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
-                RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(),
-                        R.layout.widget_stock_quotes_default_size);
-                appWidgetManager.updateAppWidget(mAppWidgetId, views);*/
-
-                //trying to just start the intent service instead to see if that works!
+                //start the intent service to update widget
                 getApplicationContext().startService(new Intent(getApplicationContext(), StockQuoteWidgetIntentService.class));
 
 

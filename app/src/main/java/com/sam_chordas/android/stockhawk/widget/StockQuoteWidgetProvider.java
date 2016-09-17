@@ -74,23 +74,18 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
 
     }
 
-    //TODO Delete the shared pref key value pair of widget id and symbol for widget
+    //Delete the shared pref key value pair of widget id and symbol for widget
     //when deleting widget
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
 
-
         //remove the widgetId from shared prefs - no longer need to keep track of it
         WidgetUtils.removeWidgetIdFromSharedPrefs(context, appWidgetIds[0]);
 
-        Log.v(LOG_TAG, "LJG Deleted a Widget");
+        /*Log.v(LOG_TAG, "LJG Deleted a Widget");
         Log.v(LOG_TAG, "LJG Number of widgets deleted is " + appWidgetIds.length);
         Log.v(LOG_TAG, "LJG Deleted Widget ID is " + appWidgetIds[0]);
-
-        //delete the widget id passed in
-      /*  Toast.makeText(context, "Number of Widgets being deleted is  " + appWidgetIds.length,
-                Toast.LENGTH_LONG);
-*/
+      */
     }
 }

@@ -178,13 +178,6 @@ public class StockTaskService extends GcmTaskService {
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse, mContext));
 
-
-                        //TODO For debugging - do a bd Query and get the full database and see what's in it
-                       /* Log.v(LOG_TAG, "LJG Dumping Entire Database for debugging AFTER entire DB is updated!");
-                        Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
-                        Cursor dbTestCursor = mContext.getContentResolver().query(stockQuoteUri, null, null, null, null);
-                        DatabaseUtils.dumpCursor(dbTestCursor);
-                        dbTestCursor.close();*/
                         Log.v(LOG_TAG, "LJG Dumping Entire Database for debugging AFTER entire DB is updated!");
                         dumpFullDbToLogcat(mContext);
                         //////////////end debugging - delete above lines when done //////////////
@@ -213,11 +206,8 @@ public class StockTaskService extends GcmTaskService {
     }
 
 
-
+    //Helpful method for debugging ///
     private void dumpFullDbToLogcat(Context mContext){
-
-        //TODO For debugging - do a bd Query and get the full database and see what's in it
-
         Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
         Cursor dbTestCursor = mContext.getContentResolver().query(stockQuoteUri, null, null, null, null);
         DatabaseUtils.dumpCursor(dbTestCursor);

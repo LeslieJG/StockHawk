@@ -43,8 +43,7 @@ import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallb
 
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
-    //TODO: Fix no-connection crash wheh going to stock detail
-    //TODO: Make widget
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -88,7 +87,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         }
 
 
-        //TODO: Deal with Swipe Layout
+
         //For Swipe Layout
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.stock_swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
@@ -102,9 +101,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 new RecyclerViewItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int position) {
-                        //TODO: LJG do something on item click
-                        //     Log.v(LOG_TAG, "Item Clicked");
-
                         Cursor cursor = mCursorAdapter.getCursor(); //Get the cursor with all the data in it
                         cursor.moveToPosition(position); //move cursor to correct position
                         //get Stock symbol
@@ -320,9 +316,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
 
     /*
-    LJG This is VERY important - Add the column names from database HERE
-    TODO: Put new database columns here
-     */
+    Add the column names from database HERE
+        */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This narrows the return to only the stocks that are most current.
@@ -355,7 +350,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     public void onRefresh() {
         Log.v(LOG_TAG, "Swipe Refresh");
         updateDbfromAPi();
-        Utils.reportNumberOfRowsInHistoriesDatabase(mContext);//TODO DElete
     }
 
     //stops the refreshing display

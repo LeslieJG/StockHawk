@@ -4,8 +4,6 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -30,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by sam_chordas on 10/8/15.
- *
+ * <p>
  * Other Utility Methods Added By Leslie G
  */
 public class Utils {
@@ -59,7 +57,7 @@ public class Utils {
                     if (resultsArray != null && resultsArray.length() != 0) {
                         for (int i = 0; i < resultsArray.length(); i++) {
                             jsonObject = resultsArray.getJSONObject(i);
-                           // batchOperations.add(buildBatchOperationUpdate(jsonObject, context));
+                            // batchOperations.add(buildBatchOperationUpdate(jsonObject, context));
                             batchOperations.add(buildBatchOperation(jsonObject, context)); //add result to
                         }
                     }
@@ -76,7 +74,7 @@ public class Utils {
         Log.v(LOG_TAG, "truncateBidPrice - bidprice is " + bidPrice);
         if (!bidPrice.contains("null")) {
             bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
-                } else {
+        } else {
             bidPrice = "Retry";
         }
 
@@ -137,56 +135,6 @@ public class Utils {
     }
 
 
-/**
-     * TODO: THis is my attempt at just updating
-     * NOT inserting new info
-     * @param jsonObject
-     * @param context
-     * @return
-     *//*
-
-    public static ContentProviderOperation buildBatchOperationUpdate (JSONObject jsonObject, Context context) {
-
-        //TODO Here is where db is told to insert, should be told to update if many additions
-        //get the id to update
-        Uri uriForUpdate = null;
-        try {
-            uriForUpdate = QuoteProvider.Quotes.withSymbol(jsonObject.getString(context.getString(R.string.json_symbol)));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        ContentProviderOperation.Builder builder = ContentProviderOperation.newUpdate(
-                uriForUpdate);
-        try {
-            String change = jsonObject.getString(context.getString(R.string.json_change));
-            builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString(context.getString(R.string.json_symbol)));
-            //LJG this is where the "null" bid price comes in
-            builder.withValue(QuoteColumns.NAME, jsonObject.getString(context.getString(R.string.json_name)));
-            // Log.v(LOG_TAG, "LJG Inserted Name into database is " + jsonObject.getString("Name"));
-
-            builder.withValue(QuoteColumns.BIDPRICE
-                    , truncateBidPrice(jsonObject.getString(context.getString(R.string.json_bid))));
-            builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
-                    jsonObject.getString(context.getString(R.string.json_change_in_percent)), true));
-            builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
-            builder.withValue(QuoteColumns.ISCURRENT, 1);
-            if (change.charAt(0) == '-') {
-                builder.withValue(QuoteColumns.ISUP, 0);
-            } else {
-                builder.withValue(QuoteColumns.ISUP, 1);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return builder.build();
-    }
-
-
-*/
-
-
     /**
      * Checks to see if JSON is for a stock with a valid Bid Price (i.e. is this a valid stock?)
      * If NOT it shows a toast on User's screen indicating stock is not valid
@@ -203,8 +151,8 @@ public class Utils {
                 int count = Integer.parseInt(jsonObject.getString(context.getString(R.string.json_count)));
 
                 //Invalid User input will just result in one stock being searched - this is the only thing we will look for
-               if (count == 1) {
-                   jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
+                if (count == 1) {
+                    jsonObject = jsonObject.getJSONObject(context.getString(R.string.json_results))
                             .getJSONObject(context.getString(R.string.json_quote));
                     String theBidPrice = jsonObject.getString(context.getString(R.string.json_bid));
 
@@ -265,11 +213,6 @@ public class Utils {
     }
 
 
-
-
-
-
-
     /**
      * Method used for plotting stock history
      * Finds the Difference between two dates in days
@@ -289,19 +232,17 @@ public class Utils {
     }
 
 
-
     /**
-     *  Provides the date that is a number of days offset from the reference Date
+     * Provides the date that is a number of days offset from the reference Date
      *
-     * @param date String of reference day
+     * @param date       String of reference day
      * @param offsetDays Number of days to offset (+ adds to date, - subtracts from date)
      * @return
      */
-    public static String getDateOffset (String date, int offsetDays){
+    public static String getDateOffset(String date, int offsetDays) {
         Date incomingDate = convertStringToDate(date);
-       DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //TODO LJG Confirm this is better for date format
-       // DateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        // DateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
         Calendar c = Calendar.getInstance();
         c.setTime(incomingDate);
         c.add(Calendar.DATE, offsetDays);  // number of days to add
@@ -311,12 +252,13 @@ public class Utils {
 
     /**
      * Same as above, but passing in the simple date format
+     *
      * @param date
      * @param offsetDays
      * @param df
      * @return
      */
-    public static String getDateOffset (String date, int offsetDays, SimpleDateFormat df){
+    public static String getDateOffset(String date, int offsetDays, SimpleDateFormat df) {
         Date incomingDate = convertStringToDate(date);
         Calendar c = Calendar.getInstance();
         c.setTime(incomingDate);
@@ -326,22 +268,16 @@ public class Utils {
     }
 
 
-
-
-
-
-
-
     /**
      * Get's today's date
+     *
      * @return String = today's date in yyyy-MM-dd format
      */
-    public static String getTodayDate(){
+    public static String getTodayDate() {
         Date today = Calendar.getInstance().getTime(); //get current date!!!!
         //make it a string
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //TODO COnfirm this is better for date instance
-       // DateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+        // DateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
         String todayDate = df.format(today);
 
         return todayDate;
@@ -357,14 +293,13 @@ public class Utils {
      */
     public static Date convertStringToDate(String dateAsString) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //TODO COnfirm this is better for date instance
         //DateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
         Date date;
         try {
             date = df.parse(dateAsString);
             return date;
         } catch (ParseException e) {
-         //   e.printStackTrace();
+            //   e.printStackTrace();
         }
         return null; //if error return null instead of catching ParseException
     }
@@ -384,26 +319,5 @@ public class Utils {
         long diffInMillies = newestDate.getTime() - oldestDate.getTime();
         return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
-
-
-
-    ///TODO Delete this function after testing
-    public static void reportNumberOfRowsInHistoriesDatabase(Context mContext){
-        //Test Entire Database
-        Uri uriForSAllHistories = QuoteProvider.Histories.CONTENT_URI;
-        Cursor fullStockHistoryCursor = mContext.getContentResolver().query(
-                uriForSAllHistories //Uri
-                , null //projection (columns to return) (use nyll for no projection)
-                , null // //selection Clause
-                , null//selection Arguments
-                , null); //poosibly have sort order date ascending
-
-
-        Log.v(LOG_TAG, " THe Histories Tables still has " + fullStockHistoryCursor.getCount() + " Rows in it");
-        fullStockHistoryCursor.close();
-
-
-    }
-
 
 }

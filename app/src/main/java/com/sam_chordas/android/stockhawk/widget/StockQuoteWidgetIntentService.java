@@ -8,7 +8,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -105,12 +104,6 @@ public class StockQuoteWidgetIntentService extends IntentService {
             Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol(stockSymbolForWidget);
             Log.v(LOG_TAG, "LJG Updating widget. Id:" + appWidgetID + " Symbol:" + stockSymbolForWidget);
 
-            //TODO This is where I get symbol from prefs
-            //Use the Stock symbol associated with the widgetID
-          //  String stockSymbolFromPrefs = WidgetUtils.getWidgetSymbolFromWidgetId(mContext, appWidgetID);
-           // Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol(stockSymbolFromPrefs); //use the general Content Uri for now to get all stock quotes
-
-
             //data should have the entire contents of the quote Cursor Database in it
                        Cursor data = getContentResolver().query(stockQuoteUri, //uri
                     STOCK_QUOTE_COLUMNS, //projection
@@ -118,15 +111,8 @@ public class StockQuoteWidgetIntentService extends IntentService {
                     null,
                     QuoteColumns._ID + " ASC"); //sort order
 
-/*
-            Cursor data = getContentResolver().query(stockQuoteUri, //uri
-                    STOCK_QUOTE_COLUMNS, //projection
-                    null,
-                    null,
-                    null); //sort order - should just have ONE row*/
 
-            //TODO Dump the cursor to see what's in DB
-            DatabaseUtils.dumpCursor(data);
+           // DatabaseUtils.dumpCursor(data);//Dump the cursor to see what's in DB
 
             if (data == null) { //cursor null - something went wrong - don't update Widget\
                 Log.v(LOG_TAG, "Cursor data is NULL");
@@ -134,20 +120,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
                 return;
             }
 
-            if (!data.moveToFirst()) { //if no data in cursor ----then what???? - show error in widget?
-                //it means there are no stocks to show in widget - what to do???
-                // TODO what to show in widget if no stocks in database?
-                //Do that here
-                Log.v(LOG_TAG, "Cursor data is ZERO data");
-                //Log.v(LOG_TAG, "")
-
-                //change view to error view
-               /* views = new RemoteViews(
-                        mContext.getPackageName(), R.id.widget_error); //here is the view to use - Gives defulat widget error meesage!!!
-*/
-
-                //views = makeWidgetErrorView(mContext, widgetWidth, defaultWidth);
-
+            if (!data.moveToFirst()) { //if no data in cursor - show error in widget
                 if (widgetWidth < defaultWidth) {
                     layoutId = R.layout.widget_error_small;
                 } else {
@@ -157,36 +130,17 @@ public class StockQuoteWidgetIntentService extends IntentService {
                 views = new RemoteViews(
                         mContext.getPackageName(), layoutId);
 
-               // views.setTextViewText(R.id.widget_error_text)
-               /* views.setTextViewText(R.id.widget_stock_symbol, "No Stock in App. Delete Widget"); //should display error message here
-                views.setTextViewText(R.id.widget_stock_price, "");
-                views.setTextViewText(R.id.widget_stock_price_change, "");*/
-                //  appWidgetManager.updateAppWidget(appWidgetID, views); //update the info in widgets
-                //  data.close();
-
-                //  continue; //skips out of current iteration of loop only
-                //allows other iterations to update other widgets
             } else {//we have stocks
-
-
-                //for now just show the first stock
-                //TODO Make a stock selector for the widget and show that stock - for now just show first stock in db
                 String stockSymbol = data.getString(COL_STOCK_SYMBOL);
                 String stockPrice = data.getString(COL_STOCK_BIDPRICE);
                 String stockPercentChange = data.getString(COL_STOCK_PERCENT_CHANGE);
                 String stockName = data.getString(COL_STOCK_NAME);
 
                 //display the single stock into the 1x1 widget
-
-
                 views.setTextViewText(R.id.widget_stock_symbol, stockSymbol);
                 views.setTextViewText(R.id.widget_stock_price, "$" + stockPrice);
-                //views.setTextViewText(R.id.widget_stock_price, "$$66");
-                Log.v(LOG_TAG, "Stock Price from DB is " + stockPrice + " symbol is " + stockSymbol + " percent change is " + stockPercentChange);
-                //TODO: Stock pid price in widget is not always same as displayed in app - solve!!!!
-
-
                 views.setTextViewText(R.id.widget_stock_price_change, stockPercentChange);
+
                 //change the background of stock percent change to red or green depending on whether stock is going up or down
                 int sdk = Build.VERSION.SDK_INT;
                 if (data.getInt(COL_STOCK_ISUP) == 1) { //if stock going up
@@ -210,18 +164,10 @@ public class StockQuoteWidgetIntentService extends IntentService {
                                     stockPercentChange,
                                     getString(R.string.stock_value_down)));
                 }
-
-
             }
 
 
-
-
-
-
-            //close cursor when done
-            data.close();
-
+            data.close();//close cursor when done
 
             //Set what happens when you click on a widget
             Intent launchIntent = new Intent(mContext, MyStocksActivity.class); //explicit intent to start the app itself
@@ -230,28 +176,10 @@ public class StockQuoteWidgetIntentService extends IntentService {
 
             appWidgetManager.updateAppWidget(appWidgetID, views); //update the info in widgets
 
-
         }
 
 
     }
-
-    /*
-    For setting the widget to the error view
-     */
-   /* private RemoteViews makeWidgetErrorView(Context mContext, int widgetWidth, int defaultWidth) {
-
-        int layoutId;
-        if (widgetWidth < defaultWidth) {
-            layoutId = R.layout.widget_error_small;
-        } else {
-            layoutId = R.layout.widget_error_default_size;
-        }
-
-        return new RemoteViews(
-                mContext.getPackageName(), layoutId);
-
-    }*/
 
 
     /* Credit :Udactiy Sunshine

@@ -117,26 +117,6 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         //Update the widgets so that any stocks using this info will show error
         mContext.startService(new Intent(mContext, StockQuoteWidgetIntentService.class));
 
-        //////////////////Delete these at end///////////////////
-        //TODO Delete below lines
-        //Test that it has been deleted
-        Uri uriForSymbol = QuoteProvider.Histories.withSymbol(symbol);
-        Cursor stockHistoryCursor = mContext.getContentResolver().query(
-                uriForSymbol //Uri
-                , null //projection (columns to return) (use nyll for no projection)
-                , null // //selection Clause
-                , null//selection Arguments
-                , null); //poosibly have sort order date ascending
-        Log.v(LOG_TAG, "LJG Deleted " + symbol + " from Histories table"
-                + " There are " + stockHistoryCursor.getCount() + " Entries still in Histories Table for this stock");
-        stockHistoryCursor.close();
-
-
-        //Test Entire Database TODO Delete this
-        Utils.reportNumberOfRowsInHistoriesDatabase(mContext);
-        ///////////////////////////End of stuff to delete//////////////////
-
-
         notifyItemRemoved(position);
     }
 
