@@ -30,7 +30,7 @@ import com.sam_chordas.android.stockhawk.widget.StockQuoteWidgetIntentService;
 public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAdapter.ViewHolder>
         implements ItemTouchHelperAdapter {
 
-    private static Context mContext;
+    private Context mContext;
     private static Typeface robotoLight;
     private boolean isPercent;
 
@@ -109,7 +109,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
         //delete the stock from Quotes table
         mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
-        Log.v(LOG_TAG, "LJG Deleted "+ symbol + " from Quotes table");
+        Log.v(LOG_TAG, "LJG Deleted " + symbol + " from Quotes table");
 
         //delete the stcok from Histories table
         mContext.getContentResolver().delete(QuoteProvider.Histories.withSymbol(symbol), null, null);
@@ -118,7 +118,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         mContext.startService(new Intent(mContext, StockQuoteWidgetIntentService.class));
 
         //////////////////Delete these at end///////////////////
-       //TODO Delete below lines
+        //TODO Delete below lines
         //Test that it has been deleted
         Uri uriForSymbol = QuoteProvider.Histories.withSymbol(symbol);
         Cursor stockHistoryCursor = mContext.getContentResolver().query(
@@ -127,13 +127,13 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
                 , null // //selection Clause
                 , null//selection Arguments
                 , null); //poosibly have sort order date ascending
-        Log.v(LOG_TAG, "LJG Deleted "+ symbol + " from Histories table"
+        Log.v(LOG_TAG, "LJG Deleted " + symbol + " from Histories table"
                 + " There are " + stockHistoryCursor.getCount() + " Entries still in Histories Table for this stock");
         stockHistoryCursor.close();
 
 
         //Test Entire Database TODO Delete this
-       Utils.reportNumberOfRowsInHistoriesDatabase(mContext);
+        Utils.reportNumberOfRowsInHistoriesDatabase(mContext);
         ///////////////////////////End of stuff to delete//////////////////
 
 
