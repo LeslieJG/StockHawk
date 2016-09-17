@@ -124,6 +124,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
 
                 RadioButton radioButton = new RadioButton(getApplicationContext());
                 radioButton.setText(data.getString(COL_STOCK_SYMBOL));
+                radioButton.setContentDescription(data.getString(COL_STOCK_NAME));
                 //int testID = 99;
 
                 //radioButton.setId(data.getInt(COL_STOCK_ID)); //use the ID from the database to make a unique ID. THen just look up that ID for populating the database

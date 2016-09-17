@@ -13,6 +13,7 @@
         android:id="@+id/widget_error_text"
         android:gravity="center"
         android:text="@string/widget_error_message_default_size"
+        android:contentDescription="@string/widget_error_message_default_size_content_description"
        />
     <!--
     <TextView

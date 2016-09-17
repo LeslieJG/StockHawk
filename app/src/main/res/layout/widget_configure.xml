@@ -8,7 +8,8 @@
         android:layout_height="wrap_content"
         android:text="@string/widget_configure_choose_stock"
         android:gravity="center_horizontal"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:contentDescription="@string/widget_configure_choose_stock"/>
 
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,9 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-
-
+        android:contentDescription="@string/widget_configure_make_widget_button"
         android:text="@string/widget_configure_make_widget_button" />
-
 </LinearLayout>
 

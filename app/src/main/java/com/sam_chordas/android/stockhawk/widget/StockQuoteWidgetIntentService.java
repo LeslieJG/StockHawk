@@ -174,6 +174,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
                 String stockSymbol = data.getString(COL_STOCK_SYMBOL);
                 String stockPrice = data.getString(COL_STOCK_BIDPRICE);
                 String stockPercentChange = data.getString(COL_STOCK_PERCENT_CHANGE);
+                String stockName = data.getString(COL_STOCK_NAME);
 
                 //display the single stock into the 1x1 widget
 
@@ -192,17 +193,28 @@ public class StockQuoteWidgetIntentService extends IntentService {
                     //credit for below line:  http://stackoverflow.com/questions/6201410/how-to-change-widget-layout-background-programatically
                     views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_green);
                     views.setInt(R.id.widget_stock_price_change, "setTextColor", R.color.widget_text_color);
+                    views.setContentDescription(layoutId,
+                            getString(R.string.widget_content_description,
+                                    stockName,
+                                    stockPrice,
+                                    stockPercentChange,
+                                   getString(R.string.stock_value_up)));
 
                 } else {
                     views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_red);
                     views.setInt(R.id.widget_stock_price_change, "setTextColor", Color.WHITE);
+                    views.setContentDescription(layoutId,
+                            getString(R.string.widget_content_description,
+                                    stockName,
+                                    stockPrice,
+                                    stockPercentChange,
+                                    getString(R.string.stock_value_down)));
                 }
 
 
             }
 
 
-            //TODO Add content descriptions to widget as well - later
 
 
 

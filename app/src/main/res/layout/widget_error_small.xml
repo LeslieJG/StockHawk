@@ -11,5 +11,6 @@
         android:id="@+id/widget_error_text"
         android:gravity="center"
         android:text="@string/widget_error_message_small"
+        android:contentDescription="@string/widget_error_message_small_content_description"
         />
 </LinearLayout>
