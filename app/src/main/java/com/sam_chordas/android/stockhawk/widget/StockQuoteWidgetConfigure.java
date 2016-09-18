@@ -8,12 +8,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
@@ -119,56 +117,21 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
         if (data != null) {
             while (data.moveToNext()) {//do a loop of all cursor items
                 int cursorRow = data.getPosition(); //get the row id of cursor
-                Log.v(LOG_TAG, "Cursor Position is " + cursorRow);
-                //mCursorRowId = cursorRow; //to know which button is finally selected
 
                 RadioButton radioButton = new RadioButton(getApplicationContext());
                 radioButton.setText(data.getString(COL_STOCK_SYMBOL));
                 radioButton.setContentDescription(data.getString(COL_STOCK_NAME));
-                //int testID = 99;
-
-                //radioButton.setId(data.getInt(COL_STOCK_ID)); //use the ID from the database to make a unique ID. THen just look up that ID for populating the database
                 radioButton.setId(cursorRow); //use the ID from the
-
-
-                //  radioButton.setOnClickListener(onRadioButtonClicked);
                 radioGroup.addView(radioButton);
-
-
             }
         }
-
-        //in the loop make a radio button for each row in cursor
-        //make the id of button same as _ID of database (ensures no duplication)
-        //add each button to radioGroup
-
-
-        // data.close(); //close cursor
-
-        //make a redio button (will be in a loop later on
-       /* RadioButton radioButton = new RadioButton(getApplicationContext());
-        radioButton.setText("Button 1");
-        //int testID = 99;
-        radioButton.setId(99); //use the ID from the database to make a unique ID. THen just look up that ID for populating the database
-        //  radioButton.setOnClickListener(onRadioButtonClicked);
-        radioGroup.addView(radioButton);
-
-
-        radioButton = new RadioButton(getApplicationContext());
-        radioButton.setText("Button 2");
-        // int testID = 99;
-        radioButton.setId(100);
-        //  radioButton.setOnClickListener(onRadioButtonClicked);
-        radioGroup.addView(radioButton);*/
-
 
         //Get the Make widget Button
         Button button = (Button) findViewById(R.id.widget_configure_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Do something in response to button click
-                Toast.makeText(getBaseContext(), "Button Clicked"
-                        , Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getBaseContext(), "Button Clicked"
+                //        , Toast.LENGTH_SHORT).show();
 
                 //pass the info to Shared Pref
                 //Pass the Symbol into Shared Pref
@@ -176,7 +139,6 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                 //
                 data.moveToPosition(mCursorRowId);
                 String widgetStockSymbol = data.getString(COL_STOCK_SYMBOL);
-                Log.v(LOG_TAG, "The widget symbol selected finally is " + widgetStockSymbol);
                 //put widget ID and symbol into sharedPreferences
                 WidgetUtils.addWidgetIdToSharedPrefs(getApplicationContext(), mAppWidgetId, data.getString(COL_STOCK_SYMBOL));
                 //use these to look up widget details in Widget Intent Service
@@ -200,12 +162,7 @@ public class StockQuoteWidgetConfigure extends AppCompatActivity {
                 data.close(); //ensure that the cursor is closed before leaving the Configure Activity
 
                 finish();
-
             }
         });
-
-
     }
-
-
 }

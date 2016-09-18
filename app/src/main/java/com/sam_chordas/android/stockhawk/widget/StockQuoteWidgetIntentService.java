@@ -64,23 +64,18 @@ public class StockQuoteWidgetIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.v(LOG_TAG, "in onHandle Intent for updating widgets");
-
         //Retrieve all of the Stock Quote widget ids: these are the widgets we need to update
         //This was originally done in the stock Quote Widget Provider
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                 new ComponentName(this, StockQuoteWidgetProvider.class));
 
-
         ////////////////The code from the StockQuoteWidgetProvider - moved here to take it off UI thread! ////////////
-
         //Update all the static widgets
         for (int appWidgetID : appWidgetIds) { //go through all the widgets we have
-
             Log.v(LOG_TAG, "Widget ID to update is " + appWidgetID);
             ///////Set correct Layout Depending on widget size///////
-            //get teh widget's width to assign correct layout
+            //get the widget's width to assign correct layout
             int widgetWidth = getWidgetWidth(appWidgetManager, appWidgetID);
             int defaultWidth = getResources().getDimensionPixelSize(R.dimen.widget_stock_quotes_default_width);
 
@@ -93,30 +88,20 @@ public class StockQuoteWidgetIntentService extends IntentService {
             RemoteViews views = new RemoteViews(
                     mContext.getPackageName(), layoutId); //here is the view to use
 
-
-            //////update the widget view with real data//////
-            //Get a cursor for the data in database
-            //Uri stockQuoteUri = QuoteProvider.Quotes.CONTENT_URI; //use the general Content Uri for now to get all stock quotes
-
-          // Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol("YHOO"); //use the general Content Uri for now to get all stock quotes
-
             String stockSymbolForWidget = WidgetUtils.getWidgetSymbolFromWidgetId(mContext, appWidgetID);
             Uri stockQuoteUri = QuoteProvider.Quotes.withSymbol(stockSymbolForWidget);
-            Log.v(LOG_TAG, "LJG Updating widget. Id:" + appWidgetID + " Symbol:" + stockSymbolForWidget);
 
             //data should have the entire contents of the quote Cursor Database in it
-                       Cursor data = getContentResolver().query(stockQuoteUri, //uri
+            Cursor data = getContentResolver().query(stockQuoteUri, //uri
                     STOCK_QUOTE_COLUMNS, //projection
                     null,
                     null,
                     QuoteColumns._ID + " ASC"); //sort order
 
-
-           // DatabaseUtils.dumpCursor(data);//Dump the cursor to see what's in DB
+            // DatabaseUtils.dumpCursor(data);//Dump the cursor to see what's in DB
 
             if (data == null) { //cursor null - something went wrong - don't update Widget\
-                Log.v(LOG_TAG, "Cursor data is NULL");
-
+                //Log.v(LOG_TAG, "Cursor data is NULL");
                 return;
             }
 
@@ -136,7 +121,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
                 String stockPercentChange = data.getString(COL_STOCK_PERCENT_CHANGE);
                 String stockName = data.getString(COL_STOCK_NAME);
 
-                //display the single stock into the 1x1 widget
+                //display the single stock into the widget
                 views.setTextViewText(R.id.widget_stock_symbol, stockSymbol);
                 views.setTextViewText(R.id.widget_stock_price, "$" + stockPrice);
                 views.setTextViewText(R.id.widget_stock_price_change, stockPercentChange);
@@ -152,7 +137,7 @@ public class StockQuoteWidgetIntentService extends IntentService {
                                     stockName,
                                     stockPrice,
                                     stockPercentChange,
-                                   getString(R.string.stock_value_up)));
+                                    getString(R.string.stock_value_up)));
 
                 } else {
                     views.setInt(R.id.widget_stock_price_change, "setBackgroundResource", R.drawable.percent_change_pill_red);
@@ -166,7 +151,6 @@ public class StockQuoteWidgetIntentService extends IntentService {
                 }
             }
 
-
             data.close();//close cursor when done
 
             //Set what happens when you click on a widget
@@ -177,8 +161,6 @@ public class StockQuoteWidgetIntentService extends IntentService {
             appWidgetManager.updateAppWidget(appWidgetID, views); //update the info in widgets
 
         }
-
-
     }
 
 

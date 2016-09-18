@@ -13,7 +13,7 @@ import org.junit.Test;
 /**
  * Created by Leslie on 2016-09-15.
  */
-public class WidgetUtilsTest extends AndroidTestCase{ //LJG Should use Android Support Testing Library, but I don't know how yet
+public class WidgetUtilsTest extends AndroidTestCase { //LJG Should use Android Support Testing Library, but I don't know how yet
     Context mContext;
     String defaultSymbol = "Default";
 
@@ -33,7 +33,6 @@ public class WidgetUtilsTest extends AndroidTestCase{ //LJG Should use Android S
         mContext = getContext();
         int widgetID = 999;
         String stockSymbol = "ZZZZ";
-       // String defaultSymbol = "Default";
         String prefKey = mContext.getString(R.string.widget_id_pref_key) + widgetID;
 
         //Put the shared pref in
@@ -45,7 +44,7 @@ public class WidgetUtilsTest extends AndroidTestCase{ //LJG Should use Android S
                 mContext.getString(R.string.preference_file_name), Context.MODE_PRIVATE);
 
         //First see if it is there
-        assertTrue( sharedPref.contains(prefKey)); //see if key pair in shared preferences
+        assertTrue(sharedPref.contains(prefKey)); //see if key pair in shared preferences
 
         String symbolFromSharedPrefs = sharedPref.getString(prefKey, defaultSymbol);
 

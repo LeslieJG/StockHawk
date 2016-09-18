@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.R;
 
@@ -17,14 +16,9 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // super.onUpdate(context, appWidgetManager, appWidgetIds);
 
         //N.B. on Update is called on UI thread. Move it off the UI Thread and put it on intent service
         context.startService(new Intent(context, StockQuoteWidgetIntentService.class));
-
-
-
-
 
         /*//Update all the static widgets
         for (int appWidgetID : appWidgetIds) { //go through all the widgets we have
@@ -42,8 +36,6 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
 
 
         }*/
-
-
     }
 
 
@@ -58,20 +50,18 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
     }
 
 
-
+    /**
+     *  Broadcast reciever to recieve that the API call was done for updating the quotes Database
+     *  When this happens, update the widgets
+     * @param context app context
+     * @param intent Api Call Complete Broadcast
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         if (intent.getAction().equals(context.getString(R.string.refresh_data_intent_key))) {
-            // Do stuff - maybe update my view based on the changed DB contents
-
-            Log.v(LOG_TAG, "onREceive - LJG API call done will now update widget");
             context.startService(new Intent(context, StockQuoteWidgetIntentService.class));
-
-
         }
-
-
     }
 
     //Delete the shared pref key value pair of widget id and symbol for widget
@@ -79,13 +69,7 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
-
         //remove the widgetId from shared prefs - no longer need to keep track of it
         WidgetUtils.removeWidgetIdFromSharedPrefs(context, appWidgetIds[0]);
-
-        /*Log.v(LOG_TAG, "LJG Deleted a Widget");
-        Log.v(LOG_TAG, "LJG Number of widgets deleted is " + appWidgetIds.length);
-        Log.v(LOG_TAG, "LJG Deleted Widget ID is " + appWidgetIds[0]);
-      */
     }
 }

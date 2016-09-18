@@ -2,7 +2,6 @@ package com.sam_chordas.android.stockhawk.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.R;
 
@@ -14,13 +13,10 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Log.v(LOG_TAG, "LJG Detail Activity - onCreate");
 
         if (savedInstanceState == null) {
             //get the stock sybmol name
             String stockSymbolName = getIntent().getStringExtra(STOCK_SYMBOL_DETAIL_TAG);
-            //Log.v(LOG_TAG, "LJG onCreate - the stock symbol received in DetailActivity is " + stockSymbolName);
-
 
             // Create the detail fragment and add it to the activity using a fragment transaction.
             Bundle arguments = new Bundle();

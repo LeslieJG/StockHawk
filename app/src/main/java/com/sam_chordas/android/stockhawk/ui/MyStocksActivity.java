@@ -18,7 +18,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -87,7 +86,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         }
 
 
-
         //For Swipe Layout
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.stock_swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
@@ -110,25 +108,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         //change tp upper case for nicer UI experience
                         stockSymbolClicked = stockSymbolClicked.toUpperCase();
 
-                        Log.v(LOG_TAG, "LJG Click listener - stock symbol is " + stockSymbolClicked);
-
-
-                        //pass the stock symbol to detail activity to let it know what to look up
-
-                        //start an API call for historic data
-
-                        //Make new database for historic data
-
-
-                        //ensure that the data is loaded into DB
-
-
-                        //Launch the StockHistoryIntentService to update the Stock Histories into Database
-
                         //Start Downloading Stock History from API at the same time as starting the fragment
                         //so they happen in parallel
                         //ONly do this if there is internet!
-                        if (checkInternetConnected()){
+                        if (checkInternetConnected()) {
                             Intent stockHistoryIntent = new Intent(getApplicationContext(), StockHistoryIntentService.class);
                             stockHistoryIntent.putExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG, stockSymbolClicked); //pass the IntentService name of stock symbol
                             getApplicationContext().startService(stockHistoryIntent);
@@ -155,7 +138,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //    if (isConnected){
                 if (checkInternetConnected()) { //connectivity may have changed since app started - check if connected NOW
                     new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
                             .content(R.string.content_test)
@@ -227,14 +209,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     }
 
 
-
-
     @Override
     protected void onPause() {
         if (dataUpdateReceiver != null)
             unregisterReceiver(dataUpdateReceiver); //for indicating stock refresh
-
-        Log.v(LOG_TAG, "LJG onPause");
         super.onPause();
 
     }
@@ -245,18 +223,16 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         super.onResume();
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
 
-        Log.v(LOG_TAG, "LJG onResume");
-        //LJG ensure Dataupdate Receiver is available
+        //ensure Dataupdate Receiver is available
         if (dataUpdateReceiver == null) { //for indicating stock refresh
             dataUpdateReceiver = new DataUpdateReceiver();
-            //    Log.v(LOG_TAG, "LJG onResume made new DataUpdateReceiver");
         }
 
         // IntentFilter intentFilter = new IntentFilter(REFRESH_DATA_INTENT);
         IntentFilter intentFilter = new IntentFilter(getString(R.string.refresh_data_intent_key));
         registerReceiver(dataUpdateReceiver, intentFilter);
 
-        //LJG quick network check for better user experience
+        //quick network check for better user experience
         if (!checkInternetConnected()) {
             networkToast();
         }
@@ -348,7 +324,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
      */
     @Override
     public void onRefresh() {
-        Log.v(LOG_TAG, "Swipe Refresh");
         updateDbfromAPi();
     }
 
@@ -359,7 +334,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
 
     /*
-     //LJG before returning result let the SwipreRefresh know that the refresh is done
+     //before returning result let the SwipreRefresh know that the refresh is done
         Receives call that API call is done
         Used to let UI refresh symbol know that refresh is done now.
         Credit: http://stackoverflow.com/users/574859/maximumgoat
@@ -371,10 +346,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(getString(R.string.refresh_data_intent_key))) {
-                // Do stuff - maybe update my view based on the changed DB contents
-
-                Log.v(LOG_TAG, "LJG API call done, data updated");
-                //mSwipeLayout.setRefreshing(false);
                 stopRefresh();
             }
         }
@@ -402,7 +373,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
         // mServiceIntent.putExtra("tag", getString(R.string.intent_value_init));//could also use "periodic" either will work
         mServiceIntent.putExtra(getString(R.string.intent_tag), getString(R.string.intent_init));//could also use "periodic" either will work
-       // mServiceIntent.putExtra(getString(R.string.intent_tag), "periodic");//could also use "periodic" either will work
+        // mServiceIntent.putExtra(getString(R.string.intent_tag), "periodic");//could also use "periodic" either will work
 
         // if (isConnected) {
         if (checkInternetConnected()) {

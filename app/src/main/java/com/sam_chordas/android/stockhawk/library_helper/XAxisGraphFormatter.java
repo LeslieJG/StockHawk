@@ -48,8 +48,6 @@ public class XAxisGraphFormatter implements AxisValueFormatter {
     //Value represents the actual number graphed (in my case it starts with 0 and goes up)
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
-        Log.v(LOG_TAG, "BLA  getFormattedValue - the x-value passed in is " + value + " and the start date is " + mStartDate);
-
         //dislay the values as dates (as strings)
         String dateToReturn = Utils.getDateOffset(mStartDate, (int) value, mFormat);
 

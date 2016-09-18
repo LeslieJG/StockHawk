@@ -6,10 +6,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
@@ -53,7 +51,6 @@ public class StockHistoryIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.v(LOG_TAG, "In stock History Intent Service");
         //Get the name of stock to look for
         String stockSymbol = intent.getStringExtra(DetailActivity.STOCK_SYMBOL_DETAIL_TAG);
 
@@ -66,9 +63,6 @@ public class StockHistoryIntentService extends IntentService {
                 , null//selection Arguments - get the latest date ONLY
                 // , null); //poosibly have sort order date ascending
                 , StockHistoryColumns.DATE + " DESC LIMIT 1"); //latest date - only one
-
-        Log.v(LOG_TAG, "Dumping the stock history cursor - it may be null");
-        DatabaseUtils.dumpCursor(stockHistoryCursor);
 
         String todaysDate = Utils.getTodayDate();
         String latestDateToGetHistoriesFromApi = todaysDate;
@@ -129,15 +123,12 @@ public class StockHistoryIntentService extends IntentService {
 
                     int count = Integer.parseInt(queryJsonObject.getString(getString(R.string.json_count)));
                     if (count > 0) { //if there is a count - i.e. if there is historical data from API
-                        //Log.v(LOG_TAG, "LJG JSON Stock history count is 1 or more");
                         JSONObject resultsJsonObject = queryJsonObject.getJSONObject(getString(R.string.json_results));
                         JSONArray quoteArray = resultsJsonObject.getJSONArray(getString(R.string.json_quote));
                         JSONObject individualQuoteJson = null;
 
                         if (quoteArray != null && quoteArray.length() != 0) {
-                            // Log.v(LOG_TAG, "Quote Array Not null and length is not Zero");
                             int quoteArrayLength = quoteArray.length();
-                            // Log.v(LOG_TAG, "Quote array Length is " + quoteArrayLength);
 
                             //do the for loop backwards to put the data in date ascending order (oldest to newest)
                             for (int i = quoteArrayLength - 1; i >= 0; i--) { //loop backwards - ascending date
@@ -172,7 +163,7 @@ public class StockHistoryIntentService extends IntentService {
             }
 
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "LJG Stock History String to JSON failed: " + e);
+            e.printStackTrace();
         }
 
         //Build the bulk insert content values operation

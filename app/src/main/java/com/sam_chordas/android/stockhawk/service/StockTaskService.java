@@ -62,8 +62,6 @@ public class StockTaskService extends GcmTaskService {
      */
     @Override
     public int onRunTask(TaskParams params) {
-        Log.v(LOG_TAG, "LJG Starting onRunTask");
-
         Cursor initQueryCursor;
         if (mContext == null) {
             mContext = this;
@@ -106,13 +104,6 @@ public class StockTaskService extends GcmTaskService {
                     e.printStackTrace();
                 }
             } else if (initQueryCursor != null) {
-
-                 // DatabaseUtils.dumpCursor(initQueryCursor);
-                //Get a full list of DB here and dump it out to logcat
-                /*Log.v(LOG_TAG, "LJG Dumping full database BEFORE it is updated");
-                dumpFullDbToLogcat(mContext);*/
-
-
 
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++) {
@@ -161,16 +152,11 @@ public class StockTaskService extends GcmTaskService {
                     if (isUpdate) {
 
                         contentValues.put(QuoteColumns.ISCURRENT, 0);
-                        Log.v(LOG_TAG, "LJG Updating database");
                         mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                                 null, null);
 
-                        Log.v(LOG_TAG, "Dump database After UPDATING");
-                        dumpFullDbToLogcat(mContext);
+                       // dumpFullDbToLogcat(mContext);
                     }
-
-                    //Log the value of output for debuggin
-                    //   Log.v(LOG_TAG, "The JSON response is "+ getResponse);
 
                     //if data is valid, ONLY then try to put it into Database and pass get the JSON
                     Boolean stockValid = Utils.isStockValid(getResponse, mContext);
@@ -178,11 +164,9 @@ public class StockTaskService extends GcmTaskService {
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse, mContext));
 
-                        Log.v(LOG_TAG, "LJG Dumping Entire Database for debugging AFTER entire DB is updated!");
-                        dumpFullDbToLogcat(mContext);
+                        //Log.v(LOG_TAG, "LJG Dumping Entire Database for debugging AFTER entire DB is updated!");
+                        //dumpFullDbToLogcat(mContext);
                         //////////////end debugging - delete above lines when done //////////////
-
-
 
                     } else {  //stock NOT valid!!!! - delete this else!!!!
                     }
@@ -198,8 +182,6 @@ public class StockTaskService extends GcmTaskService {
         //LJG before returning result let the SwipreRefresh know that the refresh is done
         //Credit: http://stackoverflow.com/users/574859/maximumgoat
         //from this thread http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
-
-        Log.v(LOG_TAG, "LJG Stock Task Service Done - will send broadcast for update");
         Utils.sendBroadcastForUpdate(mContext);
 
         return result;

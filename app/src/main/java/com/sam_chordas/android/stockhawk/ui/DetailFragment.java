@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -170,12 +169,8 @@ public class DetailFragment extends Fragment {
             if (!stockHistoryCursor.moveToFirst()) {
                 //Log.v(LOG_TAG, "Database test Cursor is empty!");
             } else {
-                int cursorCount = stockHistoryCursor.getCount();
-                // Log.v(LOG_TAG, "Database test cursor is valid and count is " + cursorCount);
-
                 stockHistoryCursor.moveToFirst();     //get the first date for setting up x axis
                 mEarliestDateInStockHistory = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
-                //Log.v(LOG_TAG, "Earliest date in cursor history is " + mEarliestDateInStockHistory);
 
                 do { //Loop through all data from cursor
                     String stockHistoryDate = stockHistoryCursor.getString(COL_STOCK_HISTORY_DATE);
@@ -219,8 +214,6 @@ public class DetailFragment extends Fragment {
         @Override
         protected void onPostExecute(LineData lineData) {
             super.onPostExecute(lineData);
-            //Log.v(LOG_TAG, "onPostExecute - The earliest date in stock history is " + mEarliestDateInStockHistory);
-
             stockHistoryLineChart.setData(lineData); //puts all the data into chart
 
             //Style the chart
@@ -231,9 +224,7 @@ public class DetailFragment extends Fragment {
             stockHistoryLineChart.setNoDataTextDescription("No Stock History");
 
             //setting the MarkerView
-            Log.v(LOG_TAG, "just before MyMarkerView Declared");
             MyMarkerView markView = new MyMarkerView(getContext(), R.layout.marker_view_layout, mEarliestDateInStockHistory);
-            Log.v(LOG_TAG, "Just after MyMarkerView Declared");
             stockHistoryLineChart.setMarkerView(markView);
 
             //Style the Axis
@@ -250,7 +241,6 @@ public class DetailFragment extends Fragment {
             xAxis.setLabelCount(3); //do not show more than 3 (ish) label lines for x Axis - stops dates overlapping
 
             //reset the xaxis formatter with the new date if possible
-            // Log.v(LOG_TAG, "Just before declaring new XAxisGraphFormatter. Earliest date is " + mEarliestDateInStockHistory);
             mStockHistoryDateAxisFormatter = new XAxisGraphFormatter(stockHistoryLineChart, mEarliestDateInStockHistory);
 
             //set the formatter

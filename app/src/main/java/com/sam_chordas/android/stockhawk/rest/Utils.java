@@ -64,14 +64,14 @@ public class Utils {
                 }
             }
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "String to JSON failed: " + e);
+            e.printStackTrace();
         }
         return batchOperations;
     }
 
-    //LJG this is what really errors off - who calls it
+    //this is what really errors off when server data has null bid price
     public static String truncateBidPrice(String bidPrice) {
-        Log.v(LOG_TAG, "truncateBidPrice - bidprice is " + bidPrice);
+        // Log.v(LOG_TAG, "truncateBidPrice - bidprice is " + bidPrice);
         if (!bidPrice.contains("null")) {
             bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
         } else {
@@ -112,10 +112,7 @@ public class Utils {
         try {
             String change = jsonObject.getString(context.getString(R.string.json_change));
             builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString(context.getString(R.string.json_symbol)));
-            //LJG this is where the "null" bid price comes in
             builder.withValue(QuoteColumns.NAME, jsonObject.getString(context.getString(R.string.json_name)));
-            // Log.v(LOG_TAG, "LJG Inserted Name into database is " + jsonObject.getString("Name"));
-
             builder.withValue(QuoteColumns.BIDPRICE
                     , truncateBidPrice(jsonObject.getString(context.getString(R.string.json_bid))));
             builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
@@ -173,13 +170,13 @@ public class Utils {
                 }
             }
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "IsValid? String to JSON failed: " + e);
+            e.printStackTrace();
         }
         return true; //stock is valid
     }
 
 
-    //LJG Trying to broadcast that API data is done
+    //broadcast that API data is done
     public static void sendBroadcastForUpdate(Context context) {
         Intent dataUpdated = new Intent(context.getString(R.string.refresh_data_intent_key));
         context.sendBroadcast(dataUpdated);
@@ -189,7 +186,6 @@ public class Utils {
     //Broadcast that Stock History API data is done - This is received by MyStocksActivity to stop refresh symbol showing
     public static void sendHistoryBroadcastForUpdate(Context context) {
         Intent dataUpdated = new Intent(context.getString(R.string.stock_history_received_intent_key));
-        Log.v(LOG_TAG, "In sendHistoryBroadcastForUpdate");
         context.sendBroadcast(dataUpdated);
     }
 

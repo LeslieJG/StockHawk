@@ -59,7 +59,6 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         viewHolder.symbol.setContentDescription(stockName);
 
         String stockBidPrice = cursor.getString(cursor.getColumnIndex(QuoteColumns.BIDPRICE));
-        Log.v(LOG_TAG, "LJG The bid price is " + stockBidPrice);
         viewHolder.bidPrice.setText(stockBidPrice);
         viewHolder.bidPrice.setContentDescription(mContext.getString(R.string.bid_price_content_description, stockBidPrice));
 
@@ -109,7 +108,6 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
         //delete the stock from Quotes table
         mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
-        Log.v(LOG_TAG, "LJG Deleted " + symbol + " from Quotes table");
 
         //delete the stcok from Histories table
         mContext.getContentResolver().delete(QuoteProvider.Histories.withSymbol(symbol), null, null);
